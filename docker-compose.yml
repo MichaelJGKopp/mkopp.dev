@@ -1,0 +1,33 @@
+# ToDo: need to test
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/mysite-frontend/Dockerfile.prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`yourdomain.com`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.yourdomain.com`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8080"
+
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

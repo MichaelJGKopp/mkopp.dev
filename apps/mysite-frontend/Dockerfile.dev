@@ -1,0 +1,9 @@
+# ToDo: need to test
+FROM node:lts-trixie-slim
+WORKDIR /app
+COPY package*.json nx.json angular.json tsconfig*.json ./
+RUN npm ci --legacy-peer-deps
+COPY . .
+EXPOSE 4200 4000
+# Dev browser server (adjust if you want SSR dev)
+CMD ["npx", "nx", "serve", "mysite-frontend", "--host=0.0.0.0"]
