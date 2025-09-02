@@ -1,0 +1,28 @@
+services:
+  reverse-proxy:
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+    volumes:
+      - ./certs/cert.pem:/etc/traefik/certs/cert.pem:ro
+      - ./certs/key.pem:/etc/traefik/certs/key.pem:ro
+      - ./traefik/dynamic.dev.yml:/etc/traefik/dynamic/dynamic.dev.yml:ro
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  frontend:
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.frontend.rule: "Host(`frontend.my-app.localhost`)"
+      traefik.http.services.frontend.loadbalancer.server.port: "4000"
+      traefik.http.routers.frontend.entrypoints: "websecure"
+      traefik.http.routers.frontend.tls: "true"
+      traefik.http.routers.frontend.tls.certresolver: ""  # override & effectively disable ACME for this env
+      traefik.docker.network: "web"
+    # Optional dev healthcheck label:
+    #   traefik.http.services.frontend.loadbalancer.healthcheck.path: "/health"

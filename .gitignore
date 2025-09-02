@@ -45,3 +45,8 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 .angular
+.env
+*password.txt
+
+# Ignore locally generated SSL certificates
+/certs

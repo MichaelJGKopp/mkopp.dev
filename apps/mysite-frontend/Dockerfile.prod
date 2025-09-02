@@ -5,9 +5,10 @@ FROM node:lts-trixie-slim AS builder
 
 WORKDIR /app
 
-COPY . .
-
+COPY *.json .
 RUN npm ci --legacy-peer-deps
+
+COPY . .
 RUN npx nx build mysite-frontend
 
 FROM node:lts-trixie-slim AS runner

@@ -1,9 +1,110 @@
-# ToDo: need to test
 services:
+  reverse-proxy:
+    image: traefik:v3.5
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true" # Enable the Traefik API/Dashboard
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false" # only expose services with explicit traefik labels
+      - "--entrypoints.web.address=:80"
+      # TLS
+      - "--entrypoints.websecure.address=:443"
+      # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # - "--certificatesresolvers.myresolver.acme.email=${TRAEFIK_ACME_EMAIL}"
+      # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--accesslog=true"            # enable access logs
+    ports:
+      # HTTP
+      - "80:80"
+      # HTTPS
+      - "443:443"
+      # Web UI (enabled with --api.insecure=true)
+      - "8080:8080"
+    volumes:
+    # Traefik listens to docker events
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "letsencrypt:/letsencrypt"
+    restart: unless-stopped
+    networks:
+      - web
+      - backend
+
   frontend:
     build:
       context: .
       dockerfile: apps/mysite-frontend/Dockerfile.prod
-    ports:
-      - "4000:4000"
-# ...add other services below if needed...
+    deploy:
+      mode: replicated
+      replicas: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${TRAEFIK_HTTP_HOST}`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4000"
+      # HTTPS
+      # - "traefik.http.routers.frontend.entrypoints=websecure"
+      # - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+    restart: unless-stopped
+    environment:
+      - LOG_REQUESTS=${LOG_REQUESTS}
+      - DEBUG=${DEBUG}
+    # (ensure app listens on 0.0.0.0:4000)
+    networks:
+      - web # So Traefik can reach it
+
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.backend.rule=Host(`${TRAEFIK_HTTP_HOST}`)"
+  #     - "traefik.http.services.backend.loadbalancer.server.port=8080"
+  #     - "traefik.docker.network=web"
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 3
+  #   restart: unless-stopped
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy  # only starts after postgres is healthy
+  #   networks:
+  #     - backend # For Frontend to reach it
+  #     - database # To connect to the database
+
+  postgres:
+    image: postgres:16.10-alpine
+    secrets:
+      - db-password
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGUSER=${POSTGRES_USER}            # Ensure tools default to the right DB user
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # Use the intended DB user instead of defaulting to 'root'
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - database
+
+secrets:
+  db-password:
+    file: ${POSTGRES_PASSWORD_FILE}
+
+volumes:
+  letsencrypt:
+  db-data:
+
+# Isolate database network
+networks:
+  web:
+    driver: bridge
+  backend:
+    driver: bridge
+  database:
+    driver: bridge
