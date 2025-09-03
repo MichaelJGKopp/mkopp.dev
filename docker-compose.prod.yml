@@ -2,40 +2,36 @@ services:
   reverse-proxy:
     image: traefik:v3.5
     command:
-      - "--log.level=DEBUG"
+      #- "--log.level=DEBUG"
       #- "--api.insecure=true" # Enable the Traefik API/Dashboard
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false" # only expose services with explicit traefik labels
       - "--entrypoints.web.address=:80"
-      - "--providers.docker.network=web"
       # TLS
       - "--entrypoints.websecure.address=:443"
-      # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      # - "--certificatesresolvers.myresolver.acme.email=${TRAEFIK_ACME_EMAIL}"
-      # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=${TRAEFIK_ACME_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # redirect
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--accesslog=true"            # enable access logs
-    ports:
-      # HTTP
-      - "80:80"
-      # HTTPS
-      - "443:443"
-      # Web UI (enabled with --api.insecure=true)
-      # - "8080:8080"
     labels:
       - "traefik.enable=true"
-      # - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/dashboard`)" # Dashboard route
-      - "traefik.http.routers.api.rule=Host(`traefik.localhost`)" # Dashboard route
-      - "traefik.http.routers.api.entrypoints=web"
-      # - "traefik.http.routers.api.entrypoints=websecure"
-      # - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.routers.api.rule=${TRAEFIK_DASHBOARD_HTTP_RULE}" # Dashboard route
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
       - "traefik.http.routers.api.service=api@internal"
-      - "traefik.http.routers.api.middlewares=myauth" # Apply the authentication middleware
+      - "traefik.http.routers.api.middlewares=auth" # Apply the authentication middleware
       # Define the Basic Auth Middleware
-      - "traefik.http.middlewares.myauth.basicauth.users=${TRAEFIK_AUTH_USER}" # AUTH Dashboard
+      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_AUTH_USER}" # AUTH Dashboard
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      # - "8080:8080" # Web UI
     volumes:
-    # Traefik listens to docker events
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" # Traefik listens to docker events
       - "letsencrypt:/letsencrypt"
     restart: unless-stopped
     networks:
@@ -48,19 +44,20 @@ services:
       dockerfile: apps/mysite-frontend/Dockerfile.prod
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 3
     labels:
       - "traefik.enable=true"
+      # --- Rule for HTTPS ---
       - "traefik.http.routers.frontend.rule=${TRAEFIK_HTTP_RULE}"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      # --- Loadbalancing - Port ---
       - "traefik.http.services.frontend.loadbalancer.server.port=4000"
       - "traefik.docker.network=web"
-      - "traefik.http.routers.frontend.entrypoints=web,websecure" # remove websecure
-      # - "traefik.http.routers.frontend.tls.certresolver=myresolver"
     restart: unless-stopped
     environment:
       - LOG_REQUESTS=${LOG_REQUESTS}
       - DEBUG=${DEBUG}
-    # (ensure app listens on 0.0.0.0:4000)
     networks:
       - web # So Traefik can reach it
 
@@ -70,9 +67,13 @@ services:
   #     dockerfile: Dockerfile
   #   labels:
   #     - "traefik.enable=true"
-  #     - "traefik.http.routers.backend.rule=Host(`${TRAEFIK_HTTP_HOST}`)"
+  #     - "traefik.docker.network=backend"
+  #     # --- Rule for HTTPS ---
+  #     - "traefik.http.routers.backend.rule=PathPrefix(`/api`)" # Route requests starting with /api
+  #     - "traefik.http.routers.backend.entrypoints=websecure"
+  #     - "traefik.http.routers.backend.tls.certresolver=myresolver"
+  #     # --- Loadbalancing - Port ---
   #     - "traefik.http.services.backend.loadbalancer.server.port=8080"
-  #     - "traefik.docker.network=web"
   #   deploy:
   #     mode: replicated
   #     replicas: 3

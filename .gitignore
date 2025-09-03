@@ -46,6 +46,7 @@ Thumbs.db
 
 .angular
 .env
+.env.prod
 *password.txt
 
 # Ignore locally generated SSL certificates

@@ -24,5 +24,6 @@ Thumbs.db
 .idea
 
 .env
+.env.prod
 *password.txt
 /certs
