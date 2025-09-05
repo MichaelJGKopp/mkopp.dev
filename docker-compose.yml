@@ -1,3 +1,4 @@
+name: mysite_dev
 services:
   reverse-proxy:
     image: traefik:v3.5
@@ -22,6 +23,13 @@ services:
       - "443:443"
       # Web UI (enabled with --api.insecure=true)
       # - "8080:8080"
+    networks:
+      - web
+      - backend
+    volumes:
+    # Traefik listens to docker events
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "letsencrypt:/letsencrypt"
     labels:
       - "traefik.enable=true"
       # - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/dashboard`)" # Dashboard route
@@ -33,22 +41,18 @@ services:
       - "traefik.http.routers.api.middlewares=myauth" # Apply the authentication middleware
       # Define the Basic Auth Middleware
       - "traefik.http.middlewares.myauth.basicauth.users=${TRAEFIK_AUTH_USER}" # AUTH Dashboard
-    volumes:
-    # Traefik listens to docker events
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "letsencrypt:/letsencrypt"
     restart: unless-stopped
-    networks:
-      - web
-      - backend
 
   frontend:
     build:
       context: .
       dockerfile: apps/mysite-frontend/Dockerfile.prod
-    deploy:
-      mode: replicated
-      replicas: 1
+    environment:
+      - LOG_REQUESTS=${LOG_REQUESTS}
+      - DEBUG=${DEBUG}
+    # (ensure app listens on 0.0.0.0:4000)
+    networks:
+      - web # So Traefik can reach it
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=${TRAEFIK_HTTP_RULE}"
@@ -57,42 +61,48 @@ services:
       - "traefik.http.routers.frontend.entrypoints=web,websecure" # remove websecure
       # - "traefik.http.routers.frontend.tls.certresolver=myresolver"
     restart: unless-stopped
-    environment:
-      - LOG_REQUESTS=${LOG_REQUESTS}
-      - DEBUG=${DEBUG}
-    # (ensure app listens on 0.0.0.0:4000)
-    networks:
-      - web # So Traefik can reach it
+    deploy:
+      mode: replicated
+      replicas: 1
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.backend.rule=Host(`${TRAEFIK_HTTP_HOST}`)"
-  #     - "traefik.http.services.backend.loadbalancer.server.port=8080"
-  #     - "traefik.docker.network=web"
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 3
-  #   restart: unless-stopped
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy  # only starts after postgres is healthy
-  #   networks:
-  #     - backend # For Frontend to reach it
-  #     - database # To connect to the database
+  backend:
+    build:
+      context: .
+      dockerfile: apps/mysite-backend/Dockerfile
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    secrets:
+      - db-password
+    networks:
+      - backend
+      - database
+      # - web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=${TRAEFIK_HTTP_BACKEND_RULE}"
+      - "traefik.docker.network=backend" # web before backend
+      - "traefik.http.services.backend.loadbalancer.server.port=8200"
+    restart: unless-stopped
 
   postgres:
     image: postgres:16.10-alpine
-    secrets:
-      - db-password
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
       - POSTGRES_DB=${POSTGRES_DB}
       - PGUSER=${POSTGRES_USER}            # Ensure tools default to the right DB user
+    secrets:
+      - db-password
+    ports:
+      - "5555:5432"
+    networks:
+      - database
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -102,16 +112,10 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    networks:
-      - database
 
 secrets:
   db-password:
     file: ${POSTGRES_PASSWORD_FILE}
-
-volumes:
-  letsencrypt:
-  db-data:
 
 # Isolate database network
 networks:
@@ -124,3 +128,7 @@ networks:
   database:
     driver: bridge
     name: database
+
+volumes:
+  letsencrypt:
+  db-data:

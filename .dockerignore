@@ -27,3 +27,4 @@ Thumbs.db
 .env.prod
 *password.txt
 /certs
+log.txt

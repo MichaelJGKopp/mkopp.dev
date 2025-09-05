@@ -1,0 +1,29 @@
+# Development-specific configuration
+spring:
+  jpa:
+    properties:
+      hibernate:
+        # Show all SQL statements to identify N+1 problems (only in dev)
+        '[show_sql]': true
+        '[format_sql]': true
+        # '[dynamic-update]': true
+
+        # Enable statistics to see if batching is working
+        #'[generate_statistics]': true
+
+        # Uncomment these settings for additional Hibernate cache settings
+        # '[cache.use_second_level_cache]': true
+        # '[cache.use_query_cache]': true
+        # '[cache.region.factory_class]': org.hibernate.cache.jcache.JCacheRegionFactory
+        # '[javax.cache.provider]': org.ehcache.jsr107.EhcacheCachingProvider
+        # For Caffeine (preferred, consistent with your Spring cache):
+        # '[cache.region.factory_class]': org.hibernate.cache.jcache.JCacheRegionFactory
+        # '[javax.cache.provider]': com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+
+logging:
+  level:
+    '[dev.mkopp.mysite.logging]': DEBUG
+    '[dev.mkopp.mysite]': DEBUG
+    # SQL logging for N+1 detection (only in dev)
+    # '[org.hibernate.SQL]': DEBUG
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE

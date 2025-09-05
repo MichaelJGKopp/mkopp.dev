@@ -51,3 +51,4 @@ Thumbs.db
 
 # Ignore locally generated SSL certificates
 /certs
+log.txt

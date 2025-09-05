@@ -1,24 +1,36 @@
-# Use node:lts-alpine for smallest, lowest vulnerability image (if app works with Alpine).
-# Use node:lts-trixie-slim for best compatibility and still low vulnerabilities.
+# Multi-stage Dockerfile for an Nx Angular SSR application
 
+# Debian-based Node.js image for balance of size and compatibility.
 FROM node:lts-trixie-slim AS builder
 
 WORKDIR /app
 
-COPY *.json .
+COPY package.json package-lock.json* nx.json ./
+COPY tsconfig.base.json ./
 RUN npm ci --legacy-peer-deps
 
 COPY . .
 RUN npx nx build mysite-frontend
 
+
 FROM node:lts-trixie-slim AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/dist/apps/mysite-frontend /app/dist
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/package.json /app/package.json
+# Create a non-root user and group for security.
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid 1001 -m nodejs
+
+# Set the environment to production.
+ENV NODE_ENV=production
+
+# Copy the standalone server output from the builder stage.
+# This includes only the necessary production node_modules, assets, and server files.
+# The --chown flag ensures the non-root user owns the files.
+COPY --from=builder --chown=nodejs:nodejs /app/dist/apps/mysite-frontend .
+
+USER nodejs
 
 EXPOSE 4000
 
-CMD ["node", "dist/server/server.mjs"]
+CMD ["node", "server/server.mjs"]

@@ -1,0 +1,24 @@
+{
+  "name": "mysite-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/mysite-backend/src",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nxrocks/nx-spring-boot:run",
+      "options": {
+        "root": "apps/mysite-backend",
+        "args": [
+          "-Dspring-boot.run.profiles=dev"
+        ],
+        "envFile": ".env"
+      }
+    },
+    "build": {
+      "executor": "@nxrocks/nx-spring-boot:build",
+      "options": {
+        "root": "apps/mysite-backend"
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+# Production-specific configuration
+# spring:
+#   jpa:
+#     properties:
+#       hibernate:
+#         '[show_sql]': false
+#         '[format_sql]': false
+#         '[jdbc.batch_size]': 25
+
+# logging:
+#   level:
+#     '[dev.mkopp.mysite.shared.logging]': ERROR
+#     '[dev.mkopp.mysite]': INFO
+#     # No SQL logging in production
+#     '[org.hibernate.SQL]': ERROR

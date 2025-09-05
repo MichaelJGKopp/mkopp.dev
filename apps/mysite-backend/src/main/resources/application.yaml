@@ -1,0 +1,125 @@
+logging:
+  level:
+    ROOT: INFO
+    '[org.hibernate.SQL]': INFO
+    '[dev.mkopp.mysite.shared.logging]': ERROR
+    '[dev.mkopp.mysite]': INFO
+# Common configuration for all profiles
+server:
+    port: 8200
+spring:
+    profiles:
+        active: dev
+    jackson:
+        time-zone: UTC
+    application:
+        name: mysite backend
+    # threads:  # update java and enable if needed
+    #     virtual:
+    #         enabled: true
+    datasource:
+        url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}?options=-c%20timezone%3DUTC
+        username: ${POSTGRES_USER}
+        password: ${POSTGRES_PASSWORD}
+        hikari:
+            poolName: Hikari
+            auto-commit: false
+        driver-class-name: org.postgresql.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+    jpa:
+        properties:
+            hibernate:
+                '[generate_statistics]': false
+                '[order_updates]': true
+                '[order_inserts]': true
+                # '[order_deletes]': true
+                '[default_schema]': ${POSTGRES_SCHEMA}
+                jdbc:
+                    '[time_zone]': UTC
+                    '[batch_size]': 25
+                    '[default_batch_fetch_size]': 25  # For collection fetching in queries
+                    '[jdbc.fetch_size]': 25 # query hint
+                    # '[batch_versioned_data]': true  # for later use with versioned entities
+                    # '[jdbc.batch_versioned_data]': true
+                query:
+                    '[fail_on_pagination_over_collection_fetch]': true
+                    '[in_clause_parameter_padding]': true
+                connection:
+                    '[provider_disables_autocommit]': true
+        hibernate:
+            ddl-auto: validate
+            naming:
+                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        open-in-view: false  # Disable open-in-view pattern for better resource management
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: https://mkopp.kinde.com
+                    jwk-set-uri: https://mkopp.kinde.com/.well-known/jwks
+                    audiences: http://localhost:8200/api
+    devtools:
+        restart:
+            enabled: false
+        livereload:
+            enabled: false
+    # cache:
+    #     type: caffeine
+    #     caffeine:
+    #         spec: maximumSize=500,expireAfterWrite=10m
+    servlet:
+        multipart:
+            max-file-size:
+                10MB
+            max-request-size:
+                10MB
+    output:
+        ansi:
+            enabled: ALWAYS
+# management: # for development only - disable for production
+#     endpoints:
+#         web:
+#             exposure:
+#                 include: health,info,mappings,modulithModules
+#     endpoint:
+#         health:
+#             show-details:
+#                 always
+springdoc:
+    swagger-ui:
+        path: /swagger-ui.html
+    api-docs:
+        path: /v3/api-docs
+
+# JWT configuration with environment variable support
+
+# jwt:
+#     secret: ${JWT_SECRET}
+#     issuer: ${JWT_ISSUER}
+#     expiration: ${JWT_EXPIRATION} # 1 day in milliseconds
+application:
+    api:
+        error:
+            path: "https://mkopp.dev/api/v1/errors/"
+    # events:
+    #     # Für Event Tabelle zum Wiederholen von fehlgeschlagenen Events und Aufräumen
+    #     outboundRetryIntervalMs: 60000
+    #     clearIntervalMs: 86400000   # 1 days
+    #     clearOlderThanDays: 30
+    client-base-url: http://localhost:4200
+    cors:
+        allowed-origins: http://localhost:4200
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "*"
+        allow-credentials: false
+        max-age: 300
+    kinde:
+        api: https://mkopp.kinde.com
+        client-id: ${KINDE_CLIENT_ID}
+        client-secret: ${KINDE_CLIENT_SECRET}
+        audience: https://mkopp.kinde.com/api
+    # stripe:
+    #     api-key: ${STRIPE_API_KEY}
+    #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}

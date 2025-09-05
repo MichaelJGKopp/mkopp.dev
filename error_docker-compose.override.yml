@@ -3,6 +3,7 @@ services:
     command:
       - "--log.level=DEBUG"
       # - "--api.insecure=true"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
@@ -11,17 +12,16 @@ services:
       - "--providers.file.watch=true"
       # - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--api.dashboard=true"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.api.entrypoints: "web,websecure"
-      traefik.http.routers.api.tls: "true"
-      traefik.http.routers.api.tls.certresolver: ""  # override & effectively disable ACME for this env
     volumes:
       - ./certs/cert.pem:/etc/traefik/certs/cert.pem:ro
       - ./certs/key.pem:/etc/traefik/certs/key.pem:ro
       - ./traefik/dynamic.dev.yml:/etc/traefik/dynamic/dynamic.dev.yml:ro
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.api.entrypoints: "web,websecure"
+      traefik.http.routers.api.tls: "true"
+      traefik.http.routers.api.tls.certresolver: ""  # override & effectively disable ACME for this env
 
   frontend:
     labels:
