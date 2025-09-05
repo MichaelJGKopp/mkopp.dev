@@ -88,6 +88,8 @@ services:
       # --- Rule for HTTPS ---
       traefik.http.routers.backend.entrypoints: "websecure"
       traefik.http.routers.backend.tls.certresolver: "letsencrypt"
+      # AUTH
+      traefik.http.routers.backend.middlewares: "auth"
     restart: unless-stopped
     deploy:
       mode: replicated
