@@ -9,7 +9,7 @@ COPY package.json package-lock.json* nx.json ./
 COPY tsconfig.base.json ./
 RUN npm ci --legacy-peer-deps
 
-COPY . .
+COPY apps/mysite-frontend ./apps/mysite-frontend
 RUN npx nx build mysite-frontend
 
 
