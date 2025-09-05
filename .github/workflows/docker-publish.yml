@@ -1,0 +1,102 @@
+name: Docker Publish
+# Sets the name of the workflow as it appears in the GitHub Actions UI.
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+# Specifies when the workflow should run.
+# Here, it runs every time you push code to the 'main' branch.
+
+jobs:
+  build-and-push-frontend:
+    name: Build and Push Frontend Image
+    runs-on: ubuntu-latest
+    # Defines a job named 'Build and Push Frontend Image'.
+    # The job runs on a GitHub-hosted Ubuntu Linux VM.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Downloads your GitHub repository's files onto the runner.
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # Logs in to Docker Hub using credentials stored as GitHub secrets.
+        # This is required to push images to your Docker Hub account.
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/mysite-frontend
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+        # Generates metadata for the Docker image (tags, labels).
+        # The output is used in the next step for tagging the image.
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/mysite-frontend/Dockerfile.prod
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        # Builds the Docker image for the frontend using the specified Dockerfile.
+        # Pushes the image to Docker Hub with the 'latest' tag and any other tags from metadata.
+        # Uses GitHub Actions cache to speed up builds.
+
+  build-and-push-backend:
+    name: Build and Push Backend Image
+    runs-on: ubuntu-latest
+    # Defines a job named 'Build and Push Backend Image'.
+    # The job runs on a GitHub-hosted Ubuntu Linux VM.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Checks out your repository code so the workflow can access it.
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # Logs in to Docker Hub using credentials stored as GitHub secrets.
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/mysite-backend
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+        # Generates metadata for the Docker image (tags, labels).
+        # The output is used in the next step for tagging the image.
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/mysite-backend/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        # Builds the Docker image for the backend using the specified Dockerfile.
+        # Pushes the image to Docker Hub with the 'latest' tag and any other tags from metadata.
+        # Uses GitHub Actions cache to speed up builds.

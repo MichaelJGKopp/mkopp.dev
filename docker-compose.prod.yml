@@ -1,4 +1,4 @@
-name: mysite_prod
+name: mysite
 services:
   reverse-proxy:
     image: traefik:v3.5
