@@ -27,9 +27,6 @@ echo "Deploying Backend Tag: $BACKEND_TAG"
 # echo "🔑 Logging in to Docker Hub..."
 # echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-echo "🚚 Pulling new images..."
-docker compose pull
-
 # Update backend first
 echo "⬆️ Updating backend services..."
 docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans backend
