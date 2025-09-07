@@ -27,6 +27,14 @@ const angularApp = new AngularNodeAppEngine();
  */
 
 /**
+ * Health check endpoint
+ */
+app.get('/healthz', (req, res) => {
+  // console.log('[HEALTH CHECK] /healthz endpoint hit');
+  res.status(200).send('OK');
+});
+
+/**
  * Serve static files from /browser
  */
 app.use(
@@ -55,9 +63,33 @@ app.use('/**', (req, res, next) => {
  */
 if (isMainModule(import.meta.url)) {
   const port = process.env['PORT'] || 4000;
-  app.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
-  });
+
+  app.listen(port, () => {  // ToDo: take out when commenting back in graceful shutdown
+         console.log(`Node Express server listening on http://localhost:${port}`);
+   });
+//   const server = app.listen(port, () => {
+//     console.log(`Node Express server listening on http://localhost:${port}`);
+//   });
+
+//   const gracefulShutdown = (signal: string) => {
+//     console.log(`[${signal}] Received, shutting down gracefully...`);
+//     server.close(() => {
+//       console.log('Closed out remaining connections.');
+//       process.exit(0);
+//     });
+
+//     // Force shutdown after 30 seconds
+//     setTimeout(() => {
+//       console.error(
+//         'Could not close connections in time, forcefully shutting down'
+//       );
+//       process.exit(1);
+//     }, 30000);
+//   };
+
+//   // Listen for termination signals
+//   process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+//   process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 }
 
 /**

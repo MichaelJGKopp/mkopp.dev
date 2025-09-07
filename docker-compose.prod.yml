@@ -4,7 +4,6 @@ services:
     image: traefik:v3.5
     command:
       #- "--log.level=DEBUG"
-      #- "--api.insecure=true" # Enable the Traefik API/Dashboard
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false" # only expose services with explicit traefik labels
@@ -39,62 +38,6 @@ services:
       traefik.http.middlewares.auth.basicauth.users: "${TRAEFIK_AUTH_USER}" # AUTH Dashboard
     restart: unless-stopped
 
-  frontend:
-    build:
-      context: .
-      dockerfile: apps/mysite-frontend/Dockerfile.prod
-    environment:
-      LOG_REQUESTS: "${LOG_REQUESTS}"
-      DEBUG: "${DEBUG}"
-    networks:
-      - web # So Traefik can reach it
-    labels:
-      traefik.enable: "true"
-      # --- Rule for HTTPS ---
-      traefik.http.routers.frontend.rule: "${TRAEFIK_HTTP_RULE}"
-      traefik.http.routers.frontend.entrypoints: "websecure"
-      traefik.http.routers.frontend.tls.certresolver: "letsencrypt"
-      # --- Loadbalancing - Port ---
-      traefik.http.services.frontend.loadbalancer.server.port: "4000"
-      traefik.docker.network: "web"
-    restart: unless-stopped
-    deploy:
-      mode: replicated
-      replicas: 3
-
-  backend:
-    build:
-      context: .
-      dockerfile: apps/mysite-backend/Dockerfile
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_DB: "${POSTGRES_DB}"
-      POSTGRES_HOST: "postgres"
-      POSTGRES_PASSWORD_FILE: "/run/secrets/db-password"
-    secrets:
-      - db-password
-    networks:
-      - backend
-      - database
-    depends_on:
-      postgres:
-        condition: service_healthy  # only starts after postgres is healthy
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.backend.rule: "${TRAEFIK_HTTP_BACKEND_RULE}"
-      traefik.docker.network: "backend"
-      # --- Loadbalancing - Port ---
-      traefik.http.services.backend.loadbalancer.server.port: "8200"
-      # --- Rule for HTTPS ---
-      traefik.http.routers.backend.entrypoints: "websecure"
-      traefik.http.routers.backend.tls.certresolver: "letsencrypt"
-      # AUTH
-      traefik.http.routers.backend.middlewares: "auth"
-    restart: unless-stopped
-    deploy:
-      mode: replicated
-      replicas: 3
-
   postgres:
     image: postgres:16.10-alpine
     environment:
@@ -118,9 +61,106 @@ services:
       retries: 5
     restart: unless-stopped
 
-secrets:
-  db-password:
-    file: "${POSTGRES_PASSWORD_FILE}"
+  backend:
+    image: ${DOCKERHUB_USERNAME}/mysite-backend:${BACKEND_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/mysite-backend/Dockerfile
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/db-password"
+    secrets:
+      - db-password
+    networks:
+      - backend
+      - database
+    depends_on:
+      postgres:
+        condition: service_healthy  # only starts after postgres is healthy
+    labels:
+      #
+      # NEW FOR ZERO-DOWNTIME & IP WHITELIST
+      traefik.enable: "true"
+      traefik.docker.network: "backend"
+
+      # Define a single service for the backend, including health check
+      traefik.http.services.backend-svc.loadbalancer.server.port: "8200"
+      traefik.http.services.backend-svc.loadbalancer.healthcheck.path: "/management/health/readiness"
+      traefik.http.services.backend-svc.loadbalancer.healthcheck.interval: "10s"
+
+      # Define the IP whitelist middleware for internal traffic
+      traefik.http.middlewares.internal-ips.ipwhitelist.sourcerange: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
+
+      # Router 1: Public route for the API, protected by auth.
+      traefik.http.routers.backend-public.rule: "${TRAEFIK_HTTP_BACKEND_RULE}"
+      traefik.http.routers.backend-public.entrypoints: "websecure"
+      traefik.http.routers.backend-public.service: "backend-svc"
+      traefik.http.routers.backend-public.tls.certresolver: "letsencrypt"
+      traefik.http.routers.backend-public.middlewares: "auth"
+
+      # Router 2: Private route for management endpoints, protected by IP whitelist AND auth.
+      traefik.http.routers.backend-private.rule: "(${TRAEFIK_HTTP_BACKEND_RULE}) && PathPrefix(`/management`)"
+      traefik.http.routers.backend-private.entrypoints: "websecure"
+      traefik.http.routers.backend-private.service: "backend-svc"
+      traefik.http.routers.backend-private.tls.certresolver: "letsencrypt"
+      traefik.http.routers.backend-private.middlewares: "internal-ips,auth"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      mode: replicated
+      replicas: 3  # Add 3 replicas for zero-downtime
+      update_config:
+        parallelism: 1        # Only 1 replica updates at a time
+        delay: 10s            # 10 seconds between replica updates
+        order: start-first    # v2 starts, health check passes, then v1 stops
+        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    stop_grace_period: 30s
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/mysite-frontend:${FRONTEND_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/mysite-frontend/Dockerfile.prod
+    environment:
+      LOG_REQUESTS: "${LOG_REQUESTS}"
+      DEBUG: "${DEBUG}"
+    networks:
+      - web # So Traefik can reach it
+    labels:
+      traefik.enable: "true"
+      # --- Rule for HTTPS ---
+      traefik.http.routers.frontend.rule: "${TRAEFIK_HTTP_RULE}"
+      traefik.http.routers.frontend.entrypoints: "websecure"
+      traefik.http.routers.frontend.tls.certresolver: "letsencrypt"
+      # --- Loadbalancing - Port ---
+      traefik.http.services.frontend.loadbalancer.server.port: "4000"
+      traefik.docker.network: "web"
+      # Add health checks for zero-downtime
+      traefik.http.services.frontend.loadbalancer.healthcheck.path: "/healthz"
+      traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      mode: replicated
+      replicas: 3  # Increase to 3 for zero-downtime
+      update_config:
+        parallelism: 1        # Only 1 replica updates at a time
+        delay: 10s            # 10 seconds between replica updates
+        order: start-first    # v2 starts, health check passes, then v1 stops
+        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    stop_grace_period: 35s
 
 # Isolate database network
 networks:
@@ -137,3 +177,7 @@ networks:
 volumes:
   letsencrypt:
   db-data:
+
+secrets:
+  db-password:
+    file: "${POSTGRES_PASSWORD_FILE}"

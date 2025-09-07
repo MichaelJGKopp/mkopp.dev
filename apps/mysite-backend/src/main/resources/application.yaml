@@ -7,7 +7,10 @@ logging:
 # Common configuration for all profiles
 server:
     port: 8200
+    shutdown: graceful
 spring:
+    lifecycle:
+        timeout-per-shutdown-phase: 25s
     profiles:
         active: dev
     jackson:
@@ -77,15 +80,22 @@ spring:
     output:
         ansi:
             enabled: ALWAYS
-# management: # for development only - disable for production
-#     endpoints:
-#         web:
-#             exposure:
-#                 include: health,info,mappings,modulithModules
-#     endpoint:
-#         health:
-#             show-details:
-#                 always
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "health,info" # ,prometheus later
+            base-path: /management
+    endpoint:
+        health:
+            show-details: always
+            probes:
+                enabled: true
+            group:
+                liveness:
+                    include: "livenessState"  # Is the app itself running?
+                readiness:
+                    include: "livenessState,readinessState,db"  # Is it running AND ready for traffic?
 springdoc:
     swagger-ui:
         path: /swagger-ui.html
