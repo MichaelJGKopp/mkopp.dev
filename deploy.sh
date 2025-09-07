@@ -4,7 +4,7 @@ set -e
 # This script is called by the GitHub Actions workflow.
 # It expects FRONTEND_TAG and BACKEND_TAG environment variables to be set.
 
-cd "$DEPLOY_PATH"
+# cd "$DEPLOY_PATH"
 
 echo "🚀 Starting deployment..."
 

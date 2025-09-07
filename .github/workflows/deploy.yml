@@ -98,4 +98,5 @@ jobs:
           script: |
             export FRONTEND_TAG=${{ needs.build-and-push-frontend.outputs.image_tag }}
             export BACKEND_TAG=${{ needs.build-and-push-backend.outputs.image_tag }}
+            cd ${{ secrets.DEPLOY_PATH }}
             ./deploy.sh
