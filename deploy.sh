@@ -29,16 +29,8 @@ echo "Deploying Backend Tag: $BACKEND_TAG"
 
 # Update backend first
 echo "⬆️ Updating backend services..."
-docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps backend
-
-# After backend update
-echo "🔍 Checking backend health..."
-if docker compose -f docker-compose.prod.yml exec backend curl -sf http://localhost:8200/management/health > /dev/null; then
-  echo "✅ Backend is healthy"
-else
-  echo "❌ Backend health check failed"
-  exit 1
-fi
+docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps --wait backend
+echo "✅ Backend is healthy and ready."
 
 # Wait for backend to stabilize
 echo "⏳ Waiting for backend to stabilize..."
@@ -46,19 +38,8 @@ sleep 30
 
 # Update frontend second
 echo "⬆️ Updating frontend services..."
-docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps frontend
-
-# After frontend update
-echo "🔍 Checking frontend health..."
-if curl -sf http://localhost/healthz > /dev/null; then
-  echo "✅ Frontend is healthy"
-else
-  echo "❌ Frontend health check failed"
-  exit 1
-fi
-
-# echo "⬆️ Starting services with new images..."
-# docker compose up -d -f docker-compose.prod.yml --no-build --remove-orphans
+docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps --wait frontend
+echo "✅ Frontend is healthy and ready."
 
 echo "🧹 Cleaning up old images..."
 docker image prune -f

@@ -28,3 +28,9 @@ Thumbs.db
 *password.txt
 /certs
 log.txt
+
+# Java / Maven
+target/
+.mvn/
+mvnw
+mvnw.cmd
