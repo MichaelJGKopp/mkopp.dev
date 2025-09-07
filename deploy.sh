@@ -29,7 +29,7 @@ echo "Deploying Backend Tag: $BACKEND_TAG"
 
 # Update backend first
 echo "⬆️ Updating backend services..."
-docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans backend
+docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps backend
 
 # After backend update
 echo "🔍 Checking backend health..."
@@ -46,7 +46,7 @@ sleep 30
 
 # Update frontend second
 echo "⬆️ Updating frontend services..."
-docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans frontend
+docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans --no-deps frontend
 
 # After frontend update
 echo "🔍 Checking frontend health..."
