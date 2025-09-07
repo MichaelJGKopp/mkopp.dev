@@ -30,7 +30,7 @@ const angularApp = new AngularNodeAppEngine();
  * Health check endpoint
  */
 app.get('/healthz', (req, res) => {
-  // console.log('[HEALTH CHECK] /healthz endpoint hit');
+  console.log('[HEALTH CHECK] /healthz endpoint hit');
   res.status(200).send('OK');
 });
 
@@ -67,6 +67,7 @@ if (isMainModule(import.meta.url)) {
   app.listen(port, () => {  // ToDo: take out when commenting back in graceful shutdown
          console.log(`Node Express server listening on http://localhost:${port}`);
    });
+
 //   const server = app.listen(port, () => {
 //     console.log(`Node Express server listening on http://localhost:${port}`);
 //   });

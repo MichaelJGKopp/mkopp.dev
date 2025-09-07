@@ -87,8 +87,8 @@ services:
 
       # Define a single service for the backend, including health check
       traefik.http.services.backend-svc.loadbalancer.server.port: "8200"
-      traefik.http.services.backend-svc.loadbalancer.healthcheck.path: "/management/health/readiness"
-      traefik.http.services.backend-svc.loadbalancer.healthcheck.interval: "10s"
+      # traefik.http.services.backend-svc.loadbalancer.healthcheck.path: "/management/health/readiness"
+      # traefik.http.services.backend-svc.loadbalancer.healthcheck.interval: "10s"
 
       # Define the IP whitelist middleware for internal traffic
       traefik.http.middlewares.internal-ips.ipwhitelist.sourcerange: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
@@ -98,7 +98,7 @@ services:
       traefik.http.routers.backend-public.entrypoints: "websecure"
       traefik.http.routers.backend-public.service: "backend-svc"
       traefik.http.routers.backend-public.tls.certresolver: "letsencrypt"
-      traefik.http.routers.backend-public.middlewares: "auth"
+      traefik.http.routers.backend-public.middlewares: "auth" # ToDo. remove after spring security implemented
 
       # Router 2: Private route for management endpoints, protected by IP whitelist AND auth.
       traefik.http.routers.backend-private.rule: "(${TRAEFIK_HTTP_BACKEND_RULE}) && PathPrefix(`/management`)"
@@ -107,21 +107,21 @@ services:
       traefik.http.routers.backend-private.tls.certresolver: "letsencrypt"
       traefik.http.routers.backend-private.middlewares: "internal-ips,auth"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    #   start_period: 30s
     deploy:
       mode: replicated
       replicas: 3  # Add 3 replicas for zero-downtime
-      update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
-    stop_grace_period: 30s
+    #   update_config:
+    #     parallelism: 1        # Only 1 replica updates at a time
+    #     delay: 10s            # 10 seconds between replica updates
+    #     order: start-first    # v2 starts, health check passes, then v1 stops
+    #     failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    # stop_grace_period: 30s
 
   frontend:
     image: ${DOCKERHUB_USERNAME}/mysite-frontend:${FRONTEND_TAG:-latest}
@@ -143,24 +143,24 @@ services:
       traefik.http.services.frontend.loadbalancer.server.port: "4000"
       traefik.docker.network: "web"
       # Add health checks for zero-downtime
-      traefik.http.services.frontend.loadbalancer.healthcheck.path: "/healthz"
-      traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
+      # traefik.http.services.frontend.loadbalancer.healthcheck.path: "/healthz"
+      # traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+    # healthcheck:
+    #   test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 10s
     deploy:
       mode: replicated
       replicas: 3  # Increase to 3 for zero-downtime
-      update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
-    stop_grace_period: 35s
+    #   update_config:
+    #     parallelism: 1        # Only 1 replica updates at a time
+    #     delay: 10s            # 10 seconds between replica updates
+    #     order: start-first    # v2 starts, health check passes, then v1 stops
+    #     failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    # stop_grace_period: 35s
 
 # Isolate database network
 networks:
