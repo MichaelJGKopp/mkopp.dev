@@ -122,6 +122,7 @@ services:
         delay: 10s            # 10 seconds between replica updates
         order: start-first    # v2 starts, health check passes, then v1 stops
         failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    stop_grace_period: 30s
 
   frontend:
     build:
@@ -158,6 +159,7 @@ services:
         delay: 10s            # 10 seconds between replica updates
         order: start-first    # v2 starts, health check passes, then v1 stops
         failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    stop_grace_period: 30s
 
 # Isolate database network
 networks:

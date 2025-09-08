@@ -146,12 +146,12 @@ services:
       # traefik.http.services.frontend.loadbalancer.healthcheck.path: "/healthz"
       # traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
     restart: unless-stopped
-    # healthcheck:
-    #   test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 3
-    #   start_period: 10s
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     deploy:
       mode: replicated
       replicas: 3  # Increase to 3 for zero-downtime
