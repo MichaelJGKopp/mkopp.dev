@@ -6,6 +6,9 @@ set -e
 
 # cd "$DEPLOY_PATH"
 
+echo "🔄 Pulling latest changes..."
+git pull
+
 echo "🚀 Starting deployment..."
 
 # Load environment variables from .env file for secrets and other configurations
