@@ -2,7 +2,7 @@
   "name": "mysite-frontend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "prefix": "app",
+  "prefix": "mysite",
   "sourceRoot": "apps/mysite-frontend/src",
   "tags": [],
   "targets": {
