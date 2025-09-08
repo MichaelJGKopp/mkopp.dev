@@ -155,12 +155,12 @@ services:
     deploy:
       mode: replicated
       replicas: 3  # Increase to 3 for zero-downtime
-    #   update_config:
-    #     parallelism: 1        # Only 1 replica updates at a time
-    #     delay: 10s            # 10 seconds between replica updates
-    #     order: start-first    # v2 starts, health check passes, then v1 stops
-    #     failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
-    # stop_grace_period: 35s
+      update_config:
+        parallelism: 1        # Only 1 replica updates at a time
+        delay: 10s            # 10 seconds between replica updates
+        order: start-first    # v2 starts, health check passes, then v1 stops
+        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+    stop_grace_period: 35s
 
 # Isolate database network
 networks:
