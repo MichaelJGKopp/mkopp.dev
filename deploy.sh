@@ -6,7 +6,8 @@ set -e
 
 # cd "$DEPLOY_PATH"
 
-echo "🔄 Pulling latest changes..."
+echo "🔄 Pulling latest changes after resetting..."
+git reset --hard HEAD
 git pull
 
 echo "🚀 Starting deployment..."
