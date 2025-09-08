@@ -6,10 +6,6 @@ set -e
 
 # cd "$DEPLOY_PATH"
 
-echo "🔄 Pulling latest changes after resetting..."
-git reset --hard HEAD
-git pull
-
 echo "🚀 Starting deployment..."
 
 # Load environment variables from .env file for secrets and other configurations
