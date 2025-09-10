@@ -1,10 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FaConfig, FaIconLibrary, FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { FaConfig, FaIconComponent, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fontAwesomeIcons } from './shared/font-awesome-icons';
+import { Navbar } from "./layout/navbar";
+import { Footer } from "./layout/footer";
 
 @Component({
-  imports: [RouterModule, FaIconComponent],
+  imports: [RouterModule, Navbar, Footer, FaIconComponent],
   selector: 'mysite-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
