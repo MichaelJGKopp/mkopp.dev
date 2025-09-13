@@ -31,10 +31,10 @@ module.exports = {
         "tageslicht": {
           // #FF8C00 (Dark Orange): This is a vibrant, slightly deeper orange.
           // #FFA500 (Orange): A classic, bright orange.
-          // #FF9900: A common web orange that often appears quite luminous.
-          // #FFB700: A slightly lighter, more golden orange that can have a glowing effect
-          "primary": "#FF8C00", // Dark Orange (orange-600)
-          "secondary": "#fb923c", // Light Orange (orange-400), "#f97316", // Orange (orange-500)
+          // #FF9900 (Web Orange): A common web orange that often appears quite luminous.
+          // #FFB700 (Golden Orange): A slightly lighter, more golden orange that can have a glowing effect.
+          "primary": "#FF9900", // Dark Orange
+          "secondary": "#FFB700", // Light Orange
           "accent": "#3b82f6", // Blue (blue-500)
           "neutral": "#475569", // Medium Slate (slate-600)
           "base-100": "#ffffff", // White
