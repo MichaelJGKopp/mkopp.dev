@@ -15,4 +15,4 @@ Each ADR documents an important architectural or design decision, including:
 - [ADR 0001 – Authentication with Keycloak](0001-authentication-with-keycloak.md)
 - [ADR 0002 – Nx Monorepo](0002-nx-monorepo.md)
 - [ADR 0003 – SSR Angular](0003-ssr-angular.md)
-- [ADR 0004 – Deployment with Docker and Traefik.md](0004-deployment-with-Docker-and-traefik.md)
+- [ADR 0004 – Deployment with Docker and Traefik.md](0004-deployment-with-docker-and-traefik.md)
