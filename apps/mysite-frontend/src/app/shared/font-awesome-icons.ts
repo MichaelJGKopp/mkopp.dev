@@ -1,5 +1,5 @@
 import { IconDefinition } from '@fortawesome/angular-fontawesome';
-import { faCartShopping, faTruckFast, faUser, faBars, faSun, faMoon, faCheck, faCircleCheck, faXmark, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faTruckFast, faUser, faBars, faSun, faMoon, faCheck, faCircleCheck, faXmark, faEnvelope, faCode } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-regular-svg-icons';
 
@@ -20,6 +20,7 @@ export const fontAwesomeIcons: IconDefinition[] = [
     faMoon,
     
     faCopyright,
+    faCode,
     faTruckFast,
 
     // Not used yet
