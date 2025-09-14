@@ -68,7 +68,7 @@ KC --> B2
 KC --> B3
 ```
 
-For a full rationale and implementation details, see **[ADR 004 – Deployment with Docker + Traefik](./docs/adr/0004-deployment-with-docker-traefik.md)**.
+For a full rationale and implementation details, see **[ADR 004 – Deployment with Docker + Traefik](./docs/adr/0004-deployment-with-docker-and-traefik.md)**.
 
 ---
 
@@ -83,26 +83,30 @@ For a full rationale and implementation details, see **[ADR 004 – Deployment w
 
 ### Setup
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
+
     ```sh
     git clone https://github.com/MichaelJGKopp/mkopp.dev.git
     cd mkopp.dev
     ```
 
-2.  **Configure Environment Variables:**
+2. **Configure Environment Variables:**
     - Copy the example environment file:
+
       ```sh
       cp .env.example .env
       ```
+
     - Open the new `.env` file and replace the placeholder values with your local configuration.
 
-3.  **Launch the Application:**
+3. **Launch the Application:**
     - Use Docker Compose to build and run all the services:
+
       ```sh
       docker-compose up --build
       ```
 
-4.  **Access the Application:**
+4. **Access the Application:**
     - Frontend: [http://localhost](http://localhost) (or your configured domain)
     - Traefik Dashboard: [http://traefik.localhost](http://traefik.localhost) (Requires basic auth credentials from your `.env` file).
 
@@ -114,10 +118,10 @@ Production deployment uses a separate `docker-compose.prod.yml` file and is auto
 
 ### CI/CD Flow
 
-1.  **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
-2.  **Build & Test:** The workflow builds and tests the frontend and backend applications.
-3.  **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
-4.  **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
+1. **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
+2. **Build & Test:** The workflow builds and tests the frontend and backend applications.
+3. **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
+4. **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
 
 This process ensures automated, consistent deployments to the production environment.
 
@@ -133,6 +137,7 @@ This is an Nx monorepo. Key directories include:
 - `docs/`: Contains all project documentation, including this README, the [Design Document](./docs/design.md), and [Architecture Decision Records (ADRs)](./docs/adr/).
 
 To visualize the project graph and dependencies, run:
+
 ```sh
 npx nx graph
 ```
