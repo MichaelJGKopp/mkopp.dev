@@ -118,7 +118,7 @@ Production deployment uses a separate `docker-compose.prod.yml` file and is auto
 
 ### CI/CD Flow
 
-1. **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/ci.yml).
+1. **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
 2. **Build & Test:** The workflow builds and tests the frontend and backend applications.
 3. **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
 4. **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
@@ -146,4 +146,4 @@ npx nx graph
 
 ## Development Process
 
-This project follows an agile approach using a public Kanban board to track user stories, epics, and progress. For more details, see the [Design Document](./docs/design.md#5-development-process).
+This project follows an agile approach using a [public Kanban board](https://github.com/users/MichaelJGKopp/projects/1/views/1) to track user stories, epics, and progress. For more details, see the [Design Document](./docs/design.md#5-development-process).
