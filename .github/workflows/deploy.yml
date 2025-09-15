@@ -89,18 +89,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-and-push-frontend, build-and-push-backend]
     steps:
-      - name: Deploy to production server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            export FRONTEND_TAG=${{ needs.build-and-push-frontend.outputs.image_tag }}
-            export BACKEND_TAG=${{ needs.build-and-push-backend.outputs.image_tag }}
-            cd ${{ secrets.DEPLOY_PATH }}
-            git pull
-            chmod +x ./deploy.sh
-            ./deploy.sh
-            chmod -x ./deploy.sh
+          ssh-private-key: ${{ secrets.SSH_KEY }}
 
+      - name: Add remote host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to production server with retry
+        uses: nick-invision/retry@v3
+        with:
+          timeout_seconds: 120
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} '
+              export FRONTEND_TAG=${{ needs.build-and-push-frontend.outputs.image_tag }}
+              export BACKEND_TAG=${{ needs.build-and-push-backend.outputs.image_tag }}
+              cd ${{ secrets.DEPLOY_PATH }}
+              git pull
+              chmod +x ./deploy.sh
+              ./deploy.sh
+              chmod -x ./deploy.sh
+            '
