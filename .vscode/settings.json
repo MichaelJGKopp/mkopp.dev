@@ -1,5 +1,8 @@
 {
     "nxConsole.generateAiAgentRules": true,
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[feature]": {
+        "editor.defaultFormatter": "alexkrechik.cucumberautocomplete"
+    }
 }

@@ -1,4 +1,4 @@
-# 📄 ADR 002: Nx Monorepo with Feature-Based Modularity
+# 📄 ADR 002: Nx Monorepo
 
 ## Status
 
@@ -6,64 +6,124 @@
 
 ## Context
 
-`mkopp.dev` consists of:
+We need a structure to organize multiple applications and libraries:
 
-* One Angular SSR frontend application.
-* One Spring Boot backend application.
+* Angular frontend (SSR).
+* Spring Boot backend.
+* Shared libraries and utilities (potentially TypeScript + Java).
+* Future extensions (admin panel, docs site, mobile apps).
 
-Requirements:
+Goals:
 
-* Organize code in a scalable and maintainable way.
-* Keep the project structured for potential future expansion (e.g., admin panel, shared libraries).
-* Maintain consistency, enforce boundaries, and benefit from tooling where appropriate.
-* Single developer working on the project → minimal overhead.
+* Developer productivity.
+* Consistent tooling across frontend & backend.
+* Ability to scale project structure as the site evolves.
 
 ## Decision
 
-We will use **Nx** to manage the monorepo while keeping **feature-based modularity** inside the Angular app.
+We will use **Nx** to manage the project as a **monorepo**.
 
-* Angular app will be organized with `core/`, `shared/`, and `features/` folders for modularity.
-* The backend is defined as an Nx app using `@nxrocks/nx-spring-boot`.
-
-  * Nx orchestrates builds, tests, and linting for the backend.
-  * Gradle/Maven remains the underlying build system.
-* We consciously avoid splitting Angular into multiple apps for now, as a single app suffices.
-
-This approach balances **enterprise-grade structure** with practical simplicity for a solo developer.
+* Nx will manage the Angular frontend app, libraries, and utility packages.
+* Backend (Spring Boot) will live inside the same repository under `/apps/backend/`, tracked by Nx as an “external project.”
+* Nx executors will handle linting, testing, and builds for frontend and utilities.
+* CI/CD (GitHub Actions) will use Nx cache and affected-commands to optimize build times.
 
 ## Alternatives Considered
 
-* **No Nx / custom folder structure**
+* **Multiple Repos**
 
-  * ✅ Minimal tooling, less setup.
-  * ❌ Lacks Nx features like dependency graph, generators, caching, and consistent project conventions.
-  * ❌ Harder to scale if multiple apps or shared libraries are added later.
+  * ✅ Simple separation of concerns.
+  * ❌ Harder to coordinate frontend/backend changes.
+  * ❌ More complex CI/CD setup.
 
-* **Nx with multiple Angular apps from the start**
+* **Custom Monorepo without Nx**
 
-  * ✅ Fully leverages Nx multi-app features.
-  * ❌ Unnecessary complexity for a solo dev with only one app.
+  * ✅ Simpler for very small projects.
+  * ❌ Lacks tooling, dependency graph, caching, and affected commands.
 
-* **Nx with feature-based modularity (chosen)**
+* **Nx Monorepo**
 
-  * ✅ Scales well in the future.
-  * ✅ Uses Nx tooling where helpful (lint, test, build orchestration, affected commands).
-  * ✅ Fully integrates Spring Boot backend via `@nxrocks/nx-spring-boot`.
-  * ✅ Simple enough for solo development today.
+  * ✅ Widely adopted for Angular + TypeScript ecosystems.
+  * ✅ Strong tooling (lint, test, build orchestration, dependency graph).
+  * ✅ Developer productivity boost.
+  * ❌ Slight learning curve.
 
 ## Consequences
 
 * Positive:
 
-  * Enterprise-style repo management.
-  * Backend and frontend fully integrated into Nx workspace.
-  * Easy to add new apps or shared libraries in the future.
-  * Standardized generators and tooling improve code quality.
+  * Enterprise-style project structure, easily extensible.
+  * Shared libraries for consistency and reusability.
+  * Efficient builds in CI/CD with Nx caching.
+
 * Negative:
 
-  * Slight overhead from Nx setup and configuration.
-  * Most “advanced” Nx features (affected commands, dependency graph) currently provide little benefit for a single FE + BE.
+  * Adds an additional layer of tooling complexity.
+  * Backend (Java) integration is less native than frontend, requires custom scripts.
 
 ## Related Documents
 
 * [Design Document v0.2](../design.md)
+* [ADR 001 – Authentication with Keycloak](0001-authentication-with-keycloak.md)
+* [ADR 003 – SSR Angular](0003-ssr-angular.md)
+
+---
+
+# 📄 ADR 003: SSR Angular
+
+## Status
+
+**Accepted** (2025-09-14)
+
+## Context
+
+The frontend of `mkopp.dev` serves as a **portfolio and blog**.
+Requirements:
+
+* Must be **SEO-friendly** (recruiters, hiring managers search Google).
+* Needs to load quickly, be responsive, and mobile-first.
+* Should showcase modern, enterprise-grade Angular practices.
+
+## Decision
+
+We will use **Angular Universal** to implement **Server-Side Rendering (SSR)**.
+
+* SSR improves SEO for blog posts, portfolio pages, and documentation.
+* Pre-rendered pages enhance performance on first load.
+* Dynamic content (e.g., diagrams, live docs) will be hydrated client-side.
+
+## Alternatives Considered
+
+* **Angular SPA (No SSR)**
+
+  * ✅ Simpler to implement.
+  * ❌ Poor SEO, since search engines may not fully index JS-heavy SPAs.
+
+* **Static Site Generator (e.g., Scully, Docusaurus)**
+
+  * ✅ Excellent SEO, very fast.
+  * ❌ Less flexibility for dynamic components (auth-protected areas, live diagrams).
+
+* **Angular Universal (SSR)**
+
+  * ✅ Best balance of SEO + interactivity.
+  * ✅ Enterprise-standard for Angular production apps.
+  * ❌ Slightly more complex deployment pipeline.
+
+## Consequences
+
+* Positive:
+
+  * SEO-friendly (higher discoverability).
+  * Enterprise-grade Angular showcase.
+  * Future-proof for adding blog, documentation, and interactive teaching tools.
+
+* Negative:
+
+  * Slightly more complex build & deploy pipeline.
+  * Diagrams and dynamic content need hydration (rendered client-side after SSR).
+
+## Related Documents
+
+* [Design Document v0.2](../design.md)
+* [ADR 002 – Nx Monorepo](0002-nx-monorepo.md)

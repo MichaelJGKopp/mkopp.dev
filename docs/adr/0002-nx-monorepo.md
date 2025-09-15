@@ -1,4 +1,4 @@
-# 📄 ADR 002: Nx Monorepo
+# 📄 ADR 002: Nx Monorepo with Feature-Based Modularity
 
 ## Status
 
@@ -6,62 +6,64 @@
 
 ## Context
 
-We need a structure to organize multiple applications and libraries:
+`mkopp.dev` consists of:
 
-* Angular frontend (SSR).
-* Spring Boot backend.
-* Shared libraries and utilities (potentially TypeScript + Java).
-* Future extensions (admin panel, docs site, mobile apps).
+* One Angular SSR frontend application.
+* One Spring Boot backend application.
 
-Goals:
+Requirements:
 
-* Developer productivity.
-* Consistent tooling across frontend & backend.
-* Ability to scale project structure as the site evolves.
+* Organize code in a scalable and maintainable way.
+* Keep the project structured for potential future expansion (e.g., admin panel, shared libraries).
+* Maintain consistency, enforce boundaries, and benefit from tooling where appropriate.
+* Single developer working on the project → minimal overhead.
 
 ## Decision
 
-We will use **Nx** to manage the project as a **monorepo**.
+We will use **Nx** to manage the monorepo while keeping **feature-based modularity** inside the Angular app.
 
-* Nx will manage the Angular frontend app, libraries, and utility packages.
-* Backend (Spring Boot) will live inside the same repository under `/apps/backend/`, tracked by Nx as an “external project.”
-* Nx executors will handle linting, testing, and builds for frontend and utilities.
-* CI/CD (GitHub Actions) will use Nx cache and affected-commands to optimize build times.
+* Angular app will be organized with `core/`, `shared/`, and `features/` folders for modularity.
+* The backend is defined as an Nx app using `@nxrocks/nx-spring-boot`.
+
+  * Nx orchestrates builds, tests, and linting for the backend.
+  * Gradle/Maven remains the underlying build system.
+* We consciously avoid splitting Angular into multiple apps for now, as a single app suffices.
+
+This approach balances **enterprise-grade structure** with practical simplicity for a solo developer.
 
 ## Alternatives Considered
 
-* **Multiple Repos**
+* **No Nx / custom folder structure**
 
-  * ✅ Simple separation of concerns.
-  * ❌ Harder to coordinate frontend/backend changes.
-  * ❌ More complex CI/CD setup.
+  * ✅ Minimal tooling, less setup.
+  * ❌ Lacks Nx features like dependency graph, generators, caching, and consistent project conventions.
+  * ❌ Harder to scale if multiple apps or shared libraries are added later.
 
-* **Custom Monorepo without Nx**
+* **Nx with multiple Angular apps from the start**
 
-  * ✅ Simpler for very small projects.
-  * ❌ Lacks tooling, dependency graph, caching, and affected commands.
+  * ✅ Fully leverages Nx multi-app features.
+  * ❌ Unnecessary complexity for a solo dev with only one app.
 
-* **Nx Monorepo**
+* **Nx with feature-based modularity (chosen)**
 
-  * ✅ Widely adopted for Angular + TypeScript ecosystems.
-  * ✅ Strong tooling (lint, test, build orchestration, dependency graph).
-  * ✅ Developer productivity boost.
-  * ❌ Slight learning curve.
+  * ✅ Scales well in the future.
+  * ✅ Uses Nx tooling where helpful (lint, test, build orchestration, affected commands).
+  * ✅ Fully integrates Spring Boot backend via `@nxrocks/nx-spring-boot`.
+  * ✅ Simple enough for solo development today.
 
 ## Consequences
 
 * Positive:
 
-  * Enterprise-style project structure, easily extensible.
-  * Shared libraries for consistency and reusability.
-  * Efficient builds in CI/CD with Nx caching.
-
+  * Enterprise-style repo management.
+  * Backend and frontend fully integrated into Nx workspace.
+  * Easy to add new apps or shared libraries in the future.
+  * Standardized generators and tooling improve code quality.
 * Negative:
 
-  * Adds an additional layer of tooling complexity.
-  * Backend (Java) integration is less native than frontend, requires custom scripts.
+  * Slight overhead from Nx setup and configuration.
+  * Most “advanced” Nx features (affected commands, dependency graph) currently provide little benefit for a single FE + BE.
 
 ## Related Documents
 
 * [Design Document v0.2](../design.md)
-* [ADR 003 – SSR Angular](0003-ssr-angular.md)

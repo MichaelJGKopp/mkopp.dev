@@ -19,6 +19,11 @@ spring:
         # For Caffeine (preferred, consistent with your Spring cache):
         # '[cache.region.factory_class]': org.hibernate.cache.jcache.JCacheRegionFactory
         # '[javax.cache.provider]': com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+  devtools:
+      restart:
+          enabled: false
+      livereload:
+          enabled: false
 
 logging:
   level:
