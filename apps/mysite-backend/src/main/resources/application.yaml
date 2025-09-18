@@ -2,17 +2,19 @@ logging:
   level:
     ROOT: INFO
     '[org.hibernate.SQL]': INFO
-    '[dev.mkopp.mysite.shared.logging]': ERROR
-    '[dev.mkopp.mysite]': INFO
-# Common configuration for all profiles
+        '[dev.mkopp.mysite]': INFO
+# Control ControllerLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
+        '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ${CONTROLLER_LOGGING_ASPECT_LEVEL:INFO}
+        # Control ServiceLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
+        '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ${SERVICE_LOGGING_ASPECT_LEVEL:INFO}
 server:
     port: 8200
     shutdown: graceful
 spring:
     lifecycle:
         timeout-per-shutdown-phase: 25s
-    profiles:
-        active: dev
+# profiles:
+#     active: dev
     jackson:
         time-zone: UTC
     application:
@@ -133,3 +135,9 @@ application:
     # stripe:
     #     api-key: ${STRIPE_API_KEY}
     #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}
+    logging:
+      # Custom properties for our logging aspects
+      controller:
+        log-request-args: ${CONTROLLER_LOGGING_REQUEST_ARGS:false}
+      service:
+        log-request-args: ${SERVICE_LOGGING_REQUEST_ARGS:false}
