@@ -18,7 +18,8 @@ import dev.mkopp.mysite.shared.authentication.infrastructure.primary.KeycloakJwt
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+            Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter) throws Exception {
         http
                 .csrf(crsf -> crsf.disable())
                 .cors(Customizer.withDefaults())
@@ -44,7 +45,8 @@ public class SecurityConfig {
                         // Deny any other request by default for security
                         .anyRequest().denyAll())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         return http.build();
     }

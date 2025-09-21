@@ -8,7 +8,8 @@
             "request": "launch",
             "mainClass": "dev.mkopp.mysite.MysiteBackendApplication",
             "projectName": "mysite-backend",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": "-Dspring.profiles.active=dev"
         }
     ]
 }

@@ -50,5 +50,5 @@ Thumbs.db
 *password.txt
 
 # Ignore locally generated SSL certificates
-/certs
+docker/certs/**
 log.txt

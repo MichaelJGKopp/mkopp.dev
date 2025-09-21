@@ -1,0 +1,168 @@
+name: mysite-prod
+
+# This compose file is intended for deployment to Docker Swarm.
+# It expects FRONTEND_IMAGE and BACKEND_IMAGE environment variables to be set.
+
+services:
+  reverse-proxy:
+    image: traefik:v3.5
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - "--log.level=INFO"
+      - "--api.dashboard=true"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "letsencrypt:/letsencrypt"
+    networks:
+      - web
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - "node.role == manager"
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.api.rule: "Host(`${TRAEFIK_DASHBOARD_HOST}`)"
+        traefik.http.routers.api.entrypoints: "websecure"
+        traefik.http.routers.api.tls.certresolver: "letsencrypt"
+        traefik.http.routers.api.service: "api@internal"
+        traefik.http.middlewares.auth.basicauth.users: "${TRAEFIK_AUTH_USER}"
+
+  postgres:
+    image: postgres:16.10-alpine
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    networks:
+      - database
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      replicas: 1
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    command: start
+    environment:
+      KC_DB: "postgres"
+      KC_DB_URL_HOST: "postgres"
+      KC_DB_URL_DATABASE: "${POSTGRES_DB}"
+      KC_DB_USERNAME: "${POSTGRES_USER}"
+      KC_DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+      KC_HOSTNAME: "${KEYCLOAK_HTTP_RULE}"
+      KC_HTTP_ENABLED: "false"
+      KC_PROXY: "edge"
+    networks:
+      - database
+      - web
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.keycloak.rule: "${KEYCLOAK_HTTP_RULE}"
+        traefik.http.routers.keycloak.entrypoints: "websecure"
+        traefik.http.routers.keycloak.tls.certresolver: "letsencrypt"
+        traefik.http.services.keycloak.loadbalancer.server.port: "8080"
+        traefik.docker.network: "web"
+
+  backend:
+    image: ${BACKEND_IMAGE}
+    environment:
+      SPRING_PROFILES_ACTIVE: "prod"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL}"
+      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL}"
+      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS}"
+      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS}"
+    networks:
+      - backend
+      - database
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+      labels:
+        traefik.enable: "true"
+        traefik.docker.network: "backend"
+        traefik.http.services.backend-svc.loadbalancer.server.port: "8200"
+        traefik.http.routers.backend-public.rule: "${TRAEFIK_HTTP_BACKEND_RULE}"
+        traefik.http.routers.backend-public.entrypoints: "websecure"
+        traefik.http.routers.backend-public.tls.certresolver: "letsencrypt"
+        traefik.http.routers.backend-public.service: "backend-svc"
+
+  frontend:
+    image: ${FRONTEND_IMAGE}
+    networks:
+      - web
+      - backend
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.frontend.rule: "${TRAEFIK_HTTP_RULE}"
+        traefik.http.routers.frontend.entrypoints: "websecure"
+        traefik.http.routers.frontend.tls.certresolver: "letsencrypt"
+        traefik.http.services.frontend.loadbalancer.server.port: "4000"
+        traefik.docker.network: "web"
+
+networks:
+  web:
+    driver: overlay
+  backend:
+    driver: overlay
+  database:
+    driver: overlay
+
+volumes:
+  letsencrypt:
+  db-data:

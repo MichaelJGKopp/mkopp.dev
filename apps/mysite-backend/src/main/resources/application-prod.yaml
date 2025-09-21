@@ -1,15 +1,23 @@
 # Production-specific configuration
-# spring:
-#   jpa:
-#     properties:
-#       hibernate:
-#         '[show_sql]': false
-#         '[format_sql]': false
-#         '[jdbc.batch_size]': 25
+spring:
+  jpa:
+    properties:
+      hibernate:
+        '[show_sql]': false
+        '[format_sql]': false
+        '[jdbc.batch_size]': 25
 
-# logging:
-#   level:
-#     '[dev.mkopp.mysite.shared.logging]': ERROR
-#     '[dev.mkopp.mysite]': INFO
-#     # No SQL logging in production
-#     '[org.hibernate.SQL]': ERROR
+logging:
+  level:
+    '[dev.mkopp.mysite]': INFO
+    # No SQL logging in production
+    '[org.hibernate.SQL]': ERROR
+    # Only log exceptions from custom aspects in production
+    '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ERROR
+    '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ERROR
+
+application:
+  cors:
+    allowed-origins:
+      - "https://mkopp.dev"
+      - "https://www.mkopp.dev"

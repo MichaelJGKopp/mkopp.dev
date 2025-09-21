@@ -1,9 +1,9 @@
 logging:
-  level:
-    ROOT: INFO
-    '[org.hibernate.SQL]': INFO
+    level:
+        ROOT: INFO
+        '[org.hibernate.SQL]': INFO
         '[dev.mkopp.mysite]': INFO
-# Control ControllerLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
+        # Control ControllerLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
         '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ${CONTROLLER_LOGGING_ASPECT_LEVEL:INFO}
         # Control ServiceLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
         '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ${SERVICE_LOGGING_ASPECT_LEVEL:INFO}
@@ -13,8 +13,8 @@ server:
 spring:
     lifecycle:
         timeout-per-shutdown-phase: 25s
-# profiles:
-#     active: dev
+    # profiles:
+    #     active: dev
     jackson:
         time-zone: UTC
     application:
@@ -61,9 +61,7 @@ spring:
         oauth2:
             resourceserver:
                 jwt:
-                    issuer-uri: https://mkopp.kinde.com
-                    jwk-set-uri: https://mkopp.kinde.com/.well-known/jwks
-                    audiences: http://localhost:8200/api
+                    issuer-uri: ${KEYCLOAK_ISSUER_URI}
     devtools:
         restart:
             enabled: false
@@ -121,12 +119,25 @@ application:
     #     clearOlderThanDays: 30
     client-base-url: http://localhost:4200
     cors:
-        allowed-origins: http://localhost:4200
-        allowed-methods: "*"
-        allowed-headers: "*"
-        exposed-headers: "*"
-        allow-credentials: false
-        max-age: 300
+        allowed-origins:
+          - "http://localhost:3000"
+          - "http://localhost:4200"
+        allowed-methods:
+          - "GET"
+          - "POST"
+          - "PUT"
+          - "PATCH"
+          - "DELETE"
+          - "OPTIONS"
+        allowed-headers:
+          - "Authorization"
+          - "Content-Type"
+          - "Content-Disposition"
+          - "Accept"
+        exposed-headers:
+          - "Location"
+        allow-credentials: true
+        max-age: 3600
     kinde:
         api: https://mkopp.kinde.com
         client-id: ${KINDE_CLIENT_ID}
@@ -134,7 +145,7 @@ application:
         audience: https://mkopp.kinde.com/api
     # stripe:
     #     api-key: ${STRIPE_API_KEY}
-    #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}
+    #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}    
     logging:
       # Custom properties for our logging aspects
       controller:

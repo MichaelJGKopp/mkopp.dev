@@ -1,87 +1,131 @@
-name: mysite
+name: mysite_dev
 services:
   reverse-proxy:
     image: traefik:v3.5
     command:
-      #- "--log.level=DEBUG"
+      - "--log.level=DEBUG"
+      #- "--api.insecure=true" # Enable the Traefik API/Dashboard
       - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false" # only expose services with explicit traefik labels
       - "--entrypoints.web.address=:80"
+      - "--providers.docker.network=web"
       # TLS
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}"
-      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
-      # redirect
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # - "--certificatesresolvers.myresolver.acme.email=${TRAEFIK_ACME_EMAIL}"
+      # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - "--accesslog=true"            # enable access logs
     ports:
-      - "80:80" # HTTP
-      - "443:443" # HTTPS
-      # - "8080:8080" # Web UI
+      # HTTP
+      - "80:80"
+      # HTTPS
+      - "443:443"
+      # Web UI (enabled with --api.insecure=true)
+      # - "8080:8080"
     networks:
       - web
       - backend
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro" # Traefik listens to docker events
+    # Traefik listens to docker events
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "letsencrypt:/letsencrypt"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.api.rule: "${TRAEFIK_DASHBOARD_HTTP_RULE}" # Dashboard route
-      traefik.http.routers.api.entrypoints: "websecure"
-      traefik.http.routers.api.tls.certresolver: "letsencrypt"
+      # traefik.http.routers.api.rule: "Host(`localhost`) && PathPrefix(`/dashboard`)" # Dashboard route
+      traefik.http.routers.api.rule: "Host(`traefik.localhost`)" # Dashboard route
+      traefik.http.routers.api.entrypoints: "web"
+      # traefik.http.routers.api.entrypoints: "websecure"
+      # traefik.http.routers.api.tls.certresolver: "myresolver"
       traefik.http.routers.api.service: "api@internal"
-      traefik.http.routers.api.middlewares: "auth" # Apply the authentication middleware
+      traefik.http.routers.api.middlewares: "myauth" # Apply the authentication middleware
       # Define the Basic Auth Middleware
-      traefik.http.middlewares.auth.basicauth.users: "${TRAEFIK_AUTH_USER}" # AUTH Dashboard
+      traefik.http.middlewares.myauth.basicauth.users: "${TRAEFIK_AUTH_USER}"
     restart: unless-stopped
 
   postgres:
     image: postgres:16.10-alpine
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD_FILE: "/run/secrets/db-password"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       POSTGRES_DB: "${POSTGRES_DB}"
-      PGUSER: "${POSTGRES_USER}"            # Ensure tools default to the right DB user
-    secrets:
-      - db-password
+      PGUSER: "${POSTGRES_USER}"
     ports:
-      - "127.0.0.1:5555:5432" # Expose only to localhost for SSH tunneling
+      - "5555:5432"
     networks:
       - database
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      # Use the intended DB user instead of defaulting to 'root'
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}" ]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    command: start-dev
+    volumes:
+      # - ./keycloak-realm-config:/opt/keycloak/data/import
+      - ./keycloak-realm-config/mkopp-dev-realm.json:/opt/keycloak/data/import/mkopp-realm.json
+    environment:
+      KC_DB: "postgres"
+      KC_DB_URL_HOST: "postgres"
+      KC_DB_URL_DATABASE: "${POSTGRES_DB}"
+      KC_DB_SCHEMA: "keycloak"
+      KC_DB_USERNAME: "${POSTGRES_USER}"
+      KC_DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_PORT: "8080"
+    networks:
+      - database
+      - web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.keycloak.rule: "${KEYCLOAK_HTTP_RULE}"
+      traefik.http.routers.keycloak.entrypoints: "web"
+      traefik.http.services.keycloak.loadbalancer.server.port: "8080"
+      traefik.docker.network: "web"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/keycloak/bin/kc.sh show-config > /dev/null && curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      mode: replicated
+      replicas: 1
+    restart: unless-stopped
+
   backend:
-    image: ${DOCKERHUB_USERNAME}/mysite-backend:${BACKEND_TAG:-latest}
     build:
-      context: .
+      context: ..
       dockerfile: apps/mysite-backend/Dockerfile
     environment:
+      SPRING_PROFILES_ACTIVE: "dev"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_HOST: "postgres"
-      POSTGRES_PASSWORD_FILE: "/run/secrets/db-password"
-    secrets:
-      - db-password
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
+      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL}"
+      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL}"
+      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS}"
+      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS}"
     networks:
       - backend
       - database
     depends_on:
-      postgres:
-        condition: service_healthy  # only starts after postgres is healthy
+      keycloak:
+        condition: service_healthy
     labels:
-      #
-      # NEW FOR ZERO-DOWNTIME & IP WHITELIST
       traefik.enable: "true"
       traefik.docker.network: "backend"
 
@@ -93,19 +137,17 @@ services:
       # Define the IP whitelist middleware for internal traffic
       traefik.http.middlewares.internal-ips.ipwhitelist.sourcerange: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
-      # Router 1: Public route for the API, protected by auth.
+      # Router 1: Public route for the API.
+      # This rule assumes your API endpoints are prefixed with /api. Adjust if needed.
       traefik.http.routers.backend-public.rule: "${TRAEFIK_HTTP_BACKEND_RULE}"
-      traefik.http.routers.backend-public.entrypoints: "websecure"
+      traefik.http.routers.backend-public.entrypoints: "web"
       traefik.http.routers.backend-public.service: "backend-svc"
-      traefik.http.routers.backend-public.tls.certresolver: "letsencrypt"
-      traefik.http.routers.backend-public.middlewares: "auth" # ToDo. remove after spring security implemented
 
-      # Router 2: Private route for management endpoints, protected by IP whitelist AND auth.
+      # Router 2: Private route for management endpoints, protected by the IP whitelist.
       traefik.http.routers.backend-private.rule: "(${TRAEFIK_HTTP_BACKEND_RULE}) && PathPrefix(`/management`)"
-      traefik.http.routers.backend-private.entrypoints: "websecure"
+      traefik.http.routers.backend-private.entrypoints: "web"
       traefik.http.routers.backend-private.service: "backend-svc"
-      traefik.http.routers.backend-private.tls.certresolver: "letsencrypt"
-      traefik.http.routers.backend-private.middlewares: "internal-ips,auth"
+      traefik.http.routers.backend-private.middlewares: "internal-ips"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
@@ -124,24 +166,24 @@ services:
     stop_grace_period: 30s
 
   frontend:
-    image: ${DOCKERHUB_USERNAME}/mysite-frontend:${FRONTEND_TAG:-latest}
     build:
-      context: .
+      context: ..
       dockerfile: apps/mysite-frontend/Dockerfile.prod
     environment:
       LOG_REQUESTS: "${LOG_REQUESTS}"
       DEBUG: "${DEBUG}"
     networks:
-      - web # So Traefik can reach it
+      - web
+    depends_on:
+      mysite-backend:
+        condition: service_healthy
     labels:
       traefik.enable: "true"
-      # --- Rule for HTTPS ---
       traefik.http.routers.frontend.rule: "${TRAEFIK_HTTP_RULE}"
-      traefik.http.routers.frontend.entrypoints: "websecure"
-      traefik.http.routers.frontend.tls.certresolver: "letsencrypt"
-      # --- Loadbalancing - Port ---
       traefik.http.services.frontend.loadbalancer.server.port: "4000"
       traefik.docker.network: "web"
+      traefik.http.routers.frontend.entrypoints: "web"
+      # traefik.http.routers.frontend.tls.certresolver: "myresolver"
       # Add health checks for zero-downtime
       traefik.http.services.frontend.loadbalancer.healthcheck.path: "/healthz"
       traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
@@ -160,7 +202,7 @@ services:
         delay: 10s            # 10 seconds between replica updates
         order: start-first    # v2 starts, health check passes, then v1 stops
         failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
-    stop_grace_period: 35s
+    stop_grace_period: 30s
 
 # Isolate database network
 networks:
@@ -177,7 +219,3 @@ networks:
 volumes:
   letsencrypt:
   db-data:
-
-secrets:
-  db-password:
-    file: "${POSTGRES_PASSWORD_FILE}"
