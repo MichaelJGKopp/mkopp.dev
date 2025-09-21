@@ -1,0 +1,33 @@
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK
+        varchar username
+        varchar email
+        varchar password_hash
+        timestamp created_at
+    }
+
+    POSTS {
+        bigint id PK
+        varchar title
+        text content
+        bigint user_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    TAGS {
+        bigint id PK
+        varchar name
+    }
+
+    POST_TAGS {
+        bigint post_id PK, FK
+        bigint tag_id PK, FK
+    }
+
+    USERS ||--o{ POSTS : "writes"
+    POSTS }o--o{ POST_TAGS : "has"
+    POST_TAGS }o--o{ TAGS : "has"
+```

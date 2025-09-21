@@ -154,8 +154,4 @@ KC --> B3
 
 ## 8. Roadmap
 
-* **Phase 1**: Stabilize SSR Angular (main layout, navbar + footer, favicon/logo) + Spring Boot backend (dependencies), implement CI/CD pipeline with Docker, Traefik, and VPS deployment including TLS and domain (DONE).
-* **Phase 2**: Add Keycloak integration for authentication.
-* **Phase 3**: Build admin dashboard + blog system.
-* **Phase 4**: Publish documentation + ADRs, link Kanban board.
-* **Phase 5**: Expand blog with posts about architecture, CI/CD lessons, and security best practices.
+For a detailed project roadmap, please see the [Roadmap](./roadmap.md) document.

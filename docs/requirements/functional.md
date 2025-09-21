@@ -71,3 +71,7 @@ Each requirement has a unique ID for traceability (FR-XX).
 ### FR-21: VPS must auto-deploy updated containers via Docker Compose {#fr-21}
 
 ### FR-22: Admin must be able to monitor service health (basic logs/monitoring) {#fr-22}
+
+### FR-23: Cross-Origin Resource Sharing {#fr-23}
+
+The system must provide a configurable CORS policy to allow web clients from approved origins to access the API.

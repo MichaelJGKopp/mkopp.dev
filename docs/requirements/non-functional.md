@@ -63,3 +63,7 @@ Each requirement has a unique ID for traceability (NFR-XX).
 ### NFR-17: ADRs, design docs, and requirements must be versioned in the repo {#nfr-17}
 
 ### NFR-18: Project management (Kanban, backlog, issues) must be publicly visible {#nfr-18}
+
+### NFR-19: Environment-Specific Configuration {#nfr-18}
+
+All environment-specific settings, such as database credentials, API keys, and CORS origins, must be configurable via environment variables and not hardcoded in the application artifact.

@@ -4,6 +4,10 @@
 
 <High-level explanation of the goal. What larger value does this Epic deliver?>
 
+## Business Value
+
+<Describe the business value of this epic. How does it contribute to the project's goals?>
+
 ## Child User Stories
 
 * [US-001](../user-stories/US-001-admin-login.md)

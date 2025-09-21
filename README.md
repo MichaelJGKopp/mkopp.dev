@@ -76,39 +76,56 @@ For a full rationale and implementation details, see **[ADR 004 – Deployment w
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Java 17+
-- Node.js & npm
-- An IDE (e.g., VS Code, IntelliJ IDEA)
+- **Docker & Docker Compose**
+- **Java 17**: The backend is a Spring Boot application which requires Java 17.
+- **Node.js v22.2.0+**: The frontend is an Angular application.
+- **npm 10.8.0+**: Package manager for the frontend.
+- **An IDE** (e.g., VS Code, IntelliJ IDEA)
 
 ### Setup
 
-1. **Clone the repository:**
+1.  **Clone the repository:**
 
     ```sh
     git clone https://github.com/MichaelJGKopp/mkopp.dev.git
     cd mkopp.dev
     ```
 
-2. **Configure Environment Variables:**
-    - Copy the example environment file:
+2.  **Configure Environment Variables:**
+    -   Copy the example environment file:
 
-      ```sh
-      cp .env.example .env
-      ```
+        ```sh
+        cp .env.example .env
+        ```
 
-    - Open the new `.env` file and replace the placeholder values with your local configuration.
+    -   Open the new `.env` file and replace the placeholder values with your local configuration.
 
-3. **Launch the Application:**
-    - Use Docker Compose to build and run all the services:
+3.  **Launch the Application:**
+    -   Use Docker Compose to build and run all the services:
 
-      ```sh
-      docker-compose up --build
-      ```
+        ```sh
+        docker-compose up --build
+        ```
 
-4. **Access the Application:**
-    - Frontend: [http://localhost](http://localhost) (or your configured domain)
-    - Traefik Dashboard: [http://traefik.localhost](http://traefik.localhost) (Requires basic auth credentials from your `.env` file).
+4.  **Access the Application:**
+    -   Frontend: [http://localhost](http://localhost) (or your configured domain)
+    -   Traefik Dashboard: [http://traefik.localhost](http://traefik.localhost) (Requires basic auth credentials from your `.env` file).
+
+### Running Tests
+
+You can run the tests for the frontend and backend separately.
+
+-   **Frontend (Angular):**
+
+    ```sh
+    npx nx test mysite-frontend
+    ```
+
+-   **Backend (Spring Boot):**
+
+    ```sh
+    npx nx test mysite-backend
+    ```
 
 ---
 
@@ -118,10 +135,10 @@ Production deployment uses a separate `docker-compose.prod.yml` file and is auto
 
 ### CI/CD Flow
 
-1. **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
-2. **Build & Test:** The workflow builds and tests the frontend and backend applications.
-3. **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
-4. **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
+1.  **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
+2.  **Build & Test:** The workflow builds and tests the frontend and backend applications.
+3.  **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
+4.  **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
 
 This process ensures automated, consistent deployments to the production environment.
 
@@ -131,16 +148,28 @@ This process ensures automated, consistent deployments to the production environ
 
 This is an Nx monorepo. Key directories include:
 
-- `apps/`: Contains the two main applications:
-  - `mysite-frontend/`: The Angular SSR frontend.
-  - `mysite-backend/`: The Spring Boot (Java) backend.
-- `docs/`: Contains all project documentation, including this README, the [Design Document](./docs/design.md), and [Architecture Decision Records (ADRs)](./docs/adr/).
+-   `apps/`: Contains the two main applications:
+    -   `mysite-frontend/`: The Angular SSR frontend.
+    -   `mysite-backend/`: The Spring Boot (Java) backend.
+-   `docs/`: Contains all project documentation, including this README, the [Design Document](./docs/design.md), and [Architecture Decision Records (ADRs)](./docs/adr/).
 
 To visualize the project graph and dependencies, run:
 
 ```sh
 npx nx graph
 ```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please see our [Contributing Guidelines](./CONTRIBUTING.md) for more information on how to get started.
+
+---
+
+## Code of Conduct
+
+This project is governed by the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ---
 
