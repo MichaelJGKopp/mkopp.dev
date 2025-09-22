@@ -150,6 +150,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 }
 ```
 
+For a complete example of a `SecurityConfig` that uses this approach to secure an application with Keycloak, see our blog post on [A Deep Dive into the Keycloak JWT OAuth2 Implementation in this Repository](./004-keycloak-spring-boot-integration.md).
+
 🔗 [Spring Security CORS docs](https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html)
 
 ---
