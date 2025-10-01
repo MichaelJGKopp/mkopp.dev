@@ -138,11 +138,6 @@ application:
           - "Location"
         allow-credentials: true
         max-age: 3600
-    kinde:
-        api: https://mkopp.kinde.com
-        client-id: ${KINDE_CLIENT_ID}
-        client-secret: ${KINDE_CLIENT_SECRET}
-        audience: https://mkopp.kinde.com/api
     # stripe:
     #     api-key: ${STRIPE_API_KEY}
     #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}    
