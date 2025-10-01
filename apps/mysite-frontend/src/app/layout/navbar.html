@@ -72,7 +72,8 @@
                     <fa-icon [icon]="['fas', 'user']" size="xs" class="menu-icon"></fa-icon>
                 </div>
                 <ul class="dropdown-content menu menu-lg bg-base-100 rounded-box z-10 w-52 p-2 shadow">
-                    <li><a class="link">Login</a></li>
+                    <li><button type="button" (click)="login()">Login</button></li>
+                    <li><button type="button" (click)="logout()">Logout</button></li>
                 </ul>
             </div>
             <!-- <div class="dropdown dropdown-end me-4" routerLink="/cart">
