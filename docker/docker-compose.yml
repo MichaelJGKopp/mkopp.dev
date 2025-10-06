@@ -15,7 +15,7 @@ services:
       # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       # - "--certificatesresolvers.myresolver.acme.email=${TRAEFIK_ACME_EMAIL}"
       # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--accesslog=true"            # enable access logs
+      - "--accesslog=true" # enable access logs
     ports:
       # HTTP
       - "80:80"
@@ -27,7 +27,7 @@ services:
       - web
       - backend
     volumes:
-    # Traefik listens to docker events
+      # Traefik listens to docker events
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "letsencrypt:/letsencrypt"
     labels:
@@ -58,7 +58,11 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}" ]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -94,7 +98,11 @@ services:
       traefik.http.services.keycloak.loadbalancer.server.port: "8080"
       traefik.docker.network: "web"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/keycloak/bin/kc.sh show-config > /dev/null && curl -f http://localhost:8080/health/ready || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/keycloak/bin/kc.sh show-config > /dev/null && curl -f http://localhost:8080/health/ready || exit 1",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -150,19 +158,25 @@ services:
       traefik.http.routers.backend-private.middlewares: "internal-ips"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8200/management/health/liveness",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
     deploy:
       mode: replicated
-      replicas: 3  # Add 3 replicas for zero-downtime
-      update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+      replicas: 3 # Add 3 replicas for zero-downtime
+      update_config: # WORKS ONLY IN SWARM MODE
+        parallelism: 1 # Only 1 replica updates at a time
+        delay: 10s # 10 seconds between replica updates
+        order: start-first # v2 starts, health check passes, then v1 stops
+        failure_action: rollback # If v2 fails, shut down v2, keep v1 running
     stop_grace_period: 30s
 
   frontend:
@@ -189,19 +203,25 @@ services:
       traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
     deploy:
       mode: replicated
-      replicas: 3  # Increase to 3 for zero-downtime
+      replicas: 3 # Increase to 3 for zero-downtime
       update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+        parallelism: 1 # Only 1 replica updates at a time
+        delay: 10s # 10 seconds between replica updates
+        order: start-first # v2 starts, health check passes, then v1 stops
+        failure_action: rollback # If v2 fails, shut down v2, keep v1 running
     stop_grace_period: 30s
 
 # Isolate database network

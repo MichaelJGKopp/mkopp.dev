@@ -10,7 +10,7 @@ COPY tsconfig.base.json ./
 RUN npm ci --legacy-peer-deps
 
 COPY apps/mysite-frontend ./apps/mysite-frontend
-RUN npx nx build mysite-frontend
+RUN npx nx build mysite-frontend --configuration=production
 
 
 FROM node:lts-trixie-slim AS runner
