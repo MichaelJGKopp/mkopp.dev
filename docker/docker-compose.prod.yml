@@ -16,7 +16,7 @@ services:
       # redirect
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--accesslog=true"            # enable access logs
+      - "--accesslog=true" # enable access logs
     ports:
       - "80:80" # HTTP
       - "443:443" # HTTPS
@@ -44,7 +44,7 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}" # Changed from POSTGRES_PASSWORD_FILE
       POSTGRES_DB: "${POSTGRES_DB}"
-      PGUSER: "${POSTGRES_USER}"            # Ensure tools default to the right DB user
+      PGUSER: "${POSTGRES_USER}" # Ensure tools default to the right DB user
     ports:
       - "127.0.0.1:5555:5432" # Expose only to localhost for SSH tunneling
     networks:
@@ -53,7 +53,11 @@ services:
       - db-data:/var/lib/postgresql/data
     healthcheck:
       # Use the intended DB user instead of defaulting to 'root'
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}" ]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-$${POSTGRES_USER:-postgres}}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,14 +65,14 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.4
-    command: start # Production command
+    command: start # Production command (import realm manually once via admin UI)
     environment:
       - KC_DB=postgres
       - KC_DB_URL_HOST=postgres
       - KC_DB_URL_DATABASE=${POSTGRES_DB}
       - KC_DB_SCHEMA=keycloak
       - KC_DB_USERNAME=${POSTGRES_USER}
-      - KC_DB_PASSWORD=${POSTGRES_PASSWORD} 
+      - KC_DB_PASSWORD=${POSTGRES_PASSWORD}
       - KC_HOSTNAME=${KEYCLOAK_HOSTNAME}
       - KC_HOSTNAME_STRICT=true
       - KC_HOSTNAME_STRICT_HTTPS=true
@@ -94,11 +98,11 @@ services:
       traefik.http.services.keycloak.loadbalancer.server.port: "8080"
       traefik.docker.network: "web"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/keycloak/bin/kc.sh show-config > /dev/null && curl -f http://localhost:8080/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     deploy:
       mode: replicated
       replicas: 1
@@ -116,10 +120,12 @@ services:
       POSTGRES_HOST: "postgres"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}" # Changed from POSTGRES_PASSWORD_FILE
       KEYCLOAK_ISSUER_URI: "https://${KEYCLOAK_HOSTNAME}/realms/mkopp" # Updated for prod
-      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL}"
-      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL}"
-      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS}"
-      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS}"
+      KEYCLOAK_JWK_SET_URI: "${KEYCLOAK_JWK_SET_URI}"
+      ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-https://mkopp.dev,https://www.mkopp.dev}"
+      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL:-ERROR}"
+      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL:-ERROR}"
+      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS:-false}"
+      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS:-false}"
     networks:
       - backend
       - database
@@ -155,19 +161,25 @@ services:
       traefik.http.routers.backend-private.middlewares: "internal-ips,auth"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8200/management/health/liveness"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8200/management/health/liveness",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
     deploy:
       mode: replicated
-      replicas: 3  # Add 3 replicas for zero-downtime
+      replicas: 3 # Add 3 replicas for zero-downtime
       update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+        parallelism: 1 # Only 1 replica updates at a time
+        delay: 10s # 10 seconds between replica updates
+        order: start-first # v2 starts, health check passes, then v1 stops
+        failure_action: rollback # If v2 fails, shut down v2, keep v1 running
     stop_grace_period: 30s
 
   frontend:
@@ -181,7 +193,7 @@ services:
     networks:
       - web
     depends_on:
-      mysite-backend:
+      backend:
         condition: service_healthy
     labels:
       traefik.enable: "true"
@@ -197,19 +209,25 @@ services:
       traefik.http.services.frontend.loadbalancer.healthcheck.interval: "10s"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:4000/healthz', (res) => process.exit(res.statusCode == 200 ? 0 : 1))",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
     deploy:
       mode: replicated
-      replicas: 3  # Increase to 3 for zero-downtime
+      replicas: 3 # Increase to 3 for zero-downtime
       update_config:
-        parallelism: 1        # Only 1 replica updates at a time
-        delay: 10s            # 10 seconds between replica updates
-        order: start-first    # v2 starts, health check passes, then v1 stops
-        failure_action: rollback  # If v2 fails, shut down v2, keep v1 running
+        parallelism: 1 # Only 1 replica updates at a time
+        delay: 10s # 10 seconds between replica updates
+        order: start-first # v2 starts, health check passes, then v1 stops
+        failure_action: rollback # If v2 fails, shut down v2, keep v1 running
     stop_grace_period: 35s
 
 # Isolate database network

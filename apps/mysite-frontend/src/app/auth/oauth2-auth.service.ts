@@ -5,7 +5,6 @@ import {
 } from '@angular/common/http';
 import {
   afterNextRender,
-  computed,
   inject,
   Injectable,
   signal,
@@ -18,6 +17,7 @@ import {
   interval,
   Observable,
   of,
+  retry,
   shareReplay,
   Subject,
   Subscription,
@@ -26,13 +26,15 @@ import {
 import { environment } from '../../environments/environment';
 import { State } from '../shared/model/state.model';
 import { ConnectedUser } from '../shared/model/user.model';
+import { ToastService } from '../shared/toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Oauth2AuthService {
 
-  http = inject(HttpClient);
+  private http = inject(HttpClient);
+  private toastService = inject(ToastService);
 
   notConnected = 'NOT_CONNECTED';
 
@@ -54,16 +56,14 @@ export class Oauth2AuthService {
   lastSeen = this.lastSeen$.asObservable();
 
   constructor() {
-    // Only initialize in browser after render
     afterNextRender(() => {
-      this.initFetchUserCaching(false);
+      // this.initFetchUserCaching(false); // ToDo: add back in later
     });
   }
 
   private fetchUserSignal = signal(
     State.forSuccess<ConnectedUser>({ email: this.notConnected })
   );
-  fetchUser = computed(() => this.fetchUserSignal());
 
   public initAuthentication(): void {
     from(
@@ -74,11 +74,23 @@ export class Oauth2AuthService {
         silentCheckSsoRedirectUri:
           window.location.origin + '/silent-check-sso.html',
       })
-    ).subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.accessToken = this.keycloak.token;
-        this.fetch();
-        this.initUpdateTokenRefresh();
+    ).subscribe({
+      next: (isAuthenticated) => {
+        if (isAuthenticated) {
+          this.accessToken = this.keycloak.token;
+          this.fetch();
+          this.initUpdateTokenRefresh();
+          
+          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+          if (justLoggedIn === 'true') {
+            this.toastService.show('Successfully logged in!', 'SUCCESS');
+            sessionStorage.removeItem('justLoggedIn');
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Keycloak initialization failed:', err);
+        sessionStorage.removeItem('justLoggedIn');
       }
     });
   }
@@ -102,10 +114,8 @@ export class Oauth2AuthService {
           console.error('Token refresh failed:', err);
           
           if (this.keycloak.isTokenExpired()) {
-            console.error('Token expired and refresh failed - logging out');
-            this.logout();
-          } else {
-            console.warn('Temporary token refresh issue, will retry');
+            this.toastService.show('Your session has expired. Please login again.', 'WARNING', 5000);
+            setTimeout(() => this.logout(), 2000);
           }
         },
       });
@@ -119,7 +129,12 @@ export class Oauth2AuthService {
         { params: params }
       )
       .pipe(
-        catchError(() => of({ email: this.notConnected })),
+        retry(2),
+        catchError((error: HttpErrorResponse) => {
+          this.toastService.show('Failed to fetch user information', 'DANGER');
+          console.error('[HTTP] Failed to fetch user after retries:', error);
+          return of({ email: this.notConnected });
+        }),
         shareReplay(1)
       );
   }
@@ -139,6 +154,7 @@ export class Oauth2AuthService {
   }
 
   login(): void {
+    sessionStorage.setItem('justLoggedIn', 'true');
     this.keycloak.login();
   }
 
@@ -155,8 +171,16 @@ export class Oauth2AuthService {
     const params = new HttpParams().set('publicId', userPublicId);
     this.http
       .get<Date>(`${environment.API_URL}/users/get-last-seen`, { params })
+      .pipe(
+        retry(2),
+        catchError((error: HttpErrorResponse) => {
+          this.toastService.show('Failed to fetch last seen time', 'DANGER');
+          console.error('[HTTP] Failed to fetch last seen after retries:', error);
+          throw error;
+        })
+      )
       .subscribe({
-        next: (lastSeen) =>
+        next: (lastSeen: Date) =>
           this.lastSeen$.next(
             State.forSuccess<Dayjs>(dayjs(lastSeen))
           ),

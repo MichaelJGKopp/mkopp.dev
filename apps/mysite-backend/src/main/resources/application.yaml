@@ -61,6 +61,9 @@ spring:
         oauth2:
             resourceserver:
                 jwt:
+                    # Backend connects to Keycloak directly via Docker network
+                    jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
+                    # But validates JWTs have the public issuer (what browsers sees)
                     issuer-uri: ${KEYCLOAK_ISSUER_URI}
     devtools:
         restart:
@@ -101,13 +104,6 @@ springdoc:
         path: /swagger-ui.html
     api-docs:
         path: /v3/api-docs
-
-# JWT configuration with environment variable support
-
-# jwt:
-#     secret: ${JWT_SECRET}
-#     issuer: ${JWT_ISSUER}
-#     expiration: ${JWT_EXPIRATION} # 1 day in milliseconds
 application:
     api:
         error:
@@ -117,11 +113,9 @@ application:
     #     outboundRetryIntervalMs: 60000
     #     clearIntervalMs: 86400000   # 1 days
     #     clearOlderThanDays: 30
-    client-base-url: http://localhost:4200
+    # client-base-url: ${CLIENT_BASE_URL:http://localhost:4200}  # For email templates, webhooks, etc. (not currently used)
     cors:
-        allowed-origins:
-          - "http://localhost:3000"
-          - "http://localhost:4200"
+        allowed-origins: ${ALLOWED_ORIGINS:http://localhost,http://localhost:4200}
         allowed-methods:
           - "GET"
           - "POST"

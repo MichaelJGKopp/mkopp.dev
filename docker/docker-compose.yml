@@ -98,15 +98,11 @@ services:
       traefik.http.services.keycloak.loadbalancer.server.port: "8080"
       traefik.docker.network: "web"
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/keycloak/bin/kc.sh show-config > /dev/null && curl -f http://localhost:8080/health/ready || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
     deploy:
       mode: replicated
       replicas: 1
@@ -123,10 +119,12 @@ services:
       POSTGRES_HOST: "postgres"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       KEYCLOAK_ISSUER_URI: "${KEYCLOAK_ISSUER_URI}"
-      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL}"
-      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL}"
-      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS}"
-      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS}"
+      KEYCLOAK_JWK_SET_URI: "${KEYCLOAK_JWK_SET_URI}"
+      ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-http://localhost,http://localhost:4200}"
+      CONTROLLER_LOGGING_ASPECT_LEVEL: "${CONTROLLER_LOGGING_ASPECT_LEVEL:-ERROR}"
+      SERVICE_LOGGING_ASPECT_LEVEL: "${SERVICE_LOGGING_ASPECT_LEVEL:-ERROR}"
+      CONTROLLER_LOGGING_REQUEST_ARGS: "${CONTROLLER_LOGGING_REQUEST_ARGS:-false}"
+      SERVICE_LOGGING_REQUEST_ARGS: "${SERVICE_LOGGING_REQUEST_ARGS:-false}"
     networks:
       - backend
       - database
@@ -182,14 +180,14 @@ services:
   frontend:
     build:
       context: ..
-      dockerfile: apps/mysite-frontend/Dockerfile.prod
+      dockerfile: apps/mysite-frontend/Dockerfile.dev
     environment:
       LOG_REQUESTS: "${LOG_REQUESTS}"
       DEBUG: "${DEBUG}"
     networks:
       - web
     depends_on:
-      mysite-backend:
+      backend:
         condition: service_healthy
     labels:
       traefik.enable: "true"

@@ -5,9 +5,10 @@ import { fontAwesomeIcons } from './shared/font-awesome-icons';
 import { Navbar } from "./layout/navbar";
 import { Footer } from "./layout/footer";
 import { Oauth2AuthService } from './auth/oauth2-auth.service';
+import { ToastComponent } from './shared/toast/toast.component';
 
 @Component({
-  imports: [RouterModule, Navbar, Footer, FaIconComponent],
+  imports: [RouterModule, Navbar, Footer, FaIconComponent, ToastComponent],
   selector: 'mysite-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

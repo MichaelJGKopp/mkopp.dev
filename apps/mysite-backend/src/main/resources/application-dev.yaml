@@ -32,9 +32,3 @@ logging:
     # SQL logging for N+1 detection (only in dev)
     # '[org.hibernate.SQL]': DEBUG
     '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
-
-application:
-  cors:
-    allowed-origins:
-      - "http://localhost:3000"
-      - "http://localhost:4200"

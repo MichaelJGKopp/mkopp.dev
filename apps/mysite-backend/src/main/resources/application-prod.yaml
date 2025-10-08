@@ -15,9 +15,3 @@ logging:
     # Only log exceptions from custom aspects in production
     '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ERROR
     '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ERROR
-
-application:
-  cors:
-    allowed-origins:
-      - "https://mkopp.dev"
-      - "https://www.mkopp.dev"

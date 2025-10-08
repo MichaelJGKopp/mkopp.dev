@@ -1,0 +1,32 @@
+# Development Dockerfile for Nx Angular SSR application
+# Uses development configuration for localhost
+
+FROM node:lts-trixie-slim AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json* nx.json ./
+COPY tsconfig.base.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY apps/mysite-frontend ./apps/mysite-frontend
+# Build with DEVELOPMENT configuration
+RUN npx nx build mysite-frontend --configuration=development
+
+
+FROM node:lts-trixie-slim AS runner
+
+WORKDIR /app
+
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid 1001 -m nodejs
+
+ENV NODE_ENV=development
+
+COPY --from=builder --chown=nodejs:nodejs /app/dist/apps/mysite-frontend .
+
+USER nodejs
+
+EXPOSE 4000
+
+CMD ["node", "server/server.mjs"]
