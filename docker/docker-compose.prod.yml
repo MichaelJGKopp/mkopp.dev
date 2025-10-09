@@ -81,9 +81,6 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
       - KC_HTTP_ENABLED=true # Traefik talks HTTP internally
       - KC_HTTP_PORT=8080
-    volumes:
-      # Mount only the production realm configuration
-      - ./keycloak-realm-config/mkopp-prod-realm.json:/opt/keycloak/data/import/mkopp-realm.json
     networks:
       - database
       - web
