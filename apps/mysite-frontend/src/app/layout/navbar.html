@@ -51,7 +51,7 @@
         <div class="navbar-end flex gap-2">
             <label class="swap swap-rotate items-center">
                 <!-- this hidden checkbox controls the state -->
-                <input type="checkbox" class="theme-controller" value="halloween" />
+                <input type="checkbox" class="theme-controller" [checked]="isDarkMode()" (change)="onThemeToggle()" />
 
                 <!-- sun icon -->
                 <svg class="menu-icon swap-off h-7 w-7 fill-current" xmlns="http://www.w3.org/2000/svg"

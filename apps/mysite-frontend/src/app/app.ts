@@ -6,6 +6,7 @@ import { Navbar } from "./layout/navbar";
 import { Footer } from "./layout/footer";
 import { Oauth2AuthService } from './auth/oauth2-auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
+import { ThemeService } from './shared/theme/theme.service';
 
 @Component({
   imports: [RouterModule, Navbar, Footer, FaIconComponent, ToastComponent],
@@ -18,10 +19,18 @@ export class App implements OnInit {
   private faIconLibrary = inject(FaIconLibrary);
   private faConfig = inject(FaConfig);
   private oauth2Service = inject(Oauth2AuthService);
+  private themeService = inject(ThemeService);
 
   constructor() {
     afterNextRender(() => {
       this.oauth2Service.initAuthentication();
+      this.themeService.initTheme();
+      
+      const hash = globalThis.location.hash;
+      if (hash.includes('code=')) {
+        history.replaceState({}, document.title, globalThis.location.pathname);
+      }
+
     });
   }
 
