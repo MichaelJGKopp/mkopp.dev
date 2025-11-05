@@ -1,6 +1,6 @@
 import { afterNextRender, Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FaConfig, FaIconComponent, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FaConfig, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fontAwesomeIcons } from './shared/font-awesome-icons';
 import { Navbar } from "./layout/navbar";
 import { Footer } from "./layout/footer";
@@ -9,7 +9,7 @@ import { ToastComponent } from './shared/toast/toast.component';
 import { ThemeService } from './shared/theme/theme.service';
 
 @Component({
-  imports: [RouterModule, Navbar, Footer, FaIconComponent, ToastComponent],
+  imports: [RouterModule, Navbar, Footer, ToastComponent],
   selector: 'mysite-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -26,6 +26,7 @@ export class App implements OnInit {
       this.oauth2Service.initAuthentication();
       this.themeService.initTheme();
       
+      // Clean up URL hash if it contains OAuth2 code parameter
       const hash = globalThis.location.hash;
       if (hash.includes('code=')) {
         history.replaceState({}, document.title, globalThis.location.pathname);

@@ -8,3 +8,66 @@
 * {
   box-sizing: border-box;
 }
+
+// Typography styles for markdown content
+@import 'highlight.js/styles/github-dark.css';
+
+.prose {
+  @apply text-base-content;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-bold text-base-content;
+}
+
+.prose h1 { @apply text-3xl mt-8 mb-4; }
+.prose h2 { @apply text-2xl mt-6 mb-3; }
+.prose h3 { @apply text-xl mt-4 mb-2; }
+
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.prose pre {
+  @apply bg-base-300 rounded-lg p-4 overflow-x-auto my-4;
+}
+
+.prose code {
+  @apply bg-base-200 px-1.5 py-0.5 rounded text-sm;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
+}
+
+.prose a {
+  @apply text-primary hover:underline;
+}
+
+.prose ul, .prose ol {
+  @apply ml-6 mb-4;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-primary pl-4 italic my-4;
+}
+
+.prose img {
+  @apply rounded-lg my-4;
+}
+
+.prose table {
+  @apply w-full border-collapse my-4;
+}
+
+.prose th, .prose td {
+  @apply border border-base-300 px-4 py-2;
+}
+
+.prose th {
+  @apply bg-base-200 font-bold;
+}

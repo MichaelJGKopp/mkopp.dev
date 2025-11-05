@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "005-cors-best-practices",
+    "title": "CORS Configuration in Spring Boot: A Best Practice Guide",
+    "description": "Learn how to configure CORS in Spring Boot in a secure, flexible, and maintainable way using centralized configuration and externalized properties.",
+    "publishedAt": "2025-11-05",
+    "tags": ["spring-boot", "cors", "security", "java", "backend"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
+    "slug": "004-keycloak-spring-boot-integration",
+    "title": "A Deep Dive into the Keycloak JWT OAuth2 Implementation",
+    "description": "Detailed analysis of securing a Spring Boot backend using Keycloak with JWT for OAuth2 authentication, including role extraction and custom converters.",
+    "publishedAt": "2025-11-05",
+    "tags": ["keycloak", "spring-boot", "oauth2", "jwt", "security", "java"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
+    "slug": "003-nx-monorepo",
+    "title": "Taming the Monorepo: How We Use Nx to Manage Our Full-Stack Application",
+    "description": "Why we chose a monorepo approach and how we use Nx to manage our Angular frontend and Spring Boot backend in a single workspace.",
+    "publishedAt": "2025-11-05",
+    "tags": ["nx", "monorepo", "angular", "spring-boot", "full-stack"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
+    "slug": "002-ssr-angular",
+    "title": "The Power of Server-Side Rendering with Angular Universal",
+    "description": "How we use Angular Universal for Server-Side Rendering to enhance SEO and improve performance, including containerization with Docker.",
+    "publishedAt": "2025-11-05",
+    "tags": ["angular", "ssr", "angular-universal", "seo", "performance", "docker"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
+    "slug": "001-deployment-pipeline",
+    "title": "Our Deployment Pipeline: From git push to Production",
+    "description": "A deep dive into our CI/CD pipeline using GitHub Actions, Docker, and Docker Compose to automate deployment from code push to production.",
+    "publishedAt": "2025-11-05",
+    "tags": ["ci-cd", "github-actions", "docker", "deployment", "devops"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  }
+]

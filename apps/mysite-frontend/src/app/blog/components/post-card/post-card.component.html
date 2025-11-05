@@ -1,0 +1,41 @@
+<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+  @if (post.thumbnailUrl) {
+  <figure>
+    <img [src]="post.thumbnailUrl" [alt]="post.title" class="w-full h-48 object-cover" />
+  </figure>
+  }
+  <div class="card-body">
+    <h2 class="card-title">{{ post.title }}</h2>
+    <p class="text-base-content/70">{{ post.description }}</p>
+
+    <div class="flex items-center gap-2 text-sm text-base-content/60 mt-2">
+      <fa-icon [icon]="faCalendar" size="sm"></fa-icon>
+      <span>{{ post.publishedAt | date:'mediumDate' }}</span>
+    </div>
+
+    @if (post.tags.length > 0) {
+    <div class="flex flex-wrap gap-2 mt-2">
+      @for (tag of post.tags; track tag) {
+      <span class="badge badge-primary badge-sm">
+        <fa-icon [icon]="faTag" size="xs" class="mr-1"></fa-icon>
+        {{ tag }}
+      </span>
+      }
+    </div>
+    }
+
+    <div class="card-actions justify-end mt-4">
+      @if (post.type === 'external' || post.type === 'youtube') {
+      <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+        View {{ post.type === 'youtube' ? 'Video' : 'Article' }}
+        <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
+      </a>
+      } @else {
+      <a [routerLink]="['/blog', post.slug]" class="btn btn-primary btn-sm">
+        Read More
+        <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
+      </a>
+      }
+    </div>
+  </div>
+</div>

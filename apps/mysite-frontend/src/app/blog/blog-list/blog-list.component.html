@@ -1,0 +1,26 @@
+<div class="container mx-auto px-4 py-8">
+  <header class="mb-8">
+    <h1 class="text-4xl font-bold mb-2">Blog</h1>
+    <p class="text-lg text-base-content/70">
+      Articles, tutorials, and thoughts about programming
+    </p>
+  </header>
+
+  @if (loading()) {
+  <div class="flex justify-center items-center min-h-[400px]">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (post of posts(); track post.slug) {
+    <mysite-post-card [post]="post"></mysite-post-card>
+    }
+  </div>
+
+  @if (posts().length === 0) {
+  <div class="alert alert-info">
+    <span>No blog posts found. Check back soon!</span>
+  </div>
+  }
+  }
+</div>
