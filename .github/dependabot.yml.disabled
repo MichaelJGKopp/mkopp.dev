@@ -1,0 +1,16 @@
+# version: 2
+# updates:
+#   # Maven project example
+#   - package-ecosystem: "maven"
+#     directory: "/"            # location of pom.xml
+#     schedule:
+#       interval: "daily"
+#     commit-message:
+#       prefix: "fix(deps)"
+#     open-pull-requests-limit: 5
+
+#   # NPM project example
+#   - package-ecosystem: "npm"
+#     directory: "/frontend"
+#     schedule:
+#       interval: "weekly"
