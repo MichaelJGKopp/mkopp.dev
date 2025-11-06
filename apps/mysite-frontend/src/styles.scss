@@ -12,15 +12,9 @@
 // Typography styles for markdown content
 @import 'highlight.js/styles/github-dark.css';
 
-/* Override for light theme */
-[data-theme='winter'] .prose pre,
-[data-theme='light'] .prose pre {
-  @apply bg-base-200;
-}
-
-[data-theme='winter'] .prose code:not(pre code),
-[data-theme='light'] .prose code:not(pre code) {
-  @apply bg-base-300 text-base-content;
+/* Override for light theme - when theme is NOT halloween (dark) */
+[data-theme]:not([data-theme='halloween']) .prose pre {
+  @apply bg-black;
 }
 
 /* Markdown prose styling - responsive font sizes */
@@ -113,17 +107,6 @@
   max-width: 100%;
 }
 
-/* Light theme code readability */
-[data-theme='winter'] .prose code,
-[data-theme='light'] .prose code {
-  @apply text-gray-800;
-}
-
-[data-theme='winter'] .prose pre code,
-[data-theme='light'] .prose pre code {
-  color: inherit;
-}
-
 .prose a {
   @apply text-primary hover:underline break-words;
 }
@@ -134,6 +117,7 @@
 
 .prose li {
   @apply mb-2;
+  margin-left: -1rem;
 }
 
 .prose blockquote {
@@ -184,10 +168,4 @@
   @apply bg-base-300;
   padding: 1rem;
   overflow-x: auto;
-}
-
-[data-theme='winter'] .hljs,
-[data-theme='light'] .hljs {
-  background: #f6f8fa;
-  color: #24292e;
 }
