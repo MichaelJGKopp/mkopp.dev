@@ -1,5 +1,23 @@
 [
   {
+    "slug": "007-keycloak-js-angular-auth",
+    "title": "Implementing Authentication in Angular with Keycloak JS: A Complete Guide",
+    "description": "Learn how to integrate Keycloak authentication into Angular using the official keycloak-js adapter with route guards, HTTP interceptors, and role-based access control.",
+    "publishedAt": "2025-11-05",
+    "tags": ["keycloak", "angular", "authentication", "oauth2", "jwt", "security"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
+    "slug": "006-flyway-spring-boot",
+    "title": "Database Migrations with Flyway in Spring Boot: A Practical Guide",
+    "description": "A comprehensive guide to managing database schema migrations in Spring Boot using Flyway, covering best practices, versioning strategies, and production deployment.",
+    "publishedAt": "2025-11-05",
+    "tags": ["flyway", "spring-boot", "database", "migrations", "sql", "postgresql"],
+    "author": "Michael Kopp",
+    "type": "blog"
+  },
+  {
     "slug": "005-cors-best-practices",
     "title": "CORS Configuration in Spring Boot: A Best Practice Guide",
     "description": "Learn how to configure CORS in Spring Boot in a secure, flexible, and maintainable way using centralized configuration and externalized properties.",

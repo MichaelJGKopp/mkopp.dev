@@ -12,40 +12,93 @@
 // Typography styles for markdown content
 @import 'highlight.js/styles/github-dark.css';
 
+/* Override for light theme */
+[data-theme='winter'] .prose pre,
+[data-theme='light'] .prose pre {
+  @apply bg-base-200;
+}
+
+[data-theme='winter'] .prose code:not(pre code),
+[data-theme='light'] .prose code:not(pre code) {
+  @apply bg-base-300 text-base-content;
+}
+
+/* Markdown prose styling - responsive font sizes */
 .prose {
   @apply text-base-content;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .prose {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+
+@media (min-width: 1024px) {
+  .prose {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  @apply font-bold text-base-content;
+  @apply font-bold text-base-content mt-6 mb-3;
 }
 
-.prose h1 { @apply text-3xl mt-8 mb-4; }
-.prose h2 { @apply text-2xl mt-6 mb-3; }
-.prose h3 { @apply text-xl mt-4 mb-2; }
+.prose h1 { 
+  @apply text-2xl md:text-3xl mt-8 mb-4; 
+}
+.prose h2 { 
+  @apply text-xl md:text-2xl mt-6 mb-3; 
+}
+.prose h3 { 
+  @apply text-lg md:text-xl mt-4 mb-2; 
+}
 
 .prose p {
-  @apply mb-4 leading-relaxed;
+  @apply mb-4;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .prose pre {
-  @apply bg-base-300 rounded-lg p-4 overflow-x-auto my-4;
+  @apply bg-base-300 rounded-lg p-3 md:p-4 overflow-x-auto my-4;
+  max-width: 100%;
 }
 
 .prose code {
   @apply bg-base-200 px-1.5 py-0.5 rounded text-sm;
+  font-size: 0.875em;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .prose pre code {
   @apply bg-transparent p-0;
+  overflow-wrap: normal;
+  word-wrap: normal;
+}
+
+/* Light theme code readability */
+[data-theme='winter'] .prose code,
+[data-theme='light'] .prose code {
+  @apply text-gray-800;
+}
+
+[data-theme='winter'] .prose pre code,
+[data-theme='light'] .prose pre code {
+  color: inherit;
 }
 
 .prose a {
-  @apply text-primary hover:underline;
+  @apply text-primary hover:underline break-words;
 }
 
 .prose ul, .prose ol {
-  @apply ml-6 mb-4;
+  @apply ml-4 md:ml-6 mb-4;
 }
 
 .prose li {
@@ -57,17 +110,43 @@
 }
 
 .prose img {
-  @apply rounded-lg my-4;
+  @apply rounded-lg my-4 max-w-full h-auto;
 }
 
 .prose table {
-  @apply w-full border-collapse my-4;
+  @apply w-full border-collapse my-4 text-sm;
+  display: block;
+  overflow-x: auto;
 }
 
 .prose th, .prose td {
-  @apply border border-base-300 px-4 py-2;
+  @apply border border-base-300 px-2 md:px-4 py-2;
 }
 
 .prose th {
   @apply bg-base-200 font-bold;
+}
+
+/* Mermaid diagrams */
+.prose .language-mermaid {
+  @apply bg-transparent my-6;
+  overflow-x: auto;
+}
+
+.prose .language-mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Syntax highlighting overrides for better readability */
+.hljs {
+  @apply bg-base-300;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+[data-theme='winter'] .hljs,
+[data-theme='light'] .hljs {
+  background: #f6f8fa;
+  color: #24292e;
 }

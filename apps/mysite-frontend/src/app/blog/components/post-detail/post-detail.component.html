@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8 max-w-4xl">
+<div class="w-full px-4 py-8 max-w-4xl mx-auto">
   @if (loading()) {
   <div class="flex justify-center items-center min-h-[400px]">
     <span class="loading loading-spinner loading-lg"></span>
@@ -8,16 +8,16 @@
     <span>{{ error() }}</span>
   </div>
   } @else if (post()) {
-  <article>
+  <article class="w-full">
     <button (click)="goBack()" class="btn btn-ghost btn-sm mb-4">
       <fa-icon [icon]="faArrowLeft"></fa-icon>
       Back to Blog
     </button>
 
     <header class="mb-8">
-      <h1 class="text-4xl font-bold mb-4">{{ post()!.title }}</h1>
+      <h1 class="text-3xl md:text-4xl font-bold mb-4 break-words">{{ post()!.title }}</h1>
 
-      <div class="flex flex-wrap gap-4 text-base-content/70 mb-4">
+      <div class="flex flex-wrap gap-4 text-sm text-base-content/70 mb-4">
         <div class="flex items-center gap-2">
           <fa-icon [icon]="faCalendar"></fa-icon>
           <span>{{ post()!.publishedAt | date:'longDate' }}</span>
@@ -31,7 +31,7 @@
       @if (post()!.tags.length > 0) {
       <div class="flex flex-wrap gap-2">
         @for (tag of post()!.tags; track tag) {
-        <span class="badge badge-primary">
+        <span class="badge badge-primary badge-sm">
           <fa-icon [icon]="faTag" size="xs" class="mr-1"></fa-icon>
           {{ tag }}
         </span>
@@ -40,7 +40,7 @@
       }
     </header>
 
-    <div class="prose lg:prose-xl max-w-none">
+    <div class="prose prose-sm md:prose-base lg:prose-lg max-w-none w-full overflow-x-hidden">
       <markdown [data]="post()!.content" (ready)="onMarkdownReady()">
       </markdown>
     </div>
