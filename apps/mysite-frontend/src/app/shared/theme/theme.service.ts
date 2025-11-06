@@ -21,6 +21,12 @@ export class ThemeService {
   toggleTheme(): void {
     const newTheme: Theme = this.currentTheme() === this.DEFAULT_THEME ? this.DARK_THEME : this.DEFAULT_THEME;
     this.setTheme(newTheme);
+    
+    // Toggle Highlight.js theme
+    const link = document.getElementById('hljs-theme') as HTMLLinkElement;
+    link.href = this.isDarkMode()
+      ? 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.css'
+      : 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.css';
   }
 
   setTheme(theme: Theme): void {

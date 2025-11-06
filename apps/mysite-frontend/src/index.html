@@ -15,7 +15,7 @@
   <link rel="manifest" href="/site.webmanifest">
 
   <!-- Highlight.js for syntax highlighting -->
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"> -->
+  <link id="hljs-theme" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
   <script>
@@ -23,9 +23,17 @@
       try {
         const theme = localStorage.getItem('theme') || 'tageslicht';
         document.documentElement.dataset['theme'] = theme;
+
+        // markdown highlighting theme
+        const hljsLink = document.getElementById('hljs-theme');
+        const darkThemes = ['halloween'];
+        hljsLink.href = darkThemes.includes(theme)
+          ? 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.css'
+          : 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.css';
       } catch (e) {
         console.error('Error applying theme from localStorage', e);
         document.documentElement.dataset['theme'] = 'tageslicht';
+        document.getElementById('hljs-theme').href = 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.css';
       }
     })();
   </script>

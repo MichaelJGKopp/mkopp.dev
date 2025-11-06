@@ -9,12 +9,6 @@
   box-sizing: border-box;
 }
 
-// Typography styles for markdown content
-@import 'highlight.js/styles/github.css';
-
-/* Dark theme - import dark syntax highlighting */
-// @import 'highlight.js/styles/github-dark.css';
-
 /* Markdown prose styling - responsive font sizes */
 .prose {
   // @apply text-base-content;
@@ -100,9 +94,12 @@
 .prose code {
   @apply bg-base-200 px-1.5 py-0.5 rounded text-sm;
   font-size: 0.875em;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  max-width: 100%;
+  /* Critical: prevent wrapping issues */
+  // overflow-wrap: anywhere !important;
+  // word-break: normal !important;
+  // max-width: 100% !important;
+  // display: inline !important;
+  // vertical-align: baseline;
 }
 
 .prose a {
@@ -137,7 +134,7 @@
   max-width: none;
 }
 
-/* Force word breaks on long strings */
+/* Force word breaks on long strings - but not on code */
 .prose p,
 .prose li,
 .prose td,
@@ -145,12 +142,23 @@
 .prose h1,
 .prose h2,
 .prose h3 {
-  // word-break: break-word;
-  // overflow-wrap: break-word;
-  // hyphens: auto;
   word-break: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal; /* Changed from anywhere */
   hyphens: auto;
+}
+
+/* Only break inline code when absolutely necessary */
+.prose p code,
+.prose li code,
+.prose td code,
+.prose th code,
+.prose h1 code,
+.prose h2 code,
+.prose h3 code {
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  max-width: calc(100vw - 4rem) !important;
+  hyphens: none !important;
 }
 
 /* Mermaid diagrams */
