@@ -147,8 +147,11 @@
 .prose h1,
 .prose h2,
 .prose h3 {
-  word-break: break-word;
-  overflow-wrap: break-word;
+  // word-break: break-word;
+  // overflow-wrap: break-word;
+  // hyphens: auto;
+  word-break: normal;
+  overflow-wrap: anywhere;
   hyphens: auto;
 }
 
