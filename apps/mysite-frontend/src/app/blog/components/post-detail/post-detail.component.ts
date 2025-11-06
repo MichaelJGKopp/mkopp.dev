@@ -1,3 +1,4 @@
+import { ThemeService } from './../../../shared/theme/theme.service';
 import { Component, OnInit, signal, PLATFORM_ID, inject, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,7 +18,9 @@ export class PostDetailComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   private blogService: BlogPostsService = inject(BlogPostsService);
-  
+  private themeService = inject(ThemeService);
+
+  isDarkMode = this.themeService.isDarkMode;
   loading = signal(true);
   error = signal<string | null>(null);
   post = signal<any | null>(null);

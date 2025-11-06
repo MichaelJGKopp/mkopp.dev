@@ -10,16 +10,14 @@
 }
 
 // Typography styles for markdown content
-@import 'highlight.js/styles/github-dark.css';
+@import 'highlight.js/styles/github.css';
 
-/* Override for light theme - when theme is NOT halloween (dark) */
-[data-theme]:not([data-theme='halloween']) .prose pre {
-  @apply bg-black;
-}
+/* Dark theme - import dark syntax highlighting */
+// @import 'highlight.js/styles/github-dark.css';
 
 /* Markdown prose styling - responsive font sizes */
 .prose {
-  @apply text-base-content;
+  // @apply text-base-content;
   font-size: 0.95rem;
   line-height: 1.6;
   max-width: 100% !important;
@@ -168,7 +166,22 @@
 
 /* Syntax highlighting overrides for better readability */
 .hljs {
-  @apply bg-base-300;
   padding: 1rem;
   overflow-x: auto;
+  /* Don't override the background - let highlight.js theme handle it */
+}
+
+/* Only override hljs background for dark theme */
+[data-theme='halloween'] .hljs .prose pre {
+  background: #17130d !important; /* GitHub dark background */
+}
+
+/* Ensure light theme uses GitHub's light background */
+[data-theme]:not([data-theme='halloween']) .hljs {
+  background: #f6f8fa !important; /* GitHub light background */
+  color: #24292e !important; /* GitHub light text color */
+}
+
+[data-theme]:not([data-theme='halloween']) .prose pre {
+  background: #f6f8fa !important; /* GitHub light background */
 }
