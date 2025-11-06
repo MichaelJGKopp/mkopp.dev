@@ -33,7 +33,7 @@ module.exports = {
           // #FFA500 (Orange): A classic, bright orange.
           // #FF9900 (Web Orange): A common web orange that often appears quite luminous.
           // #FFB700 (Golden Orange): A slightly lighter, more golden orange that can have a glowing effect.
-          "primary": "#FF9900", // Dark Orange
+          "primary": "#f49200e7", // Dark Orange
           "secondary": "#FFB700", // Light Orange
           "accent": "#3b82f6", // Blue (blue-500)
           "neutral": "#475569", // Medium Slate (slate-600)
