@@ -17,7 +17,7 @@ import lombok.Getter;
 
 /**
  * Standard error response following RFC 7807 Problem Details for HTTP APIs.
- * Extended with Werkly-specific fields.
+ * Extended with Mysite-specific fields.
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
@@ -41,6 +41,7 @@ public class ApiError extends ProblemDetail {
         this.traceId = org.slf4j.MDC.get("traceId");
         
         setTitle(title);
+        // setType(URI.create(apiErrorPath + errorCode.toLowerCase())); // ToDo: implement specific error pages
     }
     
     public void addValidationError(String field, String message) {

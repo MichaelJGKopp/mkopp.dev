@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
         ApiError error = new ApiError(
                 "VALIDATION_ERROR",
-                "Die Anfrage enthält ungültige Werte",
+                "The request contains invalid values",
                 HttpStatus.BAD_REQUEST);
 
         ex.getBindingResult().getAllErrors().forEach(e -> {
@@ -48,13 +48,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class) // e.g. updateUser(@NotNull Long id, @NotBlank String name)
+    @ExceptionHandler(ConstraintViolationException.class) // e.g. updateUser(@NotNull Long id, @NotBlank String name) {
     public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
         log.warn("Constraint violation: {}", ex.getMessage());
 
         ApiError error = new ApiError(
                 "VALIDATION_ERROR",
-                "Die Anfrage enthält ungültige Werte",
+                "The request contains invalid values",
                 HttpStatus.BAD_REQUEST);
 
         ex.getConstraintViolations().forEach(v -> {
@@ -72,15 +72,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
         log.warn("Type mismatch: {}", ex.getMessage());
 
-        String message = String.format("Parameter '%s' hat einen ungültigen Wert: '%s'",
+        String message = String.format("Parameter '%s' has an invalid value: '%s'",
                 ex.getName(), ex.getValue());
 
         ApiError error = new ApiError(
                 "INVALID_PARAMETER",
-                "Ungültiger Parameter in der Anfrage",
+                "Invalid request parameter",
                 HttpStatus.BAD_REQUEST);
         error.setDetail(message);
 
+        // Instance: Path of the failed request
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
         error.setInstance(URI.create(uri));
 
@@ -92,7 +93,7 @@ public class GlobalExceptionHandler {
         log.warn("Access denied: {}", ex.getMessage());
         ApiError error = new ApiError(
                 "FORBIDDEN",
-                "Zugriff verweigert",
+                "Access Denied",
                 HttpStatus.FORBIDDEN);
         error.setDetail(ex.getMessage());
 
@@ -109,9 +110,9 @@ public class GlobalExceptionHandler {
 
         ApiError error = new ApiError(
                 "INTERNAL_SERVER_ERROR",
-                "Ein unerwarteter Fehler ist aufgetreten",
+                "An unexpected error has occurred",
                 HttpStatus.INTERNAL_SERVER_ERROR);
-        error.setDetail("Ein interner Serverfehler ist aufgetreten. Fehler-ID: " + errorId);
+        error.setDetail("An internal server error has occurred. Error ID: " + errorId);
 
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
         error.setInstance(URI.create(uri));
