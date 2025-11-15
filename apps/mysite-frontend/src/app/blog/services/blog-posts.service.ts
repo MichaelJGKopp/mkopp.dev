@@ -1,15 +1,7 @@
-import {
-  inject,
-  Injectable,
-  makeStateKey,
-  signal,
-  TransferState,
-} from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, map, of } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 import { BlogPost, BlogPostMetadata } from '../models/post.model';
-
-const POSTS_KEY = makeStateKey<any[]>('posts');
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +9,6 @@ const POSTS_KEY = makeStateKey<any[]>('posts');
 export class BlogPostsService {
   private postsMetadata = signal<BlogPostMetadata[]>([]);
   private http = inject(HttpClient);
-  private transferState = inject(TransferState);
 
   loadPostsMetadataSSR(): Observable<BlogPostMetadata[]> {
     return this.http
@@ -25,7 +16,6 @@ export class BlogPostsService {
       .pipe(
         tap((metadata) => {
           this.postsMetadata.set(metadata);
-          this.transferState.set(POSTS_KEY, metadata);
         })
       );
   }
