@@ -1,25 +1,33 @@
-import { inject, Injectable, signal } from '@angular/core';
+import {
+  inject,
+  Injectable,
+  makeStateKey,
+  signal,
+  TransferState,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, tap, map, of } from 'rxjs';
 import { BlogPost, BlogPostMetadata } from '../models/post.model';
 
+const POSTS_KEY = makeStateKey<any[]>('posts');
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BlogPostsService {
   private postsMetadata = signal<BlogPostMetadata[]>([]);
-  private http: HttpClient = inject(HttpClient);
+  private http = inject(HttpClient);
+  private transferState = inject(TransferState);
 
-  constructor() {
-    this.loadPostsMetadata();
-  }
-
-  private loadPostsMetadata() {
-    this.http.get<BlogPostMetadata[]>('/blog/posts-index.json')
-      .subscribe({
-        next: (metadata) => this.postsMetadata.set(metadata),
-        error: (err) => console.error('Error loading posts metadata:', err)
-      });
+  loadPostsMetadataSSR(): Observable<BlogPostMetadata[]> {
+    return this.http
+      .get<BlogPostMetadata[]>('/assets/blog/posts-index.json')
+      .pipe(
+        tap((metadata) => {
+          this.postsMetadata.set(metadata);
+          this.transferState.set(POSTS_KEY, metadata);
+        })
+      );
   }
 
   getAllPosts(): BlogPostMetadata[] {
@@ -27,15 +35,16 @@ export class BlogPostsService {
   }
 
   getPostBySlug(slug: string): Observable<BlogPost> {
-    const metadata = this.postsMetadata().find(p => p.slug === slug);
-    
+    const metadata = this.postsMetadata().find((p) => p.slug === slug);
+
     if (!metadata) {
       throw new Error(`Post with slug "${slug}" not found`);
     }
 
-    return this.http.get(`/blog/posts/${slug}.md`, { responseType: 'text' })
+    return this.http
+      .get(`/assets/blog/posts/${slug}.md`, { responseType: 'text' })
       .pipe(
-        map(content => ({
+        map((content) => ({
           ...metadata,
           content,
           publishedAt: new Date(metadata.publishedAt),
@@ -43,9 +52,12 @@ export class BlogPostsService {
       );
   }
 
-  getRecentPosts(limit = 6): BlogPostMetadata[] {
-    return this.postsMetadata()
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  getRecentPosts(limit = 99): BlogPostMetadata[] {
+    return [...this.postsMetadata()]
+      .sort(
+        (a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      )
       .slice(0, limit);
   }
 }

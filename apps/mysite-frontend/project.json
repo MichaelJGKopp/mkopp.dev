@@ -20,6 +20,7 @@
         "tsConfig": "apps/mysite-frontend/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
+          "apps/mysite-frontend/src/assets",
           {
             "glob": "**/*",
             "input": "apps/mysite-frontend/public"
