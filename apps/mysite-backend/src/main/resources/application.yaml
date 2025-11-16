@@ -1,143 +1,146 @@
 logging:
-    level:
-        ROOT: INFO
-        '[org.hibernate.SQL]': INFO
-        '[dev.mkopp.mysite]': INFO
-        # Control ControllerLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
-        '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ${CONTROLLER_LOGGING_ASPECT_LEVEL:INFO}
-        # Control ServiceLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
-        '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ${SERVICE_LOGGING_ASPECT_LEVEL:INFO}
+  level:
+    ROOT: INFO
+    '[org.hibernate.SQL]': INFO
+    '[dev.mkopp.mysite]': INFO
+    # Control ControllerLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
+    '[dev.mkopp.mysite.shared.logging.ControllerLoggingAspect]': ${CONTROLLER_LOGGING_ASPECT_LEVEL:INFO}
+    # Control ServiceLoggingAspect level. Set to DEBUG to see args, or OFF to disable.
+    '[dev.mkopp.mysite.shared.logging.ServiceLoggingAspect]': ${SERVICE_LOGGING_ASPECT_LEVEL:INFO}
 server:
-    port: 8200
-    shutdown: graceful
+  port: 8200
+  shutdown: graceful
 spring:
-    lifecycle:
-        timeout-per-shutdown-phase: 25s
-    # profiles:
-    #     active: dev
-    jackson:
-        time-zone: UTC
-    application:
-        name: mysite backend
-    # threads:  # update java and enable if needed
-    #     virtual:
-    #         enabled: true
-    datasource:
-        url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}?options=-c%20timezone%3DUTC
-        username: ${POSTGRES_USER}
-        password: ${POSTGRES_PASSWORD}
-        hikari:
-            poolName: Hikari
-            auto-commit: false
-        driver-class-name: org.postgresql.Driver
-        type: com.zaxxer.hikari.HikariDataSource
-    jpa:
-        properties:
-            hibernate:
-                '[generate_statistics]': false
-                '[order_updates]': true
-                '[order_inserts]': true
-                # '[order_deletes]': true
-                '[default_schema]': ${POSTGRES_SCHEMA}
-                jdbc:
-                    '[time_zone]': UTC
-                    '[batch_size]': 25
-                    '[default_batch_fetch_size]': 25  # For collection fetching in queries
-                    '[jdbc.fetch_size]': 25 # query hint
-                    # '[batch_versioned_data]': true  # for later use with versioned entities
-                    # '[jdbc.batch_versioned_data]': true
-                query:
-                    '[fail_on_pagination_over_collection_fetch]': true
-                    '[in_clause_parameter_padding]': true
-                connection:
-                    '[provider_disables_autocommit]': true
-        hibernate:
-            ddl-auto: validate
-            naming:
-                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        open-in-view: false  # Disable open-in-view pattern for better resource management
-    security:
-        oauth2:
-            resourceserver:
-                jwt:
-                    # Backend connects to Keycloak directly via Docker network
-                    jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
-                    # But validates JWTs have the public issuer (what browsers sees)
-                    issuer-uri: ${KEYCLOAK_ISSUER_URI}
-    devtools:
-        restart:
-            enabled: false
-        livereload:
-            enabled: false
-    # cache:
-    #     type: caffeine
-    #     caffeine:
-    #         spec: maximumSize=500,expireAfterWrite=10m
-    servlet:
-        multipart:
-            max-file-size:
-                10MB
-            max-request-size:
-                10MB
-    output:
-        ansi:
-            enabled: ALWAYS
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
+  # profiles:
+  #     active: dev
+  jackson:
+    time-zone: UTC
+  application:
+    name: mysite backend
+  # threads:  # update java and enable if needed
+  #     virtual:
+  #         enabled: true
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}?options=-c%20timezone%3DUTC
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    properties:
+      hibernate:
+        '[generate_statistics]': false
+        '[order_updates]': true
+        '[order_inserts]': true
+        # '[order_deletes]': true
+        '[default_schema]': ${POSTGRES_SCHEMA}
+        jdbc:
+          '[time_zone]': UTC
+          '[batch_size]': 25
+          '[default_batch_fetch_size]': 25 # For collection fetching in queries
+          '[jdbc.fetch_size]': 25 # query hint
+          # '[batch_versioned_data]': true  # for later use with versioned entities
+          # '[jdbc.batch_versioned_data]': true
+        query:
+          '[fail_on_pagination_over_collection_fetch]': true
+          '[in_clause_parameter_padding]': true
+        connection:
+          '[provider_disables_autocommit]': true
+    hibernate:
+      ddl-auto: validate
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    open-in-view: false # Disable open-in-view pattern for better resource management
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public,user,blog
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Backend connects to Keycloak directly via Docker network
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
+          # But validates JWTs have the public issuer (what browsers sees)
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  # cache:
+  #     type: caffeine
+  #     caffeine:
+  #         spec: maximumSize=500,expireAfterWrite=10m
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  output:
+    ansi:
+      enabled: ALWAYS
 management:
-    endpoints:
-        web:
-            exposure:
-                include: "health,info" # ,prometheus later
-            base-path: /management
-    endpoint:
-        health:
-            show-details: always
-            probes:
-                enabled: true
-            group:
-                liveness:
-                    include: "livenessState"  # Is the app itself running?
-                readiness:
-                    include: "livenessState,readinessState,db"  # Is it running AND ready for traffic?
+  endpoints:
+    web:
+      exposure:
+        include: 'health,info' # ,prometheus later
+      base-path: /management
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: 'livenessState' # Is the app itself running?
+        readiness:
+          include: 'livenessState,readinessState,db' # Is it running AND ready for traffic?
 springdoc:
-    swagger-ui:
-        path: /swagger-ui.html
-    api-docs:
-        path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
 application:
-    api:
-        error:
-            path: "https://mkopp.dev/api/v1/errors/"
-    # events:
-    #     # Für Event Tabelle zum Wiederholen von fehlgeschlagenen Events und Aufräumen
-    #     outboundRetryIntervalMs: 60000
-    #     clearIntervalMs: 86400000   # 1 days
-    #     clearOlderThanDays: 30
-    # client-base-url: ${CLIENT_BASE_URL:http://localhost:4200}  # For email templates, webhooks, etc. (not currently used)
-    cors:
-        allowed-origins: ${ALLOWED_ORIGINS:http://localhost,http://localhost:4200}
-        allowed-methods:
-          - "GET"
-          - "POST"
-          - "PUT"
-          - "PATCH"
-          - "DELETE"
-          - "OPTIONS"
-        allowed-headers:
-          - "Authorization"
-          - "Content-Type"
-          - "Content-Disposition"
-          - "Accept"
-        exposed-headers:
-          - "Location"
-        allow-credentials: true
-        max-age: 3600
-    # stripe:
-    #     api-key: ${STRIPE_API_KEY}
-    #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}    
-    logging:
-      # Custom properties for our logging aspects
-      controller:
-        log-request-args: ${CONTROLLER_LOGGING_REQUEST_ARGS:false}
-      service:
-        log-request-args: ${SERVICE_LOGGING_REQUEST_ARGS:false}
+  api:
+    error:
+      path: 'https://mkopp.dev/api/v1/errors/'
+  # events:
+  #     # Für Event Tabelle zum Wiederholen von fehlgeschlagenen Events und Aufräumen
+  #     outboundRetryIntervalMs: 60000
+  #     clearIntervalMs: 86400000   # 1 days
+  #     clearOlderThanDays: 30
+  # client-base-url: ${CLIENT_BASE_URL:http://localhost:4200}  # For email templates, webhooks, etc. (not currently used)
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost,http://localhost:4200}
+    allowed-methods:
+      - 'GET'
+      - 'POST'
+      - 'PUT'
+      - 'PATCH'
+      - 'DELETE'
+      - 'OPTIONS'
+    allowed-headers:
+      - 'Authorization'
+      - 'Content-Type'
+      - 'Content-Disposition'
+      - 'Accept'
+    exposed-headers:
+      - 'Location'
+    allow-credentials: true
+    max-age: 3600
+  # stripe:
+  #     api-key: ${STRIPE_API_KEY}
+  #     webhook-secret: ${STRIPE_WEBHOOK_SECRET}
+  logging:
+    # Custom properties for our logging aspects
+    controller:
+      log-request-args: ${CONTROLLER_LOGGING_REQUEST_ARGS:false}
+    service:
+      log-request-args: ${SERVICE_LOGGING_REQUEST_ARGS:false}
