@@ -27,8 +27,12 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     hikari:
-      poolName: Hikari
+      poolName: MysiteHikari
       auto-commit: false
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 30000 # 30 seconds
+      idle-timeout: 600000 # 10 minutes
     driver-class-name: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
@@ -39,6 +43,7 @@ spring:
         '[order_inserts]': true
         # '[order_deletes]': true
         '[default_schema]': ${POSTGRES_SCHEMA}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         jdbc:
           '[time_zone]': UTC
           '[batch_size]': 25
