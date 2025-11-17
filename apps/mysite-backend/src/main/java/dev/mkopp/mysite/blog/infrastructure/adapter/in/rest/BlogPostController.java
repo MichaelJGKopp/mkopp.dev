@@ -5,7 +5,7 @@ import dev.mkopp.mysite.blog.domain.model.BlogPost;
 import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.dto.BlogPostRequest;
 import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.dto.BlogPostResponse;
 import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.mapper.BlogPostRestMapper;
-import dev.mkopp.mysite.user.application.port.in.FindOrCreateUserUseCase;
+import dev.mkopp.mysite.user.api.UserApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,7 +30,7 @@ public class BlogPostController {
     private final CreateBlogPostUseCase createBlogPostUseCase;
     private final UpdateBlogPostUseCase updateBlogPostUseCase;
     private final DeleteBlogPostUseCase deleteBlogPostUseCase;
-    private final FindOrCreateUserUseCase findOrCreateUserUseCase;
+    private final UserApi userApi;
     private final BlogPostRestMapper mapper;
     
     @GetMapping
@@ -95,7 +95,7 @@ public class BlogPostController {
         String firstName = jwt.getClaimAsString("given_name");
         String lastName = jwt.getClaimAsString("family_name");
         
-        findOrCreateUserUseCase.execute(userId, username, email, firstName, lastName);
+        userApi.findOrCreateUser(userId, username, email, firstName, lastName);
         return userId;
     }
 }

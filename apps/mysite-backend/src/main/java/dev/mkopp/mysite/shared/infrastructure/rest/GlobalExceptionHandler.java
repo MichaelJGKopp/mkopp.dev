@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.shared.infrastructure.web;
+package dev.mkopp.mysite.shared.infrastructure.rest;
 
 import dev.mkopp.mysite.shared.api.exception.BusinessException;
 import dev.mkopp.mysite.shared.api.exception.ResourceNotFoundException;

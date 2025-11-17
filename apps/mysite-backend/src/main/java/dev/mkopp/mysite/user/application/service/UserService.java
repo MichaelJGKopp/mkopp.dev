@@ -34,7 +34,6 @@ class UserService implements FindOrCreateUserUseCase, GetUserUseCase, UserApi {
             .orElseGet(() -> {
                 log.info("Creating new user from Keycloak JWT: {}", username);
                 
-                // Build user WITHOUT audit fields - they're set by AbstractAuditingEntity
                 User newUser = User.builder()
                     .id(keycloakId)
                     .username(username)
@@ -45,7 +44,6 @@ class UserService implements FindOrCreateUserUseCase, GetUserUseCase, UserApi {
                 
                 User savedUser = userRepository.save(newUser);
                 
-                // Use MapStruct to map to event
                 eventPublisher.publishEvent(userEventMapper.toCreatedEvent(savedUser));
                 
                 return savedUser;
@@ -74,5 +72,11 @@ class UserService implements FindOrCreateUserUseCase, GetUserUseCase, UserApi {
     @Transactional(readOnly = true)
     public Optional<UserDto> getUserByUsername(String username) {
         return userRepository.findByUsername(username).map(userDtoMapper::toDto);
+    }
+    
+    @Override
+    public UserDto findOrCreateUser(UUID keycloakId, String username, String email, String firstName, String lastName) {
+        User user = execute(keycloakId, username, email, firstName, lastName);
+        return userDtoMapper.toDto(user);
     }
 }

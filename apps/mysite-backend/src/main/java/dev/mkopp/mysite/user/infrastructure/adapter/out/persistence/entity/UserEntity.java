@@ -7,13 +7,13 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users", schema = "user")
+@Table(name = "users", schema = "app_user")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class UserEntity extends AbstractAuditingEntity<UUID> {
+public class UserEntity extends AbstractAuditingEntity<UUID> {
     
     @Id
     private UUID id;
@@ -33,5 +33,15 @@ class UserEntity extends AbstractAuditingEntity<UUID> {
     @Override
     public UUID getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

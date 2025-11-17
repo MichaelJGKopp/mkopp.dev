@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.wire.infrastructure.postgresql;
+package dev.mkopp.mysite.shared.config.infrastructure.postgresql;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

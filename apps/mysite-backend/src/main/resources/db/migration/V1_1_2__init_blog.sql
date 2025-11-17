@@ -5,20 +5,20 @@ CREATE TABLE blog.blog_posts (
     description TEXT,
     content TEXT NOT NULL,
     author_id UUID NOT NULL,
-    published_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    published_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     thumbnail_url VARCHAR(1000),
     type VARCHAR(50) NOT NULL DEFAULT 'blog',
     external_url VARCHAR(1000),
-    CONSTRAINT fk_blog_posts_author FOREIGN KEY (author_id) REFERENCES user.users (id) ON DELETE CASCADE
+    CONSTRAINT fk_blog_posts_author FOREIGN KEY (author_id) REFERENCES app_user.users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE blog.blog_tags (
     id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE blog.blog_post_tags (
@@ -35,10 +35,10 @@ CREATE TABLE blog.comments (
     user_id UUID NOT NULL,
     parent_comment_id UUID NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_comment_post FOREIGN KEY (blog_post_id) REFERENCES blog.blog_posts (id) ON DELETE CASCADE,
-    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user.users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES app_user.users (id) ON DELETE CASCADE,
     CONSTRAINT fk_parent_comment FOREIGN KEY (parent_comment_id) REFERENCES blog.comments (id) ON DELETE CASCADE
 );
 
@@ -46,10 +46,10 @@ CREATE TABLE blog.blog_likes (
     id UUID PRIMARY KEY,
     blog_post_id UUID NOT NULL,
     user_id UUID NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_likes_post FOREIGN KEY (blog_post_id) REFERENCES blog.blog_posts (id) ON DELETE CASCADE,
-    CONSTRAINT fk_likes_user FOREIGN KEY (user_id) REFERENCES user.users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_likes_user FOREIGN KEY (user_id) REFERENCES app_user.users (id) ON DELETE CASCADE,
     CONSTRAINT unique_user_post_like UNIQUE (blog_post_id, user_id)
 );
 

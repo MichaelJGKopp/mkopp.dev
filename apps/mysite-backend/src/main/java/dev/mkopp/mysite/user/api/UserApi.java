@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface UserApi {
     Optional<UserDto> getUserById(UUID userId);
     Optional<UserDto> getUserByUsername(String username);
+    UserDto findOrCreateUser(UUID keycloakId, String username, String email, String firstName, String lastName);
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class TagEntity extends AbstractAuditingEntity<UUID> {
+public class TagEntity extends AbstractAuditingEntity<UUID> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.wire.crosscutting.security;
+package dev.mkopp.mysite.shared.config.crosscutting.security;
 
 import java.util.Arrays;
 import java.util.List;

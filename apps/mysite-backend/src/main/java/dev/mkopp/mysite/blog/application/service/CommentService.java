@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
-class CommentService {
+public class CommentService {
     
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;

@@ -2,8 +2,8 @@ package dev.mkopp.mysite.shared.authentication.domain;
 
 import java.util.UUID;
 
-import dev.mkopp.mysite.shared.error.domain.Assert;
-import dev.mkopp.mysite.shared.error.domain.InvalidUserIdException;
+import dev.mkopp.mysite.shared.domain.exception.Assert;
+import dev.mkopp.mysite.shared.domain.exception.InvalidUserIdException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.wire.crosscutting.security;
+package dev.mkopp.mysite.shared.config.crosscutting.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

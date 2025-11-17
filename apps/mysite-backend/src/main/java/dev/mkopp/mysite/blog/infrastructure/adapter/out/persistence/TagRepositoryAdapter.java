@@ -1,7 +1,7 @@
 package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence;
 
 import dev.mkopp.mysite.blog.application.port.out.TagRepository;
-import dev.mkopp.mysite.blog.infrastructure.entity.TagEntity;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.TagEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

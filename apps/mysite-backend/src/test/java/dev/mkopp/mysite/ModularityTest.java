@@ -6,7 +6,7 @@ import org.springframework.modulith.docs.Documenter;
 
 class ModularityTest {
     
-    ApplicationModules modules = ApplicationModules.of(MySiteApplication.class);
+    ApplicationModules modules = ApplicationModules.of(MysiteBackendApplication.class);
     
     @Test
     void verifyModularity() {
@@ -15,7 +15,7 @@ class ModularityTest {
     }
     
     @Test
-    void generateModuleDocumentation() throws Exception {
+    void generateModuleDocumentation() {
         // Generates architecture documentation
         new Documenter(modules)
             .writeDocumentation()

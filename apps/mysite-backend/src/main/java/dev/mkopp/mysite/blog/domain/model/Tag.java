@@ -2,7 +2,6 @@ package dev.mkopp.mysite.blog.domain.model;
 
 import java.util.UUID;
 
-import dev.mkopp.mysite.shared.persistence.jpa.AbstractAuditingEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Tag extends AbstractAuditingEntity<UUID> {
+public class Tag {
     
     @Id
     @GeneratedValue

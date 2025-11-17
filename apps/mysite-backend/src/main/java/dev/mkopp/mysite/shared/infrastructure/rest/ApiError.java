@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.shared.infrastructure.web;
+package dev.mkopp.mysite.shared.infrastructure.rest;
 
 import java.io.Serializable;
 import java.time.Instant;

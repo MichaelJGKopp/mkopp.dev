@@ -1,7 +1,10 @@
-package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity;
+package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.mapper;
 
+import dev.mkopp.mysite.blog.application.mapper.AuthorMapper;
 import dev.mkopp.mysite.blog.domain.model.Author;
 import dev.mkopp.mysite.blog.domain.model.BlogPost;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.BlogPostEntity;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.TagEntity;
 import dev.mkopp.mysite.user.api.UserApi;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {AuthorMapper.class}
 )
-abstract class BlogPostEntityMapper {
+public abstract class BlogPostEntityMapper {
     
     @Autowired
     protected UserApi userApi;

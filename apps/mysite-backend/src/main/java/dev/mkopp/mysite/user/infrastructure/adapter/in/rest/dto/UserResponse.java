@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Schema(description = "User response")
-record UserResponse(
+public record UserResponse(
     @Schema(description = "User ID") UUID id,
     @Schema(description = "Username") String username,
     @Schema(description = "Email") String email,

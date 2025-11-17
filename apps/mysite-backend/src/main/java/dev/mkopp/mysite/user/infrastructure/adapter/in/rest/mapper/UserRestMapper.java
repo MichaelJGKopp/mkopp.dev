@@ -9,7 +9,7 @@ import org.mapstruct.ReportingPolicy;
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-interface UserRestMapper {
+public interface UserRestMapper {
     
     UserResponse toResponse(User user);
 }

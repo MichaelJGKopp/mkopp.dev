@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.wire.crosscutting.security;
+package dev.mkopp.mysite.shared.config.crosscutting.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
 
                         // All other API requests must be authenticated
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/v1/**").authenticated()
 
                         // Deny any other request by default for security
                         .anyRequest().denyAll())

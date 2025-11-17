@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.shared.error.domain;
+package dev.mkopp.mysite.shared.domain.exception;
 
 // You can place this in your domain error package
 public class InvalidUserIdException extends RuntimeException {

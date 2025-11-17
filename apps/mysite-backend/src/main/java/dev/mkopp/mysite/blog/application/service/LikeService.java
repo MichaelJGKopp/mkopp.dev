@@ -6,13 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-class LikeService {
+public class LikeService {
     
     private final LikeRepository likeRepository;
     
@@ -25,7 +24,6 @@ class LikeService {
                         .id(UUID.randomUUID())
                         .blogPostId(blogPostId)
                         .userId(userId)
-                        .createdAt(Instant.now())
                         .build();
                     likeRepository.save(newLike);
                 }

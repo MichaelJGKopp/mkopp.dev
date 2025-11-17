@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import dev.mkopp.mysite.shared.error.domain.Assert;
+import dev.mkopp.mysite.shared.domain.exception.Assert;
 
 public enum Role {
   ADMIN,

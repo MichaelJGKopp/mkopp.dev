@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.shared.error.domain;
+package dev.mkopp.mysite.shared.domain.exception;
 
 import java.math.BigDecimal;
 import java.time.Instant;

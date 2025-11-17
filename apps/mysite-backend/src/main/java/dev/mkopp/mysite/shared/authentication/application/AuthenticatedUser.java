@@ -3,7 +3,7 @@ package dev.mkopp.mysite.shared.authentication.application;
 import dev.mkopp.mysite.shared.authentication.domain.Role;
 import dev.mkopp.mysite.shared.authentication.domain.Roles;
 import dev.mkopp.mysite.shared.authentication.domain.UserId;
-import dev.mkopp.mysite.shared.error.domain.Assert;
+import dev.mkopp.mysite.shared.domain.exception.Assert;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.Authentication;

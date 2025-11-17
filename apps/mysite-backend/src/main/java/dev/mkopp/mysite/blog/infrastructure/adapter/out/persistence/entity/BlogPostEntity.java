@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class BlogPostEntity extends AbstractAuditingEntity<UUID> {
+public class BlogPostEntity extends AbstractAuditingEntity<UUID> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

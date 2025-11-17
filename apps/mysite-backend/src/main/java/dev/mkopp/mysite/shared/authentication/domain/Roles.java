@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import dev.mkopp.mysite.shared.error.domain.Assert;
+import dev.mkopp.mysite.shared.domain.exception.Assert;
 
 public record Roles(Set<Role> roles) {
 

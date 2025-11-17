@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import dev.mkopp.mysite.shared.api.persistence.AbstractAuditingEntity;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -16,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-class LikeEntity {
+public class LikeEntity extends AbstractAuditingEntity<UUID> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,8 +29,9 @@ class LikeEntity {
     
     @Column(name = "user_id", nullable = false)
     private UUID userId;
-    
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+        
+    @Override
+    public UUID getId() {
+        return id;
+    }
 }

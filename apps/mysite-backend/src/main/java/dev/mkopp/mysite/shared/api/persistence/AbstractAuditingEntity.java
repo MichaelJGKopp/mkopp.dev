@@ -1,4 +1,4 @@
-package dev.mkopp.mysite.shared.persistence.jpa;
+package dev.mkopp.mysite.shared.api.persistence;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,11 +13,6 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
-/* 
- * Base class for entities to provide auditing fields, hashcode and equals.
- * T is the type of the entity's identifier.
- * Identity, hashCode, and equals are based on the identifier only.
- */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter

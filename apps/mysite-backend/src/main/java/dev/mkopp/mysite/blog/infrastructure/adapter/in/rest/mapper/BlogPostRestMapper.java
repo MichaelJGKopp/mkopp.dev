@@ -14,8 +14,6 @@ public interface BlogPostRestMapper {
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     BlogPost toDomain(BlogPostRequest request);
     
     @Mapping(target = "authorId", source = "author.id")

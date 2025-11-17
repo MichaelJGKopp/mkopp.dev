@@ -2,6 +2,7 @@ package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence;
 
 import dev.mkopp.mysite.blog.application.port.out.CommentRepository;
 import dev.mkopp.mysite.blog.domain.model.Comment;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.mapper.CommentEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
