@@ -1,473 +1,92 @@
-# Implementing Authentication in Angular with Keycloak JS: A Complete Guide
+# Our Deployment Pipeline: From `git push` to Production
 
-In this article, we'll explore how to integrate Keycloak authentication into an Angular application using the official **keycloak-js** adapter. We'll cover the complete implementation used in this project, from initialization to protected routes and HTTP interceptors.
+This post provides a deep dive into the CI/CD and deployment pipeline used for this project. It's designed to be automated, reliable, and to follow industry best practices.
 
-## Why Keycloak JS?
+## The Big Picture: A High-Level Overview
 
-[Keycloak](https://www.keycloak.org/) is a powerful open-source Identity and Access Management solution. While there's a community wrapper called `keycloak-angular`, we chose to use the official `keycloak-js` adapter directly. As detailed in our [ADR on choosing Keycloak JS over Angular-Keycloak](./../docs/adr/0007-keycloak-js-over-angular-keycloak.md), this gives us:
+Our deployment pipeline is triggered on every push to the `main` branch. It consists of three main stages:
 
-- **Direct control** and full visibility
-- **Framework-agnostic** knowledge
-- **Official support** from the Keycloak team
-- **Simpler dependencies** and fewer breaking changes
+1. **Build & Test**: The application is built and tested in a clean environment.
+2. **Publish Docker Images**: The frontend and backend applications are packaged into Docker images and pushed to a container registry.
+3. **Deploy to VPS**: The new images are pulled on the production server, and the services are updated.
 
-ðŸ”— [Official Keycloak JavaScript Adapter Documentation](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter)
+Here is a visual representation of the pipeline:
 
-## Installation
+```mermaid
+graph TD
+    A[Push to main] --> B{Build & Test};
+    B --> C{Publish Docker Images};
+    C --> D{Deploy to VPS};
 
-First, install the Keycloak JS adapter:
+    subgraph GitHub Actions
+        A
+        B
+        C
+    end
 
-```bash
-npm install keycloak-js
+    subgraph VPS
+        D
+    end
 ```
 
-ðŸ”— [keycloak-js on NPM](https://www.npmjs.com/package/keycloak-js)
-
-## Project Structure
-
-Our authentication implementation consists of four main parts:
-
-1. **AuthService** - Manages Keycloak instance and core authentication logic
-2. **HTTP Interceptor** - Adds JWT tokens to API requests
-3. **Route Guards** - Protects routes requiring authentication
-4. **App Initialization** - Initializes Keycloak before the app starts
-
-## Step 1: Create the Auth Service
-
-The `AuthService` is the core of our authentication system:
-
-```typescript
-// src/app/shared/auth/auth.service.ts
-import { Injectable, signal } from '@angular/core';
-import Keycloak from 'keycloak-js';
-import { environment } from '../../../environments/environment';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  private keycloakInstance!: Keycloak;
-  
-  // Signals for reactive state
-  isAuthenticated = signal<boolean>(false);
-  userProfile = signal<Keycloak.KeycloakProfile | null>(null);
-
-  /**
-   * Initialize Keycloak instance
-   */
-  async initialize(): Promise<boolean> {
-    this.keycloakInstance = new Keycloak({
-      url: environment.keycloakUrl,
-      realm: environment.keycloakRealm,
-      clientId: environment.keycloakClientId
-    });
-
-    try {
-      const authenticated = await this.keycloakInstance.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
-        checkLoginIframe: false,
-        pkceMethod: 'S256' // Enable PKCE for better security
-      });
-
-      this.isAuthenticated.set(authenticated);
-
-      if (authenticated) {
-        await this.loadUserProfile();
-      }
-
-      // Token refresh setup
-      this.setupTokenRefresh();
-
-      return authenticated;
-    } catch (error) {
-      console.error('Keycloak initialization failed:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Login user
-   */
-  login(): Promise<void> {
-    return this.keycloakInstance.login();
-  }
-
-  /**
-   * Logout user
-   */
-  logout(): Promise<void> {
-    this.isAuthenticated.set(false);
-    this.userProfile.set(null);
-    return this.keycloakInstance.logout();
-  }
-
-  /**
-   * Get current access token
-   */
-  getToken(): string | undefined {
-    return this.keycloakInstance.token;
-  }
-
-  /**
-   * Update token if it's about to expire
-   */
-  async updateToken(minValidity: number = 30): Promise<string | undefined> {
-    try {
-      const refreshed = await this.keycloakInstance.updateToken(minValidity);
-      if (refreshed) {
-        console.log('Token refreshed');
-      }
-      return this.keycloakInstance.token;
-    } catch (error) {
-      console.error('Failed to refresh token:', error);
-      await this.logout();
-      return undefined;
-    }
-  }
-
-  /**
-   * Check if user has a specific role
-   */
-  hasRole(role: string): boolean {
-    return this.keycloakInstance.hasRealmRole(role);
-  }
-
-  /**
-   * Load user profile from Keycloak
-   */
-  private async loadUserProfile(): Promise<void> {
-    try {
-      const profile = await this.keycloakInstance.loadUserProfile();
-      this.userProfile.set(profile);
-    } catch (error) {
-      console.error('Failed to load user profile:', error);
-    }
-  }
-
-  /**
-   * Setup automatic token refresh
-   */
-  private setupTokenRefresh(): void {
-    // Refresh token every 30 seconds if expiring
-    setInterval(() => {
-      this.updateToken(60);
-    }, 30000);
-  }
-}
-```
-
-ðŸ”— [Keycloak JS API Reference](https://www.keycloak.org/docs/latest/securing_apps/#javascript-adapter-reference)
-
-### Key Methods Explained
-
-- **`init()`**: Initializes the Keycloak client with configuration options
-  - `onLoad: 'check-sso'`: Checks if user is already logged in without forcing login
-  - `silentCheckSsoRedirectUri`: URL for silent SSO checks (iframe-based)
-  - `pkceMethod: 'S256'`: Enables Proof Key for Code Exchange for enhanced security
-
-- **`updateToken(minValidity)`**: Refreshes the token if it expires in less than `minValidity` seconds
-- **`hasRealmRole(role)`**: Checks if the user has a specific role
-
-ðŸ”— [Keycloak Init Options](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter_init_options)
-
-## Step 2: App Initialization
-
-We need to initialize Keycloak **before** the Angular app starts. This ensures authentication state is ready when components load.
-
-```typescript
-// src/app/app.config.ts
-import { ApplicationConfig, APP_INITIALIZER } from '@angular/core';
-import { AuthService } from './shared/auth/auth.service';
-
-export function initializeKeycloak(authService: AuthService) {
-  return () => authService.initialize();
-}
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      deps: [AuthService],
-      multi: true
-    },
-    // ... other providers
-  ]
-};
-```
-
-The `APP_INITIALIZER` token ensures Keycloak is initialized before the app bootstraps.
-
-ðŸ”— [Angular APP_INITIALIZER](https://angular.dev/api/core/APP_INITIALIZER)
-
-## Step 3: HTTP Interceptor
-
-Add JWT tokens to all API requests automatically:
-
-```typescript
-// src/app/shared/auth/auth.interceptor.ts
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from './auth.service';
-
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
-
-  // Only add token to API requests (not external URLs)
-  if (token && req.url.includes('/api/')) {
-    const clonedRequest = req.clone({
-      setHeaders: {
-        Authorization: `Bearer $${token}`
-      }
-    });
-    return next(clonedRequest);
-  }
-
-  return next(req);
-};
-```
-
-Register the interceptor in `app.config.ts`:
-
-```typescript
-// src/app/app.config.ts
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './shared/auth/auth.interceptor';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    ),
-    // ... other providers
-  ]
-};
-```
-
-ðŸ”— [Angular HTTP Interceptors](https://angular.dev/guide/http/interceptors)
-
-## Step 4: Route Guards
-
-Protect routes that require authentication:
-
-```typescript
-// src/app/shared/auth/auth.guard.ts
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from './auth.service';
-
-export const authGuard: CanActivateFn = async (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  if (authService.isAuthenticated()) {
-    return true;
-  }
-
-  // Redirect to login
-  await authService.login();
-  return false;
-};
-
-export const roleGuard = (role: string): CanActivateFn => {
-  return async (route, state) => {
-    const authService = inject(AuthService);
-    const router = inject(Router);
-
-    if (!authService.isAuthenticated()) {
-      await authService.login();
-      return false;
-    }
-
-    if (!authService.hasRole(role)) {
-      // User doesn't have required role
-      router.navigate(['/unauthorized']);
-      return false;
-    }
-
-    return true;
-  };
-};
-```
-
-Use guards in your routes:
-
-```typescript
-// src/app/app.routes.ts
-import { Routes } from '@angular/router';
-import { authGuard, roleGuard } from './shared/auth/auth.guard';
-
-export const routes: Routes = [
-  {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    loadComponent: () => import('./dashboard/dashboard.component')
-  },
-  {
-    path: 'admin',
-    canActivate: [roleGuard('ROLE_ADMIN')],
-    loadComponent: () => import('./admin/admin.component')
-  }
-];
-```
-
-ðŸ”— [Angular Route Guards](https://angular.dev/guide/routing/guards)
-
-## Step 5: Silent SSO Check
-
-Create a silent SSO check HTML file for background authentication:
-
-```html
-<!-- src/assets/silent-check-sso.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Silent SSO Check</title>
-</head>
-<body>
-    <script>
-        parent.postMessage(location.href, location.origin);
-    </script>
-</body>
-</html>
-```
-
-This file enables Keycloak to silently check authentication status in an iframe.
-
-ðŸ”— [Keycloak Silent SSO](https://www.keycloak.org/docs/latest/securing_apps/#_silent_check_sso)
-
-## Using Authentication in Components
-
-Now you can use authentication in your components:
-
-```typescript
-// navbar.component.ts
-import { Component, inject } from '@angular/core';
-import { AuthService } from '../shared/auth/auth.service';
-
-@Component({
-  selector: 'mysite-navbar',
-  template: `
-    <nav>
-      @if (authService.isAuthenticated()) {
-        <div>
-          <span>Welcome, {{ authService.userProfile()?.firstName }}</span>
-          <button (click)="authService.logout()">Logout</button>
-        </div>
-      } @else {
-        <button (click)="authService.login()">Login</button>
-      }
-    </nav>
-  `
-})
-export class NavbarComponent {
-  authService = inject(AuthService);
-}
-```
-
-## Environment Configuration
-
-Configure Keycloak connection in your environment files:
-
-```typescript
-// src/environments/environment.ts
-export const environment = {
-  production: false,
-  keycloakUrl: 'http://localhost:8080',
-  keycloakRealm: 'my-realm',
-  keycloakClientId: 'my-angular-app'
-};
-```
-
-```typescript
-// src/environments/environment.prod.ts
-export const environment = {
-  production: true,
-  keycloakUrl: 'https://auth.mysite.com',
-  keycloakRealm: 'production-realm',
-  keycloakClientId: 'mysite-frontend'
-};
-```
-
-## Security Best Practices
-
-### 1. Enable PKCE
-
-Always use PKCE (Proof Key for Code Exchange) for enhanced security:
-
-```typescript
-await this.keycloakInstance.init({
-  pkceMethod: 'S256'
-});
-```
-
-ðŸ”— [OAuth 2.0 PKCE](https://oauth.net/2/pkce/)
-
-### 2. Token Refresh
-
-Implement automatic token refresh to keep users logged in:
-
-```typescript
-private setupTokenRefresh(): void {
-  setInterval(() => {
-    this.updateToken(60); // Refresh if expiring in 60 seconds
-  }, 30000); // Check every 30 seconds
-}
-```
-
-### 3. Secure Token Storage
-
-keycloak-js stores tokens in memory by default (not localStorage), which is more secure against XSS attacks.
-
-### 4. HTTPS Only in Production
-
-Always use HTTPS in production for Keycloak and your application.
-
-## Debugging and Troubleshooting
-
-### Enable Keycloak Logging
-
-```typescript
-Keycloak({ enableLogging: true });
-```
-
-### Common Issues
-
-**Issue: "Failed to initialize adapter"**
-
-- Check Keycloak URL and realm configuration
-- Verify client exists in Keycloak admin console
-- Check browser console for CORS errors
-
-**Issue: "Token refresh failed"**
-
-- Verify refresh token settings in Keycloak client configuration
-- Check token expiration times
-
-**Issue: "Infinite redirect loop"**
-
-- Check `onLoad` configuration
-- Verify redirect URIs in Keycloak client settings
-
-ðŸ”— [Keycloak Troubleshooting Guide](https://www.keycloak.org/docs/latest/server_admin/#troubleshooting)
+## The CI Stage: Building and Pushing with GitHub Actions
+
+The continuous integration part of our pipeline is handled by GitHub Actions. The workflow is defined in `.github/workflows/deploy.yml`.
+
+### Build and Push Jobs
+
+The workflow has two parallel jobs, `build-and-push-frontend` and `build-and-push-backend`, which are responsible for building the Docker images for the frontend and backend respectively.
+
+These jobs perform the following steps:
+
+1. **Checkout the code**.
+2. **Set up Docker Buildx** for building multi-platform images.
+3. **Log in to Docker Hub** using secrets stored in the repository.
+4. **Extract metadata** such as tags and labels for the Docker images.
+5. **Build and push the Docker image** to Docker Hub. The images are tagged with the short commit SHA for traceability.
+
+### The Deploy Job
+
+Once the images are successfully built and pushed, the `deploy` job is triggered. This job is responsible for updating the services on our production Virtual Private Server (VPS).
+
+It performs the following steps:
+
+1. **Sets up an SSH agent** with the private key to access the VPS.
+2. **Adds the remote host to `known_hosts`** to avoid interactive prompts.
+3. **Connects to the VPS via SSH and executes the `deploy.sh` script**.
+
+## The Deployment Stage: Updating the Services on the VPS
+
+The `deploy.sh` script on the server orchestrates the update of the running services. It uses `docker-compose` with the `docker/docker-compose.prod.yml` file to manage the services.
+
+Here is the core logic of the script:
+
+1. **It expects `FRONTEND_TAG` and `BACKEND_TAG` environment variables** to be set by the GitHub Actions workflow.
+2. **It updates the backend service first** using `docker compose ... up -d --force-recreate backend`.
+3. **It waits for 30 seconds** for the backend to stabilize.
+4. **It then updates the frontend service**.
+5. **Finally, it prunes old Docker images** to save disk space.
+
+This backend-first deployment strategy helps to minimize downtime, as the frontend is only updated after the new backend is healthy and ready.
+
+## Infrastructure and Architecture
+
+Our production environment is running on a VPS and is orchestrated using Docker Compose. The key components are:
+
+* **Traefik**: A modern reverse proxy that handles HTTPS termination and routing to the frontend and backend services.
+* **PostgreSQL**: The database for our backend.
+* **Frontend and Backend services**: Running as Docker containers.
+
+For more details on the architecture and the decisions behind it, you can refer to our [ADR on Deployment with Docker and Traefik](./../docs/adr/0004-deployment-with-docker-and-traefik.md).
+
+## Limitations and Future Improvements
+
+Our current pipeline is robust, but there is always room for improvement. Here are some of the current limitations and potential future enhancements:
+
+* **No Zero-Downtime Deployment**: The current setup stops the old containers before starting the new ones, which can cause a brief downtime. In the future, we might move to a more advanced orchestration tool like Kubernetes to achieve zero-downtime deployments.
+* **Nx Integration**: Currently, Nx is only used to build the frontend. We plan to integrate the backend build process into Nx as well.
+* **Linting and Testing**: We plan to integrate linting and more comprehensive testing into the CI/CD pipeline to improve code quality.
 
 ## Conclusion
 
-By using keycloak-js directly, we have full control over our authentication flow while benefiting from Keycloak's robust security features. This implementation is:
-
-- **Transparent**: We see exactly what's happening
-- **Maintainable**: Direct API usage is easier to debug
-- **Framework-agnostic**: Knowledge transfers to other JavaScript frameworks
-- **Production-ready**: Includes token refresh, role-based access, and security best practices
-
-The initial setup requires more code than using a wrapper, but the long-term benefits of clarity, control, and maintainability make it worthwhile.
-
-## Further Reading
-
-- [Official Keycloak JavaScript Adapter Documentation](https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter)
-- [Keycloak Admin Console Guide](https://www.keycloak.org/docs/latest/server_admin/)
-- [Angular Authentication Best Practices](https://angular.dev/best-practices/security)
-- [OAuth 2.0 and OpenID Connect Overview](https://oauth.net/2/)
-- [Keycloak Blog and Tutorials](https://www.keycloak.org/blog)
+Our current deployment pipeline provides a solid foundation for developing and deploying our application. It's automated, reliable, and follows modern DevOps practices. It allows us to ship new features and bug fixes to production quickly and safely.
