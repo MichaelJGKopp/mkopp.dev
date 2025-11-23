@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(crsf -> crsf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        // Swagger UI / Documentation endpoints
+                        // Swagger UI / Documentation endpoints, currently on but later to be restricted or removed
                         .requestMatchers("/swagger-ui/oauth2-redirect.html")
                         .permitAll()
                         .requestMatchers(
@@ -49,9 +49,13 @@ public class SecurityConfig {
                                 "/v1/blog/**")
                         .permitAll()
 
-                        // All other API requests must be authenticated
+                        // Allow unauthenticated access to get current user info
+                        .requestMatchers("/v1/users/me")
+                        .permitAll()
+
+                        // All other API requests must be admin
                         .requestMatchers("/v1/**")
-                        .authenticated()
+                        .hasRole("ADMIN")
 
                         // Deny any other request by default for security
                         .anyRequest().denyAll())
