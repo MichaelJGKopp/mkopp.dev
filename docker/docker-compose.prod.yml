@@ -143,12 +143,11 @@ services:
       # Define the IP whitelist middleware for internal traffic
       traefik.http.middlewares.internal-ips.ipwhitelist.sourcerange: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16"
 
-      # Router 1: Public route for the API, protected by auth.
+      # Router 1: Public route for the API, protected by OAuth2 in Spring Security.
       traefik.http.routers.backend-public.rule: "${TRAEFIK_HTTP_BACKEND_RULE}"
       traefik.http.routers.backend-public.entrypoints: "websecure"
       traefik.http.routers.backend-public.service: "backend-svc"
       traefik.http.routers.backend-public.tls.certresolver: "letsencrypt"
-      traefik.http.routers.backend-public.middlewares: "auth" # ToDo. remove after spring security implemented
 
       # Router 2: Private route for management endpoints, protected by IP whitelist AND auth.
       traefik.http.routers.backend-private.rule: "(${TRAEFIK_HTTP_BACKEND_RULE}) && PathPrefix(`/management`)"
