@@ -24,28 +24,12 @@
       "description": "Local Development Server"
     }
   ],
-  "security": [
-    {
-      "keycloak-oauth2": []
-    }
-  ],
+  "security": [{ "keycloak-oauth2": [] }],
   "tags": [
-    {
-      "name": "Likes",
-      "description": "Blog like management API"
-    },
-    {
-      "name": "User",
-      "description": "User management API"
-    },
-    {
-      "name": "Blog",
-      "description": "Blog post management API"
-    },
-    {
-      "name": "Comments",
-      "description": "Blog comment management API"
-    }
+    { "name": "Likes", "description": "Blog like management API" },
+    { "name": "User", "description": "User management API" },
+    { "name": "Blog", "description": "Blog post management API" },
+    { "name": "Comments", "description": "Blog comment management API" }
   ],
   "paths": {
     "/v1/blog/{id}": {
@@ -58,18 +42,13 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BlogPostRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/BlogPostRequest" }
             }
           },
           "required": true
@@ -79,18 +58,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       },
       "delete": {
         "tags": ["Blog"],
@@ -101,22 +74,11 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "responses": { "200": { "description": "OK" } },
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/blog/{blogPostId}/comments/{commentId}": {
@@ -129,27 +91,19 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           },
           {
             "name": "commentId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CommentRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/CommentRequest" }
             }
           },
           "required": true
@@ -159,18 +113,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommentResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/CommentResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       },
       "delete": {
         "tags": ["Comments"],
@@ -181,31 +129,17 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           },
           {
             "name": "commentId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "responses": { "200": { "description": "OK" } },
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/blog": {
@@ -218,9 +152,7 @@
             "name": "pageable",
             "in": "query",
             "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Pageable"
-            }
+            "schema": { "$ref": "#/components/schemas/Pageable" }
           }
         ],
         "responses": {
@@ -243,9 +175,7 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BlogPostRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/BlogPostRequest" }
             }
           },
           "required": true
@@ -255,18 +185,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/blog/{blogPostId}/like": {
@@ -279,10 +203,7 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "responses": {
@@ -290,9 +211,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LikeResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/LikeResponse" }
               }
             }
           }
@@ -307,10 +226,7 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "responses": {
@@ -318,18 +234,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LikeResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/LikeResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/blog/{blogPostId}/comments": {
@@ -342,18 +252,13 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           },
           {
             "name": "pageable",
             "in": "query",
             "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Pageable"
-            }
+            "schema": { "$ref": "#/components/schemas/Pageable" }
           }
         ],
         "responses": {
@@ -361,9 +266,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PageCommentResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/PageCommentResponse" }
               }
             }
           }
@@ -378,18 +281,13 @@
             "name": "blogPostId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CommentRequest"
-              }
+              "schema": { "$ref": "#/components/schemas/CommentRequest" }
             }
           },
           "required": true
@@ -399,18 +297,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/CommentResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/CommentResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/users/{userId}": {
@@ -423,10 +315,7 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "schema": { "type": "string", "format": "uuid" }
           }
         ],
         "responses": {
@@ -434,9 +323,7 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
               }
             }
           }
@@ -453,18 +340,12 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/UserResponse" }
               }
             }
           }
         },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
+        "security": [{ "oauth2": [] }]
       }
     },
     "/v1/blog/{slug}": {
@@ -477,9 +358,7 @@
             "name": "slug",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -487,9 +366,7 @@
             "description": "Successfully retrieved blog post",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
           },
@@ -497,9 +374,7 @@
             "description": "Blog post not found",
             "content": {
               "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostResponse"
-                }
+                "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
           }
@@ -516,17 +391,13 @@
             "name": "tagName",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "pageable",
             "in": "query",
             "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Pageable"
-            }
+            "schema": { "$ref": "#/components/schemas/Pageable" }
           }
         ],
         "responses": {
@@ -555,42 +426,25 @@
             "description": "Unique slug",
             "example": "my-first-post"
           },
-          "title": {
-            "type": "string",
-            "description": "Title"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description"
-          },
-          "content": {
-            "type": "string",
-            "description": "Content"
-          },
+          "title": { "type": "string", "description": "Title" },
+          "description": { "type": "string", "description": "Description" },
+          "content": { "type": "string", "description": "Content" },
           "publishedAt": {
             "type": "string",
             "format": "date-time",
             "description": "Publication date"
           },
-          "thumbnailUrl": {
-            "type": "string",
-            "description": "Thumbnail URL"
-          },
+          "thumbnailUrl": { "type": "string", "description": "Thumbnail URL" },
           "type": {
             "type": "string",
             "description": "Post type",
             "enum": ["BLOG", "YOUTUBE", "EXTERNAL"]
           },
-          "externalUrl": {
-            "type": "string",
-            "description": "External URL"
-          },
+          "externalUrl": { "type": "string", "description": "External URL" },
           "tags": {
             "type": "array",
             "description": "Tags",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "uniqueItems": true
           }
         }
@@ -599,36 +453,17 @@
         "type": "object",
         "description": "Blog post response",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID"
-          },
-          "slug": {
-            "type": "string",
-            "description": "Slug"
-          },
-          "title": {
-            "type": "string",
-            "description": "Title"
-          },
-          "description": {
-            "type": "string",
-            "description": "Description"
-          },
-          "content": {
-            "type": "string",
-            "description": "Content"
-          },
+          "id": { "type": "string", "format": "uuid", "description": "ID" },
+          "slug": { "type": "string", "description": "Slug" },
+          "title": { "type": "string", "description": "Title" },
+          "description": { "type": "string", "description": "Description" },
+          "content": { "type": "string", "description": "Content" },
           "authorId": {
             "type": "string",
             "format": "uuid",
             "description": "Author ID"
           },
-          "authorName": {
-            "type": "string",
-            "description": "Author name"
-          },
+          "authorName": { "type": "string", "description": "Author name" },
           "publishedAt": {
             "type": "string",
             "format": "date-time",
@@ -644,25 +479,17 @@
             "format": "date-time",
             "description": "Update date"
           },
-          "thumbnailUrl": {
-            "type": "string",
-            "description": "Thumbnail URL"
-          },
+          "thumbnailUrl": { "type": "string", "description": "Thumbnail URL" },
           "type": {
             "type": "string",
             "description": "Post type",
             "enum": ["BLOG", "YOUTUBE", "EXTERNAL"]
           },
-          "externalUrl": {
-            "type": "string",
-            "description": "External URL"
-          },
+          "externalUrl": { "type": "string", "description": "External URL" },
           "tags": {
             "type": "array",
             "description": "Tags",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "uniqueItems": true
           }
         }
@@ -671,10 +498,7 @@
         "type": "object",
         "description": "Comment creation/update request",
         "properties": {
-          "content": {
-            "type": "string",
-            "description": "Content"
-          },
+          "content": { "type": "string", "description": "Content" },
           "parentCommentId": {
             "type": "string",
             "format": "uuid",
@@ -686,20 +510,13 @@
         "type": "object",
         "description": "Comment response",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "ID"
-          },
+          "id": { "type": "string", "format": "uuid", "description": "ID" },
           "userId": {
             "type": "string",
             "format": "uuid",
             "description": "User ID"
           },
-          "content": {
-            "type": "string",
-            "description": "Content"
-          },
+          "content": { "type": "string", "description": "Content" },
           "parentCommentId": {
             "type": "string",
             "format": "uuid",
@@ -708,9 +525,7 @@
           "replies": {
             "type": "array",
             "description": "Replies",
-            "items": {
-              "description": "Comment response"
-            }
+            "items": { "description": "Comment response" }
           },
           "createdAt": {
             "type": "string",
@@ -733,10 +548,7 @@
             "format": "int64",
             "description": "Like count"
           },
-          "isLiked": {
-            "type": "boolean",
-            "description": "Is liked by user"
-          }
+          "isLiked": { "type": "boolean", "description": "Is liked by user" }
         }
       },
       "UserResponse": {
@@ -748,22 +560,10 @@
             "format": "uuid",
             "description": "User ID"
           },
-          "username": {
-            "type": "string",
-            "description": "Username"
-          },
-          "email": {
-            "type": "string",
-            "description": "Email"
-          },
-          "firstName": {
-            "type": "string",
-            "description": "First name"
-          },
-          "lastName": {
-            "type": "string",
-            "description": "Last name"
-          },
+          "username": { "type": "string", "description": "Username" },
+          "email": { "type": "string", "description": "Email" },
+          "firstName": { "type": "string", "description": "First name" },
+          "lastName": { "type": "string", "description": "Last name" },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -774,154 +574,66 @@
       "Pageable": {
         "type": "object",
         "properties": {
-          "page": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1
-          },
-          "sort": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
+          "page": { "type": "integer", "format": "int32", "minimum": 0 },
+          "size": { "type": "integer", "format": "int32", "minimum": 1 },
+          "sort": { "type": "array", "items": { "type": "string" } }
         }
       },
       "PageBlogPostResponse": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "first": { "type": "boolean" },
+          "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BlogPostResponse"
-            }
+            "items": { "$ref": "#/components/schemas/BlogPostResponse" }
           },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "empty": {
-            "type": "boolean"
-          }
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
         }
       },
       "PageableObject": {
         "type": "object",
         "properties": {
-          "offset": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "paged": {
-            "type": "boolean"
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unpaged": {
-            "type": "boolean"
-          }
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "paged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "unpaged": { "type": "boolean" }
         }
       },
       "SortObject": {
         "type": "object",
         "properties": {
-          "empty": {
-            "type": "boolean"
-          },
-          "sorted": {
-            "type": "boolean"
-          },
-          "unsorted": {
-            "type": "boolean"
-          }
+          "empty": { "type": "boolean" },
+          "sorted": { "type": "boolean" },
+          "unsorted": { "type": "boolean" }
         }
       },
       "PageCommentResponse": {
         "type": "object",
         "properties": {
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalElements": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "first": {
-            "type": "boolean"
-          },
-          "size": {
-            "type": "integer",
-            "format": "int32"
-          },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "first": { "type": "boolean" },
+          "size": { "type": "integer", "format": "int32" },
           "content": {
             "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CommentResponse"
-            }
+            "items": { "$ref": "#/components/schemas/CommentResponse" }
           },
-          "number": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/SortObject"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageable": {
-            "$ref": "#/components/schemas/PageableObject"
-          },
-          "last": {
-            "type": "boolean"
-          },
-          "empty": {
-            "type": "boolean"
-          }
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
         }
       }
     },
