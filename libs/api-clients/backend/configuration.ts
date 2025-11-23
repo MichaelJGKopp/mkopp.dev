@@ -91,6 +91,15 @@ constructor({ accessToken, apiKeys, basePath, credentials, encodeParam, encoder,
         this.encodeParam = encodeParam ?? (param => this.defaultEncodeParam(param));
         this.credentials = credentials ?? {};
 
+        // init default bearer-jwt credential
+        if (!this.credentials['bearer-jwt']) {
+            this.credentials['bearer-jwt'] = () => {
+                return typeof this.accessToken === 'function'
+                    ? this.accessToken()
+                    : this.accessToken;
+            };
+        }
+
         // init default keycloak-oauth2 credential
         if (!this.credentials['keycloak-oauth2']) {
             this.credentials['keycloak-oauth2'] = () => {

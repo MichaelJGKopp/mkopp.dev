@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,9 +51,6 @@ public class OpenApiConfig {
                                 .url("http://localhost:8200")
                                 .description("Local Development Server")
                                 ))
-                .addSecurityItem(new SecurityRequirement()
-                        .addList(bearerSchemeName)
-                        .addList(oauthSchemeName))
                 .components(new Components()
                         // Bearer token scheme (manual token input)
                         .addSecuritySchemes(bearerSchemeName, new SecurityScheme()

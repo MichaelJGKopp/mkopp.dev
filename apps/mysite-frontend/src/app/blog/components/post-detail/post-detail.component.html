@@ -24,11 +24,11 @@
         </div>
         <div class="flex items-center gap-2">
           <fa-icon [icon]="faUser"></fa-icon>
-          <span>{{ post()!.author }}</span>
+          <span>{{ post()!.authorName }}</span>
         </div>
       </div>
 
-      @if (post()!.tags.length > 0) {
+      @if (post()!.tags && post()!.tags.size > 0) {
       <div class="flex flex-wrap gap-2">
         @for (tag of post()!.tags; track tag) {
         <span class="badge badge-primary badge-md lg:badge-lg" [class.badge-outline]="isDarkMode()">

@@ -13,7 +13,7 @@
       <span>{{ post.publishedAt | date:'mediumDate' }}</span>
     </div>
 
-    @if (post.tags.length > 0) {
+    @if (post.tags && post.tags.size > 0) {
     <div class="flex flex-wrap gap-2 mt-2">
       @for (tag of post.tags; track tag) {
       <span class="badge badge-primary badge-md lg:badge-lg" [class.badge-outline]="isDarkMode()">
@@ -25,9 +25,9 @@
     }
 
     <div class="card-actions justify-end mt-4">
-      @if (post.type === 'external' || post.type === 'youtube') {
+      @if (post.type === 'EXTERNAL' || post.type === 'YOUTUBE') {
       <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
-        View {{ post.type === 'youtube' ? 'Video' : 'Article' }}
+        View {{ post.type === 'YOUTUBE' ? 'Video' : 'Article' }}
         <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
       </a>
       } @else {

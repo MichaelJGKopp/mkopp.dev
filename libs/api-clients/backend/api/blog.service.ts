@@ -48,21 +48,18 @@ export class BlogService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createPost(blogPostRequest: BlogPostRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
-    public createPost(blogPostRequest: BlogPostRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
-    public createPost(blogPostRequest: BlogPostRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
-    public createPost(blogPostRequest: BlogPostRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createPost(blogPostRequest: BlogPostRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
+    public createPost(blogPostRequest: BlogPostRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
+    public createPost(blogPostRequest: BlogPostRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
+    public createPost(blogPostRequest: BlogPostRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostRequest === null || blogPostRequest === undefined) {
             throw new Error('Required parameter blogPostRequest was null or undefined when calling createPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -126,9 +123,6 @@ export class BlogService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -173,10 +167,10 @@ export class BlogService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllPosts(pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageBlogPostResponse>;
-    public getAllPosts(pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageBlogPostResponse>>;
-    public getAllPosts(pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageBlogPostResponse>>;
-    public getAllPosts(pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getAllPosts(pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageBlogPostResponse>;
+    public getAllPosts(pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageBlogPostResponse>>;
+    public getAllPosts(pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageBlogPostResponse>>;
+    public getAllPosts(pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (pageable === null || pageable === undefined) {
             throw new Error('Required parameter pageable was null or undefined when calling getAllPosts.');
         }
@@ -187,11 +181,8 @@ export class BlogService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -236,21 +227,18 @@ export class BlogService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPostBySlug(slug: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
-    public getPostBySlug(slug: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
-    public getPostBySlug(slug: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
-    public getPostBySlug(slug: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPostBySlug(slug: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
+    public getPostBySlug(slug: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
+    public getPostBySlug(slug: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
+    public getPostBySlug(slug: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (slug === null || slug === undefined) {
             throw new Error('Required parameter slug was null or undefined when calling getPostBySlug.');
         }
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -295,10 +283,10 @@ export class BlogService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageBlogPostResponse>;
-    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageBlogPostResponse>>;
-    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageBlogPostResponse>>;
-    public getPostsByTag(tagName: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageBlogPostResponse>;
+    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageBlogPostResponse>>;
+    public getPostsByTag(tagName: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageBlogPostResponse>>;
+    public getPostsByTag(tagName: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (tagName === null || tagName === undefined) {
             throw new Error('Required parameter tagName was null or undefined when calling getPostsByTag.');
         }
@@ -312,11 +300,8 @@ export class BlogService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -362,10 +347,10 @@ export class BlogService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
-    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
-    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
-    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BlogPostResponse>;
+    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BlogPostResponse>>;
+    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BlogPostResponse>>;
+    public updatePost(id: string, blogPostRequest: BlogPostRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updatePost.');
         }
@@ -375,11 +360,8 @@ export class BlogService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);

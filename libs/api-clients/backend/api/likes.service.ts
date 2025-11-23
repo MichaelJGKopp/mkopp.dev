@@ -42,21 +42,18 @@ export class LikesService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getLikeInfo(blogPostId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<LikeResponse>;
-    public getLikeInfo(blogPostId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LikeResponse>>;
-    public getLikeInfo(blogPostId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LikeResponse>>;
-    public getLikeInfo(blogPostId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getLikeInfo(blogPostId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LikeResponse>;
+    public getLikeInfo(blogPostId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LikeResponse>>;
+    public getLikeInfo(blogPostId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LikeResponse>>;
+    public getLikeInfo(blogPostId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling getLikeInfo.');
         }
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -100,21 +97,18 @@ export class LikesService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public toggleLike(blogPostId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<LikeResponse>;
-    public toggleLike(blogPostId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LikeResponse>>;
-    public toggleLike(blogPostId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LikeResponse>>;
-    public toggleLike(blogPostId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public toggleLike(blogPostId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<LikeResponse>;
+    public toggleLike(blogPostId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<LikeResponse>>;
+    public toggleLike(blogPostId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<LikeResponse>>;
+    public toggleLike(blogPostId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling toggleLike.');
         }
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);

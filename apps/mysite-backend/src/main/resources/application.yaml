@@ -144,7 +144,7 @@ application:
   #     clearOlderThanDays: 30
   # client-base-url: ${CLIENT_BASE_URL:http://localhost:4200}  # For email templates, webhooks, etc. (not currently used)
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost,http://localhost:4200}
+    allowed-origins: ${ALLOWED_ORIGINS:https://www.mkopp.dev,http://localhost,http://localhost:4200}
     allowed-methods:
       - 'GET'
       - 'POST'

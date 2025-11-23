@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,7 +24,7 @@ class UserController {
     private final GetUserUseCase getUserUseCase;
     private final UserRestMapper mapper;
     
-    @GetMapping("/me")
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Get current user")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
@@ -34,7 +35,7 @@ class UserController {
             .orElse(ResponseEntity.notFound().build());
     }
     
-    @GetMapping("/{userId}")
+    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get user by ID")
     public ResponseEntity<UserResponse> getUserById(@PathVariable UUID userId) {
         return getUserUseCase.findById(userId)

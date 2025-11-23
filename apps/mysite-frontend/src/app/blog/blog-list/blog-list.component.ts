@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCardComponent } from '../components/post-card/post-card.component';
-import { BlogPostMetadata } from '../models/post.model';
+import { BlogPostResponse } from '@mkopp/api-clients/backend';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,10 +13,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class BlogListComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  posts: BlogPostMetadata[] = [];
+  posts: BlogPostResponse[] = [];
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.route.data.subscribe((data) => {
       this.posts = data['posts'] || [];
     });
   }

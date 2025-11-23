@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,7 +25,7 @@ class LikeController {
     private final LikeService likeService;
     private final FindOrCreateUserUseCase findOrCreateUserUseCase;
     
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Toggle like")
     public ResponseEntity<LikeResponse> toggleLike(
@@ -38,7 +39,7 @@ class LikeController {
         ));
     }
     
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get like info")
     public ResponseEntity<LikeResponse> getLikeInfo(
             @PathVariable UUID blogPostId,

@@ -24,7 +24,6 @@
       "description": "Local Development Server"
     }
   ],
-  "security": [{ "keycloak-oauth2": [] }],
   "tags": [
     { "name": "Likes", "description": "Blog like management API" },
     { "name": "User", "description": "User management API" },
@@ -57,7 +56,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
@@ -112,7 +111,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/CommentResponse" }
               }
             }
@@ -159,7 +158,7 @@
           "200": {
             "description": "Successfully retrieved blog posts",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PageBlogPostResponse"
                 }
@@ -184,7 +183,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
@@ -210,7 +209,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/LikeResponse" }
               }
             }
@@ -233,7 +232,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/LikeResponse" }
               }
             }
@@ -265,7 +264,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/PageCommentResponse" }
               }
             }
@@ -296,7 +295,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/CommentResponse" }
               }
             }
@@ -322,7 +321,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/UserResponse" }
               }
             }
@@ -339,7 +338,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/UserResponse" }
               }
             }
@@ -365,7 +364,7 @@
           "200": {
             "description": "Successfully retrieved blog post",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
@@ -373,7 +372,7 @@
           "404": {
             "description": "Blog post not found",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": { "$ref": "#/components/schemas/BlogPostResponse" }
               }
             }
@@ -404,7 +403,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PageBlogPostResponse"
                 }
@@ -638,9 +637,15 @@
       }
     },
     "securitySchemes": {
+      "bearer-jwt": {
+        "type": "http",
+        "description": "Enter your JWT token obtained from Keycloak",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
       "keycloak-oauth2": {
         "type": "oauth2",
-        "description": "OAuth2 authentication with Keycloak",
+        "description": "OAuth2 authentication with Keycloak (Authorization Code Flow)",
         "flows": {
           "authorizationCode": {
             "authorizationUrl": "http://auth.localhost/realms/mkopp/protocol/openid-connect/auth",

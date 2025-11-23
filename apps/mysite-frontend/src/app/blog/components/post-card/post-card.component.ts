@@ -1,9 +1,13 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { BlogPostMetadata } from '../../models/post.model';
+import { BlogPostResponse } from '@mkopp/api-clients/backend';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendar, faTag, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendar,
+  faTag,
+  faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { ThemeService } from '../../../shared/theme/theme.service';
 
 @Component({
@@ -14,8 +18,8 @@ import { ThemeService } from '../../../shared/theme/theme.service';
   styleUrls: ['./post-card.component.scss'],
 })
 export class PostCardComponent {
-  @Input({ required: true }) post!: BlogPostMetadata;
-  
+  @Input({ required: true }) post!: BlogPostResponse;
+
   private themeService = inject(ThemeService);
 
   isDarkMode = this.themeService.isDarkMode;

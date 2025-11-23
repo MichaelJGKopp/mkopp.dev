@@ -1,53 +1,38 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
-import { BlogPost, BlogPostMetadata } from '../models/post.model';
+import { BlogService, BlogPostResponse } from '@mkopp/api-clients/backend';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BlogPostsService {
-  private postsMetadata = signal<BlogPostMetadata[]>([]);
-  private http = inject(HttpClient);
+  private postsMetadata = signal<BlogPostResponse[]>([]);
+  private blogApi = inject(BlogService);
 
-  loadPostsMetadataSSR(): Observable<BlogPostMetadata[]> {
-    return this.http
-      .get<BlogPostMetadata[]>('/assets/blog/posts-index.json')
-      .pipe(
-        tap((metadata) => {
-          this.postsMetadata.set(metadata);
-        })
-      );
+  loadPostsMetadataSSR(): Observable<BlogPostResponse[]> {
+    return this.blogApi.getAllPosts({ page: 0, size: 100 }).pipe(
+      map((response) => response.content || []),
+      tap((metadata) => {
+        this.postsMetadata.set(metadata);
+      })
+    );
   }
 
-  getAllPosts(): BlogPostMetadata[] {
+  getAllPosts(): BlogPostResponse[] {
     return this.postsMetadata();
   }
 
-  getPostBySlug(slug: string): Observable<BlogPost> {
-    const metadata = this.postsMetadata().find((p) => p.slug === slug);
-
-    if (!metadata) {
-      throw new Error(`Post with slug "${slug}" not found`);
-    }
-
-    return this.http
-      .get(`/assets/blog/posts/${slug}.md`, { responseType: 'text' })
-      .pipe(
-        map((content) => ({
-          ...metadata,
-          content,
-          publishedAt: new Date(metadata.publishedAt),
-        }))
-      );
+  getPostBySlug(slug: string): Observable<BlogPostResponse> {
+    return this.blogApi.getPostBySlug(slug);
   }
 
-  getRecentPosts(limit = 99): BlogPostMetadata[] {
+  getRecentPosts(limit = 99): BlogPostResponse[] {
     return [...this.postsMetadata()]
-      .sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      )
+      .sort((a, b) => {
+        const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return dateB - dateA;
+      })
       .slice(0, limit);
   }
 }

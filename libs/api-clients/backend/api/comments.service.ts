@@ -49,10 +49,10 @@ export class CommentsService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling createComment.');
         }
@@ -62,11 +62,8 @@ export class CommentsService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -134,9 +131,6 @@ export class CommentsService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -182,10 +176,10 @@ export class CommentsService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<PageCommentResponse>;
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCommentResponse>>;
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCommentResponse>>;
-    public getComments(blogPostId: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getComments(blogPostId: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageCommentResponse>;
+    public getComments(blogPostId: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCommentResponse>>;
+    public getComments(blogPostId: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCommentResponse>>;
+    public getComments(blogPostId: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling getComments.');
         }
@@ -199,11 +193,8 @@ export class CommentsService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -250,10 +241,10 @@ export class CommentsService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
+    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
+    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
+    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling updateComment.');
         }
@@ -266,11 +257,8 @@ export class CommentsService extends BaseService {
 
         let localVarHeaders = this.defaultHeaders;
 
-        // authentication (keycloak-oauth2) required
-        localVarHeaders = this.configuration.addCredentialToHeaders('keycloak-oauth2', 'Authorization', localVarHeaders, 'Bearer ');
-
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);

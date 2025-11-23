@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -28,7 +29,7 @@ class CommentController {
     private final FindOrCreateUserUseCase findOrCreateUserUseCase;
     private final CommentRestMapper mapper;
     
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get comments for blog post")
     public ResponseEntity<Page<CommentResponse>> getComments(
             @PathVariable UUID blogPostId,
@@ -37,7 +38,7 @@ class CommentController {
             .map(mapper::toResponse));
     }
     
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Create comment")
     public ResponseEntity<CommentResponse> createComment(
@@ -49,7 +50,7 @@ class CommentController {
         return ResponseEntity.ok(mapper.toResponse(comment));
     }
     
-    @PutMapping("/{commentId}")
+    @PutMapping(value = "/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Update comment")
     public ResponseEntity<CommentResponse> updateComment(

@@ -1,8 +1,10 @@
 package dev.mkopp.mysite.shared.config.crosscutting.security;
 
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,6 +43,11 @@ public class SecurityConfig {
                         // Secure management endpoints to be accessible only by ADMIN
                         .requestMatchers("/management/**")
                         .hasRole("ADMIN")
+
+                        // Public API endpoints with GET access
+                        .requestMatchers(HttpMethod.GET,
+                                "/v1/blog/**")
+                        .permitAll()
 
                         // All other API requests must be authenticated
                         .requestMatchers("/v1/**")
