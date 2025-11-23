@@ -24,12 +24,15 @@ public class SecurityConfig {
                 .csrf(crsf -> crsf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints for documentation (available in dev)
+                        // Swagger UI / Documentation endpoints
+                        .requestMatchers("/swagger-ui/oauth2-redirect.html")
+                        .permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**")
                         .permitAll()
+                        // .hasRole("ADMIN")
 
                         // Public actuator endpoints for health checks
                         .requestMatchers("/management/health/**")
@@ -40,11 +43,13 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
 
                         // All other API requests must be authenticated
-                        .requestMatchers("/v1/**").authenticated()
+                        .requestMatchers("/v1/**")
+                        .authenticated()
 
                         // Deny any other request by default for security
                         .anyRequest().denyAll())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // .oauth2Login(Customizer.withDefaults()) // triggers browser login if needed
                 .oauth2ResourceServer(
                         oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
