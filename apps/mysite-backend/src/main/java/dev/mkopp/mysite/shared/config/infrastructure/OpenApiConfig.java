@@ -45,6 +45,9 @@ public class OpenApiConfig {
                                 .url("https://github.com/MichaelJGKopp/mkopp.dev/blob/main/LICENSE")))
                 .servers(List.of(
                         new Server()
+                                .url("https://api.mkopp.dev")
+                                .description("Docker Production Server"),
+                        new Server()
                                 .url("http://api.localhost")
                                 .description("Docker Development Server"),
                         new Server()
