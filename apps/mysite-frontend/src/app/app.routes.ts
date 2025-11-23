@@ -21,7 +21,12 @@ export const routes: Route[] = [
     ],
   },
   {
-    path: '**',
-    redirectTo: '',
+    path: 'docs',
+    pathMatch: 'full',
+    redirectTo: 'https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs',
   },
+  // {
+  //   path: '**',
+  //   redirectTo: '',
+  // },
 ];

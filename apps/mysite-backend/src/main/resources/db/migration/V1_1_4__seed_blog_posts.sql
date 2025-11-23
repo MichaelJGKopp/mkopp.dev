@@ -8,7 +8,7 @@ ON CONFLICT (email) DO NOTHING;
 -- Blog Post 1: Implementing Authentication in Angular with Keycloak JS: A Complete Guide
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    '35b1e085-5c12-42c5-b0cb-d958c09b63d3',
+    'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5',
     '007-keycloak-js-angular-auth',
     'Implementing Authentication in Angular with Keycloak JS: A Complete Guide',
     'Learn how to integrate Keycloak authentication into Angular using the official keycloak-js adapter with route guards, HTTP interceptors, and role-based access control.',
@@ -18,7 +18,7 @@ In this article, we''ll explore how to integrate Keycloak authentication into an
 
 ## Why Keycloak JS?
 
-[Keycloak](https://www.keycloak.org/) is a powerful open-source Identity and Access Management solution. While there''s a community wrapper called `keycloak-angular`, we chose to use the official `keycloak-js` adapter directly. As detailed in our [ADR on choosing Keycloak JS over Angular-Keycloak](./../docs/adr/0007-keycloak-js-over-angular-keycloak.md), this gives us:
+[Keycloak](https://www.keycloak.org/) is a powerful open-source Identity and Access Management solution. While there''s a community wrapper called `keycloak-angular`, we chose to use the official `keycloak-js` adapter directly. As detailed in our [ADR on choosing Keycloak JS over Angular-Keycloak](https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/adr/0007-keycloak-js-over-angular-keycloak.md), this gives us:
 
 - **Direct control** and full visibility
 - **Framework-agnostic** knowledge
@@ -494,50 +494,50 @@ The initial setup requires more code than using a wrapper, but the long-term ben
 );
 -- Tag: keycloak
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('a1a0074c-7c68-498c-8a1a-30fa5a8e635b', 'keycloak', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('10446193-93c9-4474-8643-af8fbf8e466d', 'keycloak', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'keycloak';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'keycloak';
 -- Tag: angular
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('293f8cc4-6779-489d-9643-464f1961ebcd', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('cd5065c8-f788-475e-b802-65d724e5bec6', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'angular';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'angular';
 -- Tag: authentication
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('0aa18abb-1e8c-4564-b29d-12c9fcd7fbea', 'authentication', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('774b439a-0932-4580-95ac-e16dae5e5e8e', 'authentication', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'authentication';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'authentication';
 -- Tag: oauth2
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('58aeeef3-0c32-45d0-b642-d2e1da00d0e2', 'oauth2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('e0388d13-9645-4484-8b6f-bab4d34f7696', 'oauth2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'oauth2';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'oauth2';
 -- Tag: jwt
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('fc81d2ac-1d05-49b2-80be-d4f492a95c23', 'jwt', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('46c8fbd4-c8fd-4369-a9b1-c9f285c4a3ed', 'jwt', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'jwt';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'jwt';
 -- Tag: security
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('91373184-c9d3-46eb-9f93-762b68f64cb1', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('41242aa5-d2d7-4e64-815e-387d6bb5d07d', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '35b1e085-5c12-42c5-b0cb-d958c09b63d3', id FROM blog.blog_tags WHERE name = 'security';
+SELECT 'c9fd7c67-a009-4aeb-a6b3-9198f4d174a5', id FROM blog.blog_tags WHERE name = 'security';
 -- Blog Post 2: Database Migrations with Flyway in Spring Boot: A Practical Guide
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    '8a6e9efa-e9dd-4b80-9618-f505f048a3d0',
+    'e15bbc65-72b5-40e1-a2a2-20ae7401665a',
     '006-flyway-spring-boot',
     'Database Migrations with Flyway in Spring Boot: A Practical Guide',
     'A comprehensive guide to managing database schema migrations in Spring Boot using Flyway, covering best practices, versioning strategies, and production deployment.',
@@ -553,7 +553,7 @@ Think of it as **Git for your database schema**.
 
 ## Why Flyway?
 
-While there are several database migration tools available (most notably [Liquibase](https://www.liquibase.org/)), Flyway stands out for its simplicity and SQL-first approach. As detailed in our [ADR on choosing Flyway over Liquibase](./../docs/adr/0006-flyway-over-liquibase.md), we chose Flyway primarily because:
+While there are several database migration tools available (most notably [Liquibase](https://www.liquibase.org/)), Flyway stands out for its simplicity and SQL-first approach. As detailed in our [ADR on choosing Flyway over Liquibase](https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/adr/0006-flyway-over-liquibase.md), we chose Flyway primarily because:
 
 1. **Direct SQL**: You write actual SQL, not XML/YAML abstractions
 2. **Transparency**: You see exactly what will be executed
@@ -893,50 +893,50 @@ By following best practices and understanding how Flyway works, you can maintain
 );
 -- Tag: flyway
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('dfc3c51f-d852-4103-b452-a1ebfb9c50d9', 'flyway', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('1812d125-e94e-47dd-94be-ff7372d3a8bc', 'flyway', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'flyway';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'flyway';
 -- Tag: spring-boot
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('d7cb4c33-6e11-4659-a1f7-9e8a89f593a7', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('046db44d-6590-4b4e-a371-5e2b1210bd68', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'spring-boot';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'spring-boot';
 -- Tag: database
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('4e4bbde6-7c38-4e3c-a389-d42a887c514b', 'database', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('e5ce3994-1cc7-44e3-a76d-fbc7dd0ca1b5', 'database', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'database';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'database';
 -- Tag: migrations
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('55749d18-6f7b-4bb9-af7a-4f7db2aba239', 'migrations', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('3cb34025-3791-47cd-a2e1-a1c3aae36859', 'migrations', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'migrations';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'migrations';
 -- Tag: sql
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('c3edac00-cc9f-41ee-950a-56b431696f8d', 'sql', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('5d3fe907-1460-4ccd-b56c-4e9d38628f9d', 'sql', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'sql';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'sql';
 -- Tag: postgresql
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('6c9a9d8c-c4ed-4975-b684-2f52334c42d2', 'postgresql', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('764b8ae6-1dfb-4fee-b5f6-150af47d5aa8', 'postgresql', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '8a6e9efa-e9dd-4b80-9618-f505f048a3d0', id FROM blog.blog_tags WHERE name = 'postgresql';
+SELECT 'e15bbc65-72b5-40e1-a2a2-20ae7401665a', id FROM blog.blog_tags WHERE name = 'postgresql';
 -- Blog Post 3: CORS Configuration in Spring Boot: A Best Practice Guide
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    '1f600198-a2f0-48a5-acf2-00314091c2d7',
+    '2a9fb2c5-553b-4a58-8c6f-747cec24daea',
     '005-cors-best-practices',
     'CORS Configuration in Spring Boot: A Best Practice Guide',
     'Learn how to configure CORS in Spring Boot in a secure, flexible, and maintainable way using centralized configuration and externalized properties.',
@@ -1125,43 +1125,43 @@ This approach represents the industry-standard best practice for handling CORS i
 );
 -- Tag: spring-boot
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('9cc6c3ef-736f-4031-a1e6-e856c38b4aaa', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('658e9c4b-2d77-41f6-8eb5-61ec2bf21ccd', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '1f600198-a2f0-48a5-acf2-00314091c2d7', id FROM blog.blog_tags WHERE name = 'spring-boot';
+SELECT '2a9fb2c5-553b-4a58-8c6f-747cec24daea', id FROM blog.blog_tags WHERE name = 'spring-boot';
 -- Tag: cors
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('464128b4-ea14-4388-8729-78afb0d1b349', 'cors', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('5509b8d6-a5c0-4ded-ad2a-4c02d44f11eb', 'cors', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '1f600198-a2f0-48a5-acf2-00314091c2d7', id FROM blog.blog_tags WHERE name = 'cors';
+SELECT '2a9fb2c5-553b-4a58-8c6f-747cec24daea', id FROM blog.blog_tags WHERE name = 'cors';
 -- Tag: security
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('3c8811c6-dd02-421c-9f3d-5fc90254e64f', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('57f8417d-5afb-40e8-b4ba-6b164353d555', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '1f600198-a2f0-48a5-acf2-00314091c2d7', id FROM blog.blog_tags WHERE name = 'security';
+SELECT '2a9fb2c5-553b-4a58-8c6f-747cec24daea', id FROM blog.blog_tags WHERE name = 'security';
 -- Tag: java
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('c027a585-e911-470f-89b2-07b58f582703', 'java', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('e0637477-907f-4028-98d1-b7554f9ec6a9', 'java', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '1f600198-a2f0-48a5-acf2-00314091c2d7', id FROM blog.blog_tags WHERE name = 'java';
+SELECT '2a9fb2c5-553b-4a58-8c6f-747cec24daea', id FROM blog.blog_tags WHERE name = 'java';
 -- Tag: backend
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('2c4fae06-6e22-4d41-8a51-17d69367bb04', 'backend', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('8415021b-41bb-476d-8097-945ed03a959c', 'backend', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '1f600198-a2f0-48a5-acf2-00314091c2d7', id FROM blog.blog_tags WHERE name = 'backend';
+SELECT '2a9fb2c5-553b-4a58-8c6f-747cec24daea', id FROM blog.blog_tags WHERE name = 'backend';
 -- Blog Post 4: A Deep Dive into the Keycloak JWT OAuth2 Implementation
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    'd398a46a-f8ff-4226-a885-9b8147906d0f',
+    '1ff96a87-0167-4600-b3af-953c7cdf8806',
     '004-keycloak-spring-boot-integration',
     'A Deep Dive into the Keycloak JWT OAuth2 Implementation',
     'Detailed analysis of securing a Spring Boot backend using Keycloak with JWT for OAuth2 authentication, including role extraction and custom converters.',
@@ -1358,50 +1358,50 @@ This repository has a robust and well-structured implementation for securing a S
 );
 -- Tag: keycloak
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('50755352-9031-4254-88e4-f166ddc59575', 'keycloak', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('d2b79aa5-2c54-4b4d-bd84-eefdbc23e297', 'keycloak', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'keycloak';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'keycloak';
 -- Tag: spring-boot
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('edc45285-7136-40c2-8690-4a7868d155df', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('7e3a0dc3-f8a7-4b42-b359-eda8756fe024', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'spring-boot';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'spring-boot';
 -- Tag: oauth2
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('6ebb24e7-8abf-47f0-ac8d-61c4f42eabfb', 'oauth2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('0acc4c88-4c7a-412b-963b-88dbd8f186e2', 'oauth2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'oauth2';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'oauth2';
 -- Tag: jwt
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('df598758-3afb-4f21-b3f9-df02fe1f6026', 'jwt', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('b1690a37-abe6-4e26-aa75-ebaae3f4d821', 'jwt', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'jwt';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'jwt';
 -- Tag: security
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('dcd66135-018d-4d6c-be6d-56a9497ddf5c', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('d6a3d68a-9c76-4a56-b653-62975d62feb3', 'security', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'security';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'security';
 -- Tag: java
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('a31f0594-94ca-42e9-8923-06ce24938866', 'java', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('2258aee1-2eb5-4f26-b380-7265a892effe', 'java', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'd398a46a-f8ff-4226-a885-9b8147906d0f', id FROM blog.blog_tags WHERE name = 'java';
+SELECT '1ff96a87-0167-4600-b3af-953c7cdf8806', id FROM blog.blog_tags WHERE name = 'java';
 -- Blog Post 5: Taming the Monorepo: How We Use Nx to Manage Our Full-Stack Application
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    '14178f4a-a948-4bbc-9ccc-8a35c9788050',
+    '2235b8a0-414b-4830-991a-31ff03b05f0d',
     '003-nx-monorepo',
     'Taming the Monorepo: How We Use Nx to Manage Our Full-Stack Application',
     'Why we chose a monorepo approach and how we use Nx to manage our Angular frontend and Spring Boot backend in a single workspace.',
@@ -1423,7 +1423,7 @@ This approach has several benefits:
 
 While a monorepo offers many benefits, it can also become complex to manage as the project grows. This is where Nx comes in.
 
-Nx is a smart, extensible build framework that helps you manage monorepos. As detailed in our [ADR on using an Nx Monorepo](./../docs/adr/0002-nx-monorepo.md), we chose Nx for several reasons:
+Nx is a smart, extensible build framework that helps you manage monorepos. As detailed in our [ADR on using an Nx Monorepo](https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/adr/0002-nx-monorepo.md), we chose Nx for several reasons:
 
 *   **Excellent Tooling**: Nx provides a rich set of tools for managing monorepos, including generators for creating new applications and libraries, and executors for running tasks like building, testing, and linting.
 *   **Dependency Graph**: Nx understands the dependencies between projects in the monorepo, which allows it to do smart things like only rebuilding and re-testing the parts of the application that have changed.
@@ -1469,43 +1469,43 @@ Using an Nx monorepo has been a great choice for this project. It provides a sol
 );
 -- Tag: nx
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('6d367875-11a9-4abb-8f35-f190b971a303', 'nx', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('ee582faf-0d4f-4421-b401-73d337ef4931', 'nx', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '14178f4a-a948-4bbc-9ccc-8a35c9788050', id FROM blog.blog_tags WHERE name = 'nx';
+SELECT '2235b8a0-414b-4830-991a-31ff03b05f0d', id FROM blog.blog_tags WHERE name = 'nx';
 -- Tag: monorepo
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('0e562634-f9a4-4f52-985f-fcec8bb5d347', 'monorepo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('f08cb865-0e77-4017-80d2-c0627ff7e34f', 'monorepo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '14178f4a-a948-4bbc-9ccc-8a35c9788050', id FROM blog.blog_tags WHERE name = 'monorepo';
+SELECT '2235b8a0-414b-4830-991a-31ff03b05f0d', id FROM blog.blog_tags WHERE name = 'monorepo';
 -- Tag: angular
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('f25f1e54-7a16-4282-b7e7-d6f3bcab999b', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('91e19381-7c16-46b0-b87c-459388a3af04', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '14178f4a-a948-4bbc-9ccc-8a35c9788050', id FROM blog.blog_tags WHERE name = 'angular';
+SELECT '2235b8a0-414b-4830-991a-31ff03b05f0d', id FROM blog.blog_tags WHERE name = 'angular';
 -- Tag: spring-boot
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('17f8ec6e-9d35-42fa-85ec-7f775c97c22b', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('033e1da8-847b-417c-a3bb-356b834fa9ba', 'spring-boot', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '14178f4a-a948-4bbc-9ccc-8a35c9788050', id FROM blog.blog_tags WHERE name = 'spring-boot';
+SELECT '2235b8a0-414b-4830-991a-31ff03b05f0d', id FROM blog.blog_tags WHERE name = 'spring-boot';
 -- Tag: full-stack
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('595e16ca-43f6-45e8-a789-c86d76076c2f', 'full-stack', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('57ff6b66-17fe-4be4-824a-156e63db9c32', 'full-stack', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '14178f4a-a948-4bbc-9ccc-8a35c9788050', id FROM blog.blog_tags WHERE name = 'full-stack';
+SELECT '2235b8a0-414b-4830-991a-31ff03b05f0d', id FROM blog.blog_tags WHERE name = 'full-stack';
 -- Blog Post 6: The Power of Server-Side Rendering with Angular Universal
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    'f5b61858-bd11-42b2-9a9a-6c924bca6377',
+    '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7',
     '002-ssr-angular',
     'The Power of Server-Side Rendering with Angular Universal',
     'How we use Angular Universal for Server-Side Rendering to enhance SEO and improve performance, including containerization with Docker.',
@@ -1522,7 +1522,7 @@ For a portfolio and blog site like this, SSR is crucial for two main reasons:
 1.  **Search Engine Optimization (SEO)**: Search engine crawlers can more easily index a fully rendered HTML page, which improves the site''s visibility in search results.
 2.  **Performance**: Users see a meaningful first paint of the application much faster, as they don''t have to wait for the JavaScript to download and execute.
 
-As detailed in our [ADR on SSR with Angular](./../docs/adr/0003-ssr-angular.md), we chose Angular Universal to get the best of both worlds: the rich interactivity of an SPA and the SEO and performance benefits of a server-rendered application.
+As detailed in our [ADR on SSR with Angular](https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/adr/0003-ssr-angular.md), we chose Angular Universal to get the best of both worlds: the rich interactivity of an SPA and the SEO and performance benefits of a server-rendered application.
 
 ## How SSR Works in Our Project
 
@@ -1569,50 +1569,50 @@ By using Angular Universal for Server-Side Rendering, we get a fast, SEO-friendl
 );
 -- Tag: angular
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('88015e27-1c8f-498d-9f6f-e9c7c99afaa2', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('febc764a-0f22-4441-97e4-262e4d6bc4b5', 'angular', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'angular';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'angular';
 -- Tag: ssr
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('554e99ab-f10c-4307-9615-93c8b4830c95', 'ssr', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('7f2248a2-aed2-4efe-b05e-9d40075d9967', 'ssr', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'ssr';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'ssr';
 -- Tag: angular-universal
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('8c4ca398-9c9f-4846-a66a-3034010bef64', 'angular-universal', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('b3027d8e-b46a-4e30-b961-23d97c6e5fb0', 'angular-universal', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'angular-universal';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'angular-universal';
 -- Tag: seo
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('e77c2891-4dac-41bc-98bc-def6bc9df439', 'seo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('beed8bbb-fbf7-400d-8126-86f28b0eb810', 'seo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'seo';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'seo';
 -- Tag: performance
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('172a7394-9325-4aea-9fa0-a1e128c0f1fa', 'performance', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('414d9bf8-6dab-4240-a019-79a6869c0fed', 'performance', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'performance';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'performance';
 -- Tag: docker
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('c3f72dd7-be03-4013-88a6-fc7cd1e7dccc', 'docker', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('cd166ee3-6913-4cfc-8be8-d899b0530fed', 'docker', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT 'f5b61858-bd11-42b2-9a9a-6c924bca6377', id FROM blog.blog_tags WHERE name = 'docker';
+SELECT '2e75c6d0-8fe5-4e29-be82-87c82dfe46d7', id FROM blog.blog_tags WHERE name = 'docker';
 -- Blog Post 7: Our Deployment Pipeline: From git push to Production
 INSERT INTO blog.blog_posts (id, slug, title, description, content, author_id, published_at, created_at, updated_at, type)
 VALUES (
-    '4c33f68f-fd30-408c-94dc-a802bbcd7132',
+    'a53c5054-fb02-4c36-90e1-ab7429f0b176',
     '001-deployment-pipeline',
     'Our Deployment Pipeline: From git push to Production',
     'A deep dive into our CI/CD pipeline using GitHub Actions, Docker, and Docker Compose to automate deployment from code push to production.',
@@ -1695,7 +1695,7 @@ Our production environment is running on a VPS and is orchestrated using Docker 
 * **PostgreSQL**: The database for our backend.
 * **Frontend and Backend services**: Running as Docker containers.
 
-For more details on the architecture and the decisions behind it, you can refer to our [ADR on Deployment with Docker and Traefik](./../docs/adr/0004-deployment-with-docker-and-traefik.md).
+For more details on the architecture and the decisions behind it, you can refer to our [ADR on Deployment with Docker and Traefik](https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/adr/0004-deployment-with-docker-and-traefik.md).
 
 ## Limitations and Future Improvements
 
@@ -1717,36 +1717,36 @@ Our current deployment pipeline provides a solid foundation for developing and d
 );
 -- Tag: ci-cd
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('14629ce6-ca39-4ea9-af4d-999e9dd329cf', 'ci-cd', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('dbed5cf6-a282-4c29-a7c0-044e96c8cca3', 'ci-cd', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '4c33f68f-fd30-408c-94dc-a802bbcd7132', id FROM blog.blog_tags WHERE name = 'ci-cd';
+SELECT 'a53c5054-fb02-4c36-90e1-ab7429f0b176', id FROM blog.blog_tags WHERE name = 'ci-cd';
 -- Tag: github-actions
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('3f883db7-9f65-42a8-86b1-c6a0e3e0c0ff', 'github-actions', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('e4143dc0-0d15-40d8-9c91-bbe1632d2091', 'github-actions', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '4c33f68f-fd30-408c-94dc-a802bbcd7132', id FROM blog.blog_tags WHERE name = 'github-actions';
+SELECT 'a53c5054-fb02-4c36-90e1-ab7429f0b176', id FROM blog.blog_tags WHERE name = 'github-actions';
 -- Tag: docker
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('9aaa2048-cf28-48e5-bf6e-efb059ecf5c4', 'docker', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('33125395-7b17-4eeb-8bb0-1f680dcc6e80', 'docker', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '4c33f68f-fd30-408c-94dc-a802bbcd7132', id FROM blog.blog_tags WHERE name = 'docker';
+SELECT 'a53c5054-fb02-4c36-90e1-ab7429f0b176', id FROM blog.blog_tags WHERE name = 'docker';
 -- Tag: deployment
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('b2787b12-545f-454d-8442-9ec041bf16e6', 'deployment', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('8d6bfb9c-41eb-4e6e-b7ed-9964045c067c', 'deployment', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '4c33f68f-fd30-408c-94dc-a802bbcd7132', id FROM blog.blog_tags WHERE name = 'deployment';
+SELECT 'a53c5054-fb02-4c36-90e1-ab7429f0b176', id FROM blog.blog_tags WHERE name = 'deployment';
 -- Tag: devops
 INSERT INTO blog.blog_tags (id, name, created_at, updated_at)
-VALUES ('74ed9a2d-7a05-4bac-9220-219856f80c87', 'devops', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+VALUES ('4de2de7d-94c0-424c-baa3-cb31d9533d20', 'devops', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO blog.blog_post_tags (blog_post_id, tag_id)
-SELECT '4c33f68f-fd30-408c-94dc-a802bbcd7132', id FROM blog.blog_tags WHERE name = 'devops';
+SELECT 'a53c5054-fb02-4c36-90e1-ab7429f0b176', id FROM blog.blog_tags WHERE name = 'devops';

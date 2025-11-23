@@ -32,6 +32,8 @@ foreach ($post in $postsMetadata) {
     $mdPath = Join-Path $postsDir "$slug.md"
     if (Test-Path $mdPath) {
         $content = Get-Content $mdPath -Raw -Encoding UTF8
+        # Replace relative docs links with GitHub URLs (handle ./../docs and ../docs)
+        $content = $content -replace '\(\.{0,2}/\.{0,2}/docs/', '(https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs/'
         # Escape single quotes by doubling them
         $content = $content -replace "'", "''"
         # Normalize line endings
