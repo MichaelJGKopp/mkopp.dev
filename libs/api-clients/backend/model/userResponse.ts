@@ -34,8 +34,12 @@ export interface UserResponse {
      */
     lastName?: string;
     /**
-     * Creation date
+     * Roles
      */
-    createdAt?: string;
+    roles?: Array<string>;
+    /**
+     * Token expiry
+     */
+    tokenExpiry?: string;
 }
 

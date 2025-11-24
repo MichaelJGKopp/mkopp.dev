@@ -26,4 +26,9 @@ public class TagEntity extends AbstractAuditingEntity<UUID> {
     public UUID getId() {
         return id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 }

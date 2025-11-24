@@ -1,32 +1,32 @@
 package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.mapper;
 
-import dev.mkopp.mysite.blog.domain.model.Like;
-import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.LikeEntity;
+import dev.mkopp.mysite.blog.domain.model.CommentLike;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.CommentLikeEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LikeEntityMapper {
+public class CommentLikeEntityMapper {
     
-    public Like toDomain(LikeEntity entity) {
+    public CommentLike toDomain(CommentLikeEntity entity) {
         if (entity == null) {
             return null;
         }
         
-        return Like.builder()
+        return CommentLike.builder()
             .id(entity.getId())
-            .blogPostId(entity.getBlogPostId())
+            .commentId(entity.getCommentId())
             .userId(entity.getUserId())
             .build();
     }
     
-    public LikeEntity toEntity(Like domain) {
+    public CommentLikeEntity toEntity(CommentLike domain) {
         if (domain == null) {
             return null;
         }
         
-        return LikeEntity.builder()
+        return CommentLikeEntity.builder()
             .id(domain.getId())
-            .blogPostId(domain.getBlogPostId())
+            .commentId(domain.getCommentId())
             .userId(domain.getUserId())
             .build();
     }

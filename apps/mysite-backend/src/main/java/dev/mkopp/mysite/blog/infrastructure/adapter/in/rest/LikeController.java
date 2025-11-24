@@ -31,8 +31,10 @@ class LikeController {
     public ResponseEntity<LikeResponse> toggleLike(
             @PathVariable UUID blogPostId,
             @AuthenticationPrincipal Jwt jwt) {
+
         UUID userId = extractAndEnsureUser(jwt);
         likeService.toggleLike(blogPostId, userId);
+
         return ResponseEntity.ok(new LikeResponse(
             likeService.getLikeCount(blogPostId),
             likeService.isLikedByUser(blogPostId, userId)
@@ -44,7 +46,9 @@ class LikeController {
     public ResponseEntity<LikeResponse> getLikeInfo(
             @PathVariable UUID blogPostId,
             @Parameter(hidden = true) @AuthenticationPrincipal Jwt jwt) {
+
         UUID userId = jwt != null ? extractAndEnsureUser(jwt) : null;
+        
         return ResponseEntity.ok(new LikeResponse(
             likeService.getLikeCount(blogPostId),
             userId != null && likeService.isLikedByUser(blogPostId, userId)

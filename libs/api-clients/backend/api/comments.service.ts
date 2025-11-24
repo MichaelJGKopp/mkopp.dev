@@ -17,11 +17,13 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { CommentLikeResponse } from '../model/commentLikeResponse';
+// @ts-ignore
 import { CommentRequest } from '../model/commentRequest';
 // @ts-ignore
-import { CommentResponse } from '../model/commentResponse';
+import { CommentTreeItem } from '../model/commentTreeItem';
 // @ts-ignore
-import { PageCommentResponse } from '../model/pageCommentResponse';
+import { PageCommentTreeItem } from '../model/pageCommentTreeItem';
 // @ts-ignore
 import { Pageable } from '../model/pageable';
 
@@ -49,9 +51,9 @@ export class CommentsService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
-    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentTreeItem>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentTreeItem>>;
+    public createComment(blogPostId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentTreeItem>>;
     public createComment(blogPostId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
             throw new Error('Required parameter blogPostId was null or undefined when calling createComment.');
@@ -96,7 +98,7 @@ export class CommentsService extends BaseService {
 
         let localVarPath = `/v1/blog/${this.configuration.encodeParam({name: "blogPostId", value: blogPostId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/comments`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<CommentResponse>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<CommentTreeItem>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: commentRequest,
@@ -112,19 +114,15 @@ export class CommentsService extends BaseService {
 
     /**
      * Delete comment
-     * @endpoint delete /v1/blog/{blogPostId}/comments/{commentId}
-     * @param blogPostId 
+     * @endpoint delete /v1/comments/{commentId}
      * @param commentId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteComment(blogPostId: string, commentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public deleteComment(blogPostId: string, commentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public deleteComment(blogPostId: string, commentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public deleteComment(blogPostId: string, commentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (blogPostId === null || blogPostId === undefined) {
-            throw new Error('Required parameter blogPostId was null or undefined when calling deleteComment.');
-        }
+    public deleteComment(commentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public deleteComment(commentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public deleteComment(commentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public deleteComment(commentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (commentId === null || commentId === undefined) {
             throw new Error('Required parameter commentId was null or undefined when calling deleteComment.');
         }
@@ -153,7 +151,7 @@ export class CommentsService extends BaseService {
             }
         }
 
-        let localVarPath = `/v1/blog/${this.configuration.encodeParam({name: "blogPostId", value: blogPostId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
+        let localVarPath = `/v1/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -169,22 +167,196 @@ export class CommentsService extends BaseService {
     }
 
     /**
-     * Get comments for blog post
+     * Get comment count for blog post
+     * @endpoint get /v1/blog/{blogPostId}/comments/count
+     * @param blogPostId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getCommentCount(blogPostId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<number>;
+    public getCommentCount(blogPostId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<number>>;
+    public getCommentCount(blogPostId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<number>>;
+    public getCommentCount(blogPostId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (blogPostId === null || blogPostId === undefined) {
+            throw new Error('Required parameter blogPostId was null or undefined when calling getCommentCount.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/v1/blog/${this.configuration.encodeParam({name: "blogPostId", value: blogPostId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/comments/count`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<number>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Get comment like count and user like status
+     * @endpoint get /v1/comments/{commentId}/like
+     * @param commentId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getCommentLikeInfo(commentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentLikeResponse>;
+    public getCommentLikeInfo(commentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentLikeResponse>>;
+    public getCommentLikeInfo(commentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentLikeResponse>>;
+    public getCommentLikeInfo(commentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (commentId === null || commentId === undefined) {
+            throw new Error('Required parameter commentId was null or undefined when calling getCommentLikeInfo.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/v1/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/like`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<CommentLikeResponse>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Get replies for a comment
+     * @endpoint get /v1/comments/{commentId}/replies
+     * @param commentId 
+     * @param pageable 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getReplies(commentId: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageCommentTreeItem>;
+    public getReplies(commentId: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCommentTreeItem>>;
+    public getReplies(commentId: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCommentTreeItem>>;
+    public getReplies(commentId: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (commentId === null || commentId === undefined) {
+            throw new Error('Required parameter commentId was null or undefined when calling getReplies.');
+        }
+        if (pageable === null || pageable === undefined) {
+            throw new Error('Required parameter pageable was null or undefined when calling getReplies.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+          <any>pageable, 'pageable');
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/v1/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/replies`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PageCommentTreeItem>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Get top-level comments for blog post
      * @endpoint get /v1/blog/{blogPostId}/comments
      * @param blogPostId 
      * @param pageable 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageCommentResponse>;
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCommentResponse>>;
-    public getComments(blogPostId: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCommentResponse>>;
-    public getComments(blogPostId: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getTopLevelComments(blogPostId: string, pageable: Pageable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PageCommentTreeItem>;
+    public getTopLevelComments(blogPostId: string, pageable: Pageable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PageCommentTreeItem>>;
+    public getTopLevelComments(blogPostId: string, pageable: Pageable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PageCommentTreeItem>>;
+    public getTopLevelComments(blogPostId: string, pageable: Pageable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (blogPostId === null || blogPostId === undefined) {
-            throw new Error('Required parameter blogPostId was null or undefined when calling getComments.');
+            throw new Error('Required parameter blogPostId was null or undefined when calling getTopLevelComments.');
         }
         if (pageable === null || pageable === undefined) {
-            throw new Error('Required parameter pageable was null or undefined when calling getComments.');
+            throw new Error('Required parameter pageable was null or undefined when calling getTopLevelComments.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -218,7 +390,7 @@ export class CommentsService extends BaseService {
 
         let localVarPath = `/v1/blog/${this.configuration.encodeParam({name: "blogPostId", value: blogPostId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/comments`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<PageCommentResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<PageCommentTreeItem>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -233,21 +405,72 @@ export class CommentsService extends BaseService {
     }
 
     /**
-     * Update comment
-     * @endpoint put /v1/blog/{blogPostId}/comments/{commentId}
-     * @param blogPostId 
+     * Toggle like on comment
+     * @endpoint post /v1/comments/{commentId}/like
+     * @param commentId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public toggleCommentLike(commentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<CommentLikeResponse>;
+    public toggleCommentLike(commentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentLikeResponse>>;
+    public toggleCommentLike(commentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentLikeResponse>>;
+    public toggleCommentLike(commentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (commentId === null || commentId === undefined) {
+            throw new Error('Required parameter commentId was null or undefined when calling toggleCommentLike.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            '*/*'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/v1/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/like`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<CommentLikeResponse>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Update comment (PATCH)
+     * @endpoint patch /v1/comments/{commentId}
      * @param commentId 
      * @param commentRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentResponse>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentResponse>>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentResponse>>;
-    public updateComment(blogPostId: string, commentId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (blogPostId === null || blogPostId === undefined) {
-            throw new Error('Required parameter blogPostId was null or undefined when calling updateComment.');
-        }
+    public updateComment(commentId: string, commentRequest: CommentRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CommentTreeItem>;
+    public updateComment(commentId: string, commentRequest: CommentRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CommentTreeItem>>;
+    public updateComment(commentId: string, commentRequest: CommentRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CommentTreeItem>>;
+    public updateComment(commentId: string, commentRequest: CommentRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (commentId === null || commentId === undefined) {
             throw new Error('Required parameter commentId was null or undefined when calling updateComment.');
         }
@@ -289,9 +512,9 @@ export class CommentsService extends BaseService {
             }
         }
 
-        let localVarPath = `/v1/blog/${this.configuration.encodeParam({name: "blogPostId", value: blogPostId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
+        let localVarPath = `/v1/comments/${this.configuration.encodeParam({name: "commentId", value: commentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<CommentResponse>('put', `${basePath}${localVarPath}`,
+        return this.httpClient.request<CommentTreeItem>('patch', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: commentRequest,

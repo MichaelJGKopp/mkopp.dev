@@ -4,14 +4,14 @@ import dev.mkopp.mysite.blog.application.port.out.LikeRepository;
 import dev.mkopp.mysite.blog.domain.model.Like;
 import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.mapper.LikeEntityMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
+@Repository
 @RequiredArgsConstructor
-class LikeRepositoryAdapter implements LikeRepository {
+public class LikeRepositoryAdapter implements LikeRepository {
     
     private final LikeJpaRepository jpaRepository;
     private final LikeEntityMapper mapper;
@@ -31,7 +31,7 @@ class LikeRepositoryAdapter implements LikeRepository {
     
     @Override
     public void delete(Like like) {
-        jpaRepository.delete(mapper.toEntity(like));
+        jpaRepository.deleteById(like.getId());
     }
     
     @Override

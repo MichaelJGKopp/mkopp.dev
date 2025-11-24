@@ -8,15 +8,15 @@
  * Do not edit the class manually.
  */
 import { PageableObject } from './pageableObject';
+import { CommentTreeItem } from './commentTreeItem';
 import { SortObject } from './sortObject';
-import { BlogPostResponse } from './blogPostResponse';
 
 
-export interface PageBlogPostResponse { 
+export interface PageCommentTreeItem { 
     totalPages?: number;
     totalElements?: number;
     size?: number;
-    content?: Array<BlogPostResponse>;
+    content?: Array<CommentTreeItem>;
     number?: number;
     sort?: SortObject;
     first?: boolean;

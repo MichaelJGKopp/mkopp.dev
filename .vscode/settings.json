@@ -15,5 +15,6 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "http-sonar-localhost-",
     "projectKey": "mkopp"
-  }
+  },
+  "java.debug.settings.onBuildFailureProceed": true
 }

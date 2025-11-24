@@ -7,15 +7,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SortObject } from './sortObject';
 
 
-export interface PageableObject { 
-    offset?: number;
-    sort?: SortObject;
-    pageNumber?: number;
-    paged?: boolean;
-    pageSize?: number;
-    unpaged?: boolean;
+export interface CommentTreeItem { 
+    id?: string;
+    userId?: string;
+    content?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    replyCount?: number;
+    likeCount?: number;
 }
 

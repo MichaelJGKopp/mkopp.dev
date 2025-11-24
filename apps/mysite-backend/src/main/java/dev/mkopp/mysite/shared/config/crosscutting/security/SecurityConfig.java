@@ -49,9 +49,13 @@ public class SecurityConfig {
                                 "/v1/blog/**")
                         .permitAll()
 
+                        // Allow authenticated access to comments and likes of posts
+                        .requestMatchers("/v1/blog/{blogPostId}/**")
+                        .authenticated()
+
                         // Allow unauthenticated access to get current user info
                         .requestMatchers("/v1/users/me")
-                        .permitAll()
+                        .authenticated()
 
                         // All other API requests must be admin
                         .requestMatchers("/v1/**")

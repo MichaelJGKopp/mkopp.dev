@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.Identity;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +26,8 @@ public class Comment {
     private UUID userId;
     private UUID parentCommentId;
     private String content;
+    private Instant createdAt;
+    private Instant updatedAt;
     
     @Builder.Default
     private List<Comment> replies = new ArrayList<>();

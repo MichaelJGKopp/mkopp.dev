@@ -17,22 +17,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "blog_likes", schema = "blog", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"blog_post_id", "user_id"})
+@Table(name = "comment_likes", schema = "blog", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"comment_id", "user_id"})
 })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LikeEntity extends AbstractAuditingEntity<UUID> {
+public class CommentLikeEntity extends AbstractAuditingEntity<UUID> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     
-    @Column(name = "blog_post_id", nullable = false)
-    private UUID blogPostId;
+    @Column(name = "comment_id", nullable = false)
+    private UUID commentId;
     
     @Column(name = "user_id", nullable = false)
     private UUID userId;

@@ -13,5 +13,10 @@ interface CommentJpaRepository extends JpaRepository<CommentEntity, UUID> {
     @Query("SELECT c FROM CommentEntity c WHERE c.blogPostId = :blogPostId AND c.parentCommentId IS NULL ORDER BY c.createdAt DESC")
     Page<CommentEntity> findTopLevelByBlogPostId(UUID blogPostId, Pageable pageable);
     
+    @Query("SELECT c FROM CommentEntity c WHERE c.parentCommentId = :parentCommentId ORDER BY c.createdAt ASC")
+    Page<CommentEntity> findRepliesByParentCommentId(UUID parentCommentId, Pageable pageable);
+    
     long countByBlogPostId(UUID blogPostId);
+    
+    long countByParentCommentId(UUID parentCommentId);
 }

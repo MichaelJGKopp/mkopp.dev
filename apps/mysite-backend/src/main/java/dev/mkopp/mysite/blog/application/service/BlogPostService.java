@@ -42,7 +42,6 @@ class BlogPostService implements CreateBlogPostUseCase, GetBlogPostUseCase, Upda
             .orElseThrow(() -> new ResourceNotFoundException("User", "id", authorId));
         
         blogPost = BlogPost.builder()
-            .id(UUID.randomUUID())
             .slug(blogPost.getSlug())
             .title(blogPost.getTitle())
             .description(blogPost.getDescription())

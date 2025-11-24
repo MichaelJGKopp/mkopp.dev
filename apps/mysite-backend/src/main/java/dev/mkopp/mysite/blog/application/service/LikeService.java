@@ -3,6 +3,7 @@ package dev.mkopp.mysite.blog.application.service;
 import dev.mkopp.mysite.blog.application.port.out.LikeRepository;
 import dev.mkopp.mysite.blog.domain.model.Like;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class LikeService {
     
     private final LikeRepository likeRepository;
@@ -18,10 +20,13 @@ public class LikeService {
     public void toggleLike(UUID blogPostId, UUID userId) {
         likeRepository.findByBlogPostIdAndUserId(blogPostId, userId)
             .ifPresentOrElse(
-                likeRepository::delete,
+                like -> {
+                    log.debug("Deleting like with ID: {} for blogPost: {} and user: {}", like.getId(), blogPostId, userId);
+                    likeRepository.delete(like);
+                },
                 () -> {
+                    log.debug("Creating like for blogPost: {} and user: {}", blogPostId, userId);
                     Like newLike = Like.builder()
-                        .id(UUID.randomUUID())
                         .blogPostId(blogPostId)
                         .userId(userId)
                         .build();
@@ -32,11 +37,15 @@ public class LikeService {
     
     @Transactional(readOnly = true)
     public long getLikeCount(UUID blogPostId) {
-        return likeRepository.countByBlogPostId(blogPostId);
+        long count = likeRepository.countByBlogPostId(blogPostId);
+        log.debug("Like count for blogPost {}: {}", blogPostId, count);
+        return count;
     }
     
     @Transactional(readOnly = true)
     public boolean isLikedByUser(UUID blogPostId, UUID userId) {
-        return likeRepository.existsByBlogPostIdAndUserId(blogPostId, userId);
+        boolean isLiked = likeRepository.existsByBlogPostIdAndUserId(blogPostId, userId);
+        log.debug("isLikedByUser for blogPost: {} and user: {} = {}", blogPostId, userId, isLiked);
+        return isLiked;
     }
 }

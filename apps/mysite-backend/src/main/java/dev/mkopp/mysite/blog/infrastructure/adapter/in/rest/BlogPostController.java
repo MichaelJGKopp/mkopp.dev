@@ -24,10 +24,7 @@ import org.springframework.http.MediaType;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(
-    value = "/v1/blog",
-    produces = MediaType.APPLICATION_JSON_VALUE
-)
+@RequestMapping(value = "/v1/blog", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "Blog", description = "Blog post management API")
 public class BlogPostController {

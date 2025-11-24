@@ -3,6 +3,7 @@ package dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.mapper;
 import dev.mkopp.mysite.blog.application.mapper.AuthorMapper;
 import dev.mkopp.mysite.blog.domain.model.Author;
 import dev.mkopp.mysite.blog.domain.model.BlogPost;
+import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.TagJpaRepository;
 import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.BlogPostEntity;
 import dev.mkopp.mysite.blog.infrastructure.adapter.out.persistence.entity.TagEntity;
 import dev.mkopp.mysite.user.api.UserApi;
@@ -26,9 +27,37 @@ public abstract class BlogPostEntityMapper {
     @Autowired
     protected AuthorMapper authorMapper;
     
-    @Mapping(target = "author", source = "entity", qualifiedByName = "mapAuthor")
-    @Mapping(target = "tags", source = "tags", qualifiedByName = "mapTagsToStrings")
-    public abstract BlogPost toDomain(BlogPostEntity entity);
+    @Autowired
+    protected TagJpaRepository tagJpaRepository;
+    
+    public BlogPost toDomain(BlogPostEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        
+        Author author = null;
+        if (entity.getAuthorId() != null) {
+            author = userApi.getUserById(entity.getAuthorId())
+                .map(authorMapper::toAuthor)
+                .orElse(null);
+        }
+        
+        Set<String> tags = mapTagsToStrings(entity.getTags());
+        
+        return BlogPost.builder()
+            .id(entity.getId())
+            .slug(entity.getSlug())
+            .title(entity.getTitle())
+            .description(entity.getDescription())
+            .content(entity.getContent())
+            .author(author)
+            .publishedAt(entity.getPublishedAt())
+            .thumbnailUrl(entity.getThumbnailUrl())
+            .type(entity.getType())
+            .externalUrl(entity.getExternalUrl())
+            .tags(tags)
+            .build();
+    }
     
     @Mapping(target = "authorId", source = "domain.author.id")
     @Mapping(target = "tags", ignore = true)
@@ -36,26 +65,15 @@ public abstract class BlogPostEntityMapper {
     
     @AfterMapping
     protected void mapTagsToEntity(@MappingTarget BlogPostEntity entity, BlogPost domain) {
-        if (domain.getTags() != null) {
+        if (domain.getTags() != null && !domain.getTags().isEmpty()) {
             entity.setTags(domain.getTags().stream()
-                .map(name -> TagEntity.builder().name(name).build())
+                .map(name -> tagJpaRepository.findByName(name)
+                    .orElseGet(() -> tagJpaRepository.save(TagEntity.builder().name(name).build())))
                 .collect(Collectors.toSet()));
         }
     }
     
-    @Named("mapAuthor")
-    protected Author mapAuthor(BlogPostEntity entity) {
-        if (entity.getAuthorId() == null) {
-            return null;
-        }
-        
-        return userApi.getUserById(entity.getAuthorId())
-            .map(authorMapper::toAuthor)
-            .orElse(null);
-    }
-    
-    @Named("mapTagsToStrings")
-    protected Set<String> mapTagsToStrings(Set<TagEntity> tags) {
+    private Set<String> mapTagsToStrings(Set<TagEntity> tags) {
         if (tags == null) {
             return Set.of();
         }

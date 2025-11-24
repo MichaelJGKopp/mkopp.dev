@@ -11,6 +11,8 @@ public interface CommentRepository {
     Comment save(Comment comment);
     Optional<Comment> findById(UUID id);
     Page<Comment> findTopLevelByBlogPostId(UUID blogPostId, Pageable pageable);
+    Page<Comment> findRepliesByParentCommentId(UUID parentCommentId, Pageable pageable);
     long countByBlogPostId(UUID blogPostId);
+    long countByParentCommentId(UUID parentCommentId);
     void deleteById(UUID id);
 }

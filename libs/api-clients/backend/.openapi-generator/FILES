@@ -13,12 +13,13 @@ git_push.sh
 index.ts
 model/blogPostRequest.ts
 model/blogPostResponse.ts
+model/commentLikeResponse.ts
 model/commentRequest.ts
-model/commentResponse.ts
+model/commentTreeItem.ts
 model/likeResponse.ts
 model/models.ts
 model/pageBlogPostResponse.ts
-model/pageCommentResponse.ts
+model/pageCommentTreeItem.ts
 model/pageable.ts
 model/pageableObject.ts
 model/sortObject.ts

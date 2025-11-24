@@ -1,9 +1,10 @@
 package dev.mkopp.mysite.blog.infrastructure.adapter.in.rest;
 
+import dev.mkopp.mysite.blog.application.dto.CommentLikeResponse;
+import dev.mkopp.mysite.blog.application.service.CommentLikeService;
 import dev.mkopp.mysite.blog.application.service.CommentService;
 import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.dto.CommentRequest;
-import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.dto.CommentResponse;
-import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.mapper.CommentRestMapper;
+import dev.mkopp.mysite.blog.infrastructure.adapter.in.rest.dto.CommentTreeItem;
 import dev.mkopp.mysite.user.application.port.in.FindOrCreateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,59 +21,122 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/blog/{blogPostId}/comments")
 @RequiredArgsConstructor
 @Tag(name = "Comments", description = "Blog comment management API")
 class CommentController {
     
     private final CommentService commentService;
+    private final CommentLikeService commentLikeService;
     private final FindOrCreateUserUseCase findOrCreateUserUseCase;
-    private final CommentRestMapper mapper;
     
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get comments for blog post")
-    public ResponseEntity<Page<CommentResponse>> getComments(
-            @PathVariable UUID blogPostId,
-            Pageable pageable) {
-        return ResponseEntity.ok(commentService.getTopLevelCommentsByPostId(blogPostId, pageable)
-            .map(mapper::toResponse));
+    @GetMapping(value = "/v1/blog/{blogPostId}/comments/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get comment count for blog post")
+    public ResponseEntity<Long> getCommentCount(@PathVariable UUID blogPostId) {
+        return ResponseEntity.ok(commentService.getCommentCount(blogPostId));
     }
     
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/v1/blog/{blogPostId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get top-level comments for blog post")
+    public ResponseEntity<Page<CommentTreeItem>> getTopLevelComments(
+            @PathVariable UUID blogPostId,
+            Pageable pageable) {
+        return ResponseEntity.ok(commentService.getTopLevelComments(blogPostId, pageable));
+    }
+    
+    @GetMapping(value = "/v1/comments/{commentId}/replies", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get replies for a comment")
+    public ResponseEntity<Page<CommentTreeItem>> getReplies(
+            @PathVariable UUID commentId,
+            Pageable pageable) {
+        return ResponseEntity.ok(commentService.getReplies(commentId, pageable));
+    }
+    
+    @PostMapping(value = "/v1/blog/{blogPostId}/comments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Create comment")
-    public ResponseEntity<CommentResponse> createComment(
+    public ResponseEntity<CommentTreeItem> createComment(
             @PathVariable UUID blogPostId,
             @RequestBody CommentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
         UUID userId = extractAndEnsureUser(jwt);
         var comment = commentService.createComment(blogPostId, userId, request.content(), request.parentCommentId());
-        return ResponseEntity.ok(mapper.toResponse(comment));
+        long replyCount = commentService.getReplyCount(comment.getId());
+        long likeCount = commentLikeService.getCommentLikeCount(comment.getId());
+        return ResponseEntity.ok(new CommentTreeItem(
+            comment.getId(),
+            comment.getUserId(),
+            comment.getContent(),
+            comment.getCreatedAt(),
+            comment.getUpdatedAt(),
+            replyCount,
+            likeCount
+        ));
     }
     
-    @PutMapping(value = "/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/v1/comments/{commentId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
-    @Operation(summary = "Update comment")
-    public ResponseEntity<CommentResponse> updateComment(
-            @PathVariable UUID blogPostId,
+    @Operation(summary = "Update comment (PATCH)")
+    public ResponseEntity<CommentTreeItem> updateComment(
             @PathVariable UUID commentId,
             @RequestBody CommentRequest request,
             @AuthenticationPrincipal Jwt jwt) {
         UUID userId = extractAndEnsureUser(jwt);
         var comment = commentService.updateComment(commentId, userId, request.content());
-        return ResponseEntity.ok(mapper.toResponse(comment));
+        long replyCount = commentService.getReplyCount(comment.getId());
+        long likeCount = commentLikeService.getCommentLikeCount(comment.getId());
+        return ResponseEntity.ok(new CommentTreeItem(
+            comment.getId(),
+            comment.getUserId(),
+            comment.getContent(),
+            comment.getCreatedAt(),
+            comment.getUpdatedAt(),
+            replyCount,
+            likeCount
+        ));
     }
     
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/v1/comments/{commentId}")
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Delete comment")
     public ResponseEntity<Void> deleteComment(
-            @PathVariable UUID blogPostId,
             @PathVariable UUID commentId,
             @AuthenticationPrincipal Jwt jwt) {
         UUID userId = extractAndEnsureUser(jwt);
         commentService.deleteComment(commentId, userId);
         return ResponseEntity.noContent().build();
+    }
+    
+    // Comment Like endpoints
+    
+    @PostMapping("/v1/comments/{commentId}/like")
+    @SecurityRequirement(name = "oauth2")
+    @Operation(summary = "Toggle like on comment")
+    public ResponseEntity<CommentLikeResponse> toggleCommentLike(
+            @PathVariable UUID commentId,
+            @AuthenticationPrincipal Jwt jwt) {
+        UUID userId = extractAndEnsureUser(jwt);
+        commentLikeService.toggleCommentLike(commentId, userId);
+        
+        return ResponseEntity.ok(new CommentLikeResponse(
+            commentLikeService.getCommentLikeCount(commentId),
+            commentLikeService.isCommentLikedByUser(commentId, userId)
+        ));
+    }
+    
+    @GetMapping(value = "/v1/comments/{commentId}/like", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get comment like count and user like status")
+    public ResponseEntity<CommentLikeResponse> getCommentLikeInfo(
+            @PathVariable UUID commentId,
+            @AuthenticationPrincipal(errorOnInvalidType = false) Jwt jwt) {
+        long count = commentLikeService.getCommentLikeCount(commentId);
+        boolean isLiked = false;
+        
+        if (jwt != null) {
+            UUID userId = UUID.fromString(jwt.getSubject());
+            isLiked = commentLikeService.isCommentLikedByUser(commentId, userId);
+        }
+        
+        return ResponseEntity.ok(new CommentLikeResponse(count, isLiked));
     }
     
     private UUID extractAndEnsureUser(Jwt jwt) {
