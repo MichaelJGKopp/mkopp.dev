@@ -1,0 +1,68 @@
+services:
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    depends_on:
+      sonarqube-db:
+        condition: service_healthy
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonarpass
+      SONAR_WEB_JVM_OPTIONS: "-Xms512m -Xmx2048m"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-logs:/opt/sonarqube/logs
+      - sonarqube-extensions:/opt/sonarqube/extensions
+    networks:
+      - sonar
+      - web
+    labels:
+      traefik.enable: "true"
+
+      # Router: SonarQube Web UI
+      traefik.http.routers.sonarqube.rule: "Host(`sonar.localhost`)"
+      traefik.http.routers.sonarqube.entrypoints: "web"
+      traefik.http.routers.sonarqube.service: "sonarqube-svc"
+
+      # Service
+      traefik.http.services.sonarqube-svc.loadbalancer.server.port: "9000"
+
+      # Dashboard protection optional
+      # traefik.http.routers.sonarqube.middlewares: "internal-ips"
+
+      traefik.docker.network: "web"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/about"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+
+  sonarqube-db:
+    image: postgres:16.10-alpine
+    container_name: sonarqube-db
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonarpass
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonarqube-db-data:/var/lib/postgresql/data
+    networks:
+      - sonar
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar -d sonarqube"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  sonar:
+  web:
+    external: true # <- already created in main compose
+
+volumes:
+  sonarqube-data:
+  sonarqube-logs:
+  sonarqube-extensions:
+  sonarqube-db-data:

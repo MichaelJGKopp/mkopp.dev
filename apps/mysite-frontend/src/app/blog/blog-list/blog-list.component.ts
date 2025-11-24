@@ -9,7 +9,6 @@ import { ActivatedRoute } from '@angular/router';
   standalone: true,
   imports: [CommonModule, PostCardComponent],
   templateUrl: './blog-list.component.html',
-  styleUrls: ['./blog-list.component.scss'],
 })
 export class BlogListComponent implements OnInit {
   private route = inject(ActivatedRoute);

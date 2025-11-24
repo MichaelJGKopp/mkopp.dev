@@ -15,7 +15,6 @@ import { ThemeService } from '../../../shared/theme/theme.service';
   standalone: true,
   imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './post-card.component.html',
-  styleUrls: ['./post-card.component.scss'],
 })
 export class PostCardComponent {
   @Input({ required: true }) post!: BlogPostResponse;

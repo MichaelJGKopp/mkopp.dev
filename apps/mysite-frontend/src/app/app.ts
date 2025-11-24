@@ -14,7 +14,6 @@ import { apiConfigFactory } from './core/api/api.config';
   imports: [RouterModule, Navbar, Footer, ToastComponent],
   selector: 'mysite-root',
   templateUrl: './app.html',
-  styleUrl: './app.scss',
   providers: [
     {
       provide: ApiModule,
