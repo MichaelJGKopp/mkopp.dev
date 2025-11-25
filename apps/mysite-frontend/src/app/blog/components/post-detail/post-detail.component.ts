@@ -1,16 +1,36 @@
 import { ThemeService } from './../../../shared/theme/theme.service';
-import { Component, OnInit, signal, PLATFORM_ID, inject, afterNextRender } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  PLATFORM_ID,
+  inject,
+  afterNextRender,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faArrowLeft, faCalendar, faUser, faTag } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faCalendar,
+  faUser,
+  faTag,
+} from '@fortawesome/free-solid-svg-icons';
 import { BlogPostsService } from '../../services/blog-posts.service';
+import { CommentSectionComponent } from '../comments/comment-section.component';
+import { BlogLikeButtonComponent } from '../blog-like-button/blog-like-button.component';
 
 @Component({
   selector: 'mysite-post-detail',
   standalone: true,
-  imports: [CommonModule, MarkdownModule, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    MarkdownModule,
+    FontAwesomeModule,
+    CommentSectionComponent,
+    BlogLikeButtonComponent,
+  ],
   templateUrl: './post-detail.component.html',
 })
 export class PostDetailComponent implements OnInit {
@@ -60,7 +80,7 @@ export class PostDetailComponent implements OnInit {
       error: (err) => {
         this.error.set('Failed to load post');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -84,7 +104,7 @@ export class PostDetailComponent implements OnInit {
     if (isPlatformBrowser(this.platformId) && (window as any).mermaid) {
       try {
         (window as any).mermaid.run({
-          querySelector: '.language-mermaid'
+          querySelector: '.language-mermaid',
         });
       } catch (e) {
         console.error('Mermaid initialization failed:', e);

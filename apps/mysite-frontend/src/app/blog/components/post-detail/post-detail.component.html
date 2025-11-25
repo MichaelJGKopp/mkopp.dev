@@ -28,10 +28,10 @@
         </div>
       </div>
 
-      @if (post()!.tags && post()!.tags.size > 0) {
+      @if (post()!.tags) {
       <div class="flex flex-wrap gap-2">
         @for (tag of post()!.tags; track tag) {
-        <span class="badge badge-primary badge-md lg:badge-lg" [class.badge-outline]="isDarkMode()">
+        <span class="badge badge-primary badge-outline badge-md lg:badge-lg" [class.font-bold]="!isDarkMode()">
           <fa-icon [icon]="faTag" size="xs" class="mr-1"></fa-icon>
           {{ tag }}
         </span>
@@ -44,6 +44,18 @@
       <markdown [data]="post()!.content" (ready)="onMarkdownReady()">
       </markdown>
     </div>
+
+    <!-- Like Button -->
+    @if (post()!.id) {
+    <div class="mt-8">
+      <mysite-blog-like-button [blogPostId]="post()!.id" />
+    </div>
+    }
+
+    <!-- Comments Section -->
+    @if (post()!.id) {
+    <mysite-comment-section [blogPostId]="post()!.id" />
+    }
   </article>
   }
 </div>

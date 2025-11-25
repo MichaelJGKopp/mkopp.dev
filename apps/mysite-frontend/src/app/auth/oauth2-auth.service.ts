@@ -3,12 +3,7 @@ import {
   HttpErrorResponse,
   HttpParams,
 } from '@angular/common/http';
-import {
-  afterNextRender,
-  inject,
-  Injectable,
-  signal,
-} from '@angular/core';
+import { afterNextRender, inject, Injectable, signal } from '@angular/core';
 import dayjs, { Dayjs } from 'dayjs';
 import Keycloak from 'keycloak-js';
 import {
@@ -32,7 +27,6 @@ import { ToastService } from '../shared/toast/toast.service';
   providedIn: 'root',
 })
 export class Oauth2AuthService {
-
   private http = inject(HttpClient);
   private toastService = inject(ToastService);
 
@@ -47,7 +41,7 @@ export class Oauth2AuthService {
   });
 
   private tokenRefreshSubscription?: Subscription;
-  
+
   private MIN_TOKEN_VALIDITY_MILLISECONDS = 10000;
 
   private fetchUserHttp$ = new Observable<ConnectedUser>();
@@ -65,6 +59,9 @@ export class Oauth2AuthService {
     State.forSuccess<ConnectedUser>({ email: this.notConnected })
   );
 
+  private isAuthenticatedSignal = signal(false);
+  isAuthenticated = this.isAuthenticatedSignal.asReadonly();
+
   public initAuthentication(): void {
     from(
       this.keycloak.init({
@@ -76,11 +73,13 @@ export class Oauth2AuthService {
       })
     ).subscribe({
       next: (isAuthenticated) => {
+        this.isAuthenticatedSignal.set(this.keycloak.authenticated || false);
+
         if (isAuthenticated) {
           this.accessToken = this.keycloak.token;
           this.fetch();
           this.initUpdateTokenRefresh();
-          
+
           const justLoggedIn = sessionStorage.getItem('justLoggedIn');
           if (justLoggedIn === 'true') {
             this.toastService.show('Successfully logged in!', 'SUCCESS');
@@ -91,17 +90,17 @@ export class Oauth2AuthService {
       error: (err) => {
         console.error('Keycloak initialization failed:', err);
         sessionStorage.removeItem('justLoggedIn');
-      }
+      },
     });
   }
 
   initUpdateTokenRefresh(): void {
-    this.tokenRefreshSubscription = interval(this.MIN_TOKEN_VALIDITY_MILLISECONDS)
+    this.tokenRefreshSubscription = interval(
+      this.MIN_TOKEN_VALIDITY_MILLISECONDS
+    )
       .pipe(
         switchMap(() =>
-          from(
-            this.keycloak.updateToken(this.MIN_TOKEN_VALIDITY_MILLISECONDS)
-          )
+          from(this.keycloak.updateToken(this.MIN_TOKEN_VALIDITY_MILLISECONDS))
         )
       )
       .subscribe({
@@ -112,9 +111,13 @@ export class Oauth2AuthService {
         },
         error: (err) => {
           console.error('Token refresh failed:', err);
-          
+
           if (this.keycloak.isTokenExpired()) {
-            this.toastService.show('Your session has expired. Please login again.', 'WARNING', 5000);
+            this.toastService.show(
+              'Your session has expired. Please login again.',
+              'WARNING',
+              5000
+            );
             setTimeout(() => this.logout(), 2000);
           }
         },
@@ -149,10 +152,6 @@ export class Oauth2AuthService {
     });
   }
 
-  isAuthenticated(): boolean {
-    return this.keycloak.authenticated || false;
-  }
-
   login(): void {
     sessionStorage.setItem('justLoggedIn', 'true');
     this.keycloak.login();
@@ -160,32 +159,14 @@ export class Oauth2AuthService {
 
   logout(): void {
     this.tokenRefreshSubscription?.unsubscribe();
-    this.keycloak.logout();
+    sessionStorage.removeItem('justLoggedIn');
+    this.keycloak.logout().then(() => {
+      // Sync signal after logout
+      this.isAuthenticatedSignal.set(false);
+    });
   }
 
   goToProfilePage(): void {
     this.keycloak.accountManagement();
-  }
-
-  handleLastSeen(userPublicId: string): void {
-    const params = new HttpParams().set('publicId', userPublicId);
-    this.http
-      .get<Date>(`${environment.API_URL}/users/get-last-seen`, { params })
-      .pipe(
-        retry(2),
-        catchError((error: HttpErrorResponse) => {
-          this.toastService.show('Failed to fetch last seen time', 'DANGER');
-          console.error('[HTTP] Failed to fetch last seen after retries:', error);
-          throw error;
-        })
-      )
-      .subscribe({
-        next: (lastSeen: Date) =>
-          this.lastSeen$.next(
-            State.forSuccess<Dayjs>(dayjs(lastSeen))
-          ),
-        error: (err) =>
-          this.lastSeen$.next(State.forError<Dayjs>(err)),
-      });
   }
 }

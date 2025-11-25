@@ -8,9 +8,12 @@
                 <ul tabIndex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                     <li><a routerLink="/">Home</a></li>
                     <li><a routerLink="/blog">Blog</a></li>
-                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs" target="_blank" rel="noopener noreferrer">Documentation</a></li>
-                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev/issues" target="_blank" rel="noopener noreferrer">Issues</a></li>
+                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev" target="_blank"
+                            rel="noopener noreferrer">GitHub</a></li>
+                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs" target="_blank"
+                            rel="noopener noreferrer">Documentation</a></li>
+                    <li><a href="https://github.com/MichaelJGKopp/mkopp.dev/issues" target="_blank"
+                            rel="noopener noreferrer">Issues</a></li>
                 </ul>
             </div>
             <a class="btn btn-ghost text-2xl text-primary hover:bg-base-300 font-bold" routerLink="/">
@@ -26,9 +29,13 @@
                     <details #resourcesMenu>
                         <summary class="btn btn-ghost">Resources</summary>
                         <ul class="z-30 shadow">
-                            <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
-                            <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs" target="_blank" rel="noopener noreferrer">Documentation</a></li>
-                            <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev/issues" target="_blank" rel="noopener noreferrer">Issue Tracker</a></li>
+                            <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev"
+                                    target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
+                            <li><a class="btn btn-ghost"
+                                    href="https://github.com/MichaelJGKopp/mkopp.dev/blob/main/docs" target="_blank"
+                                    rel="noopener noreferrer">Documentation</a></li>
+                            <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev/issues"
+                                    target="_blank" rel="noopener noreferrer">Issue Tracker</a></li>
                         </ul>
                     </details>
                 </li>
@@ -58,8 +65,11 @@
                     <fa-icon [icon]="['fas', 'user']" size="xs" class="menu-icon"></fa-icon>
                 </div>
                 <ul class="dropdown-content menu menu-lg bg-base-100 rounded-box z-10 w-52 p-2 shadow">
+                    @if (!isAuthenticated()) {
                     <li><button type="button" (click)="login()">Login</button></li>
+                    } @else {
                     <li><button type="button" (click)="logout()">Logout</button></li>
+                    }
                 </ul>
             </div>
             <!-- <div class="dropdown dropdown-end me-4" routerLink="/cart">

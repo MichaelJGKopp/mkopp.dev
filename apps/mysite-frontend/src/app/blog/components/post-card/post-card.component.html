@@ -13,10 +13,10 @@
       <span>{{ post.publishedAt | date:'mediumDate' }}</span>
     </div>
 
-    @if (post.tags && post.tags.size > 0) {
+    @if (post.tags) {
     <div class="flex flex-wrap gap-2 mt-2">
       @for (tag of post.tags; track tag) {
-      <span class="badge badge-primary badge-md lg:badge-lg" [class.badge-outline]="isDarkMode()">
+      <span class="badge badge-primary badge-outline badge-md lg:badge-lg" [class.font-bold]="!isDarkMode()">
         <fa-icon [icon]="faTag" size="xs" class="mr-1"></fa-icon>
         {{ tag }}
       </span>

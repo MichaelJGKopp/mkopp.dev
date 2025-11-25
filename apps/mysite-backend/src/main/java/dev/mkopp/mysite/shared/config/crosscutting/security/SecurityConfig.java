@@ -46,7 +46,8 @@ public class SecurityConfig {
 
                         // Public API endpoints with GET access
                         .requestMatchers(HttpMethod.GET,
-                                "/v1/blog/**")
+                                "/v1/blog/**", 
+                        "/v1/comments/**")
                         .permitAll()
 
                         // Allow authenticated access to comments and likes of posts

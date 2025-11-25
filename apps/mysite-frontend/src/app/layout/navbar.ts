@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faBars, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
@@ -11,10 +11,10 @@ import { ThemeService } from '../shared/theme/theme.service';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
-
   private oauth2Service = inject(Oauth2AuthService);
   private themeService = inject(ThemeService);
 
+  isAuthenticated = this.oauth2Service.isAuthenticated;
   isDarkMode = this.themeService.isDarkMode;
 
   faBars = faBars;

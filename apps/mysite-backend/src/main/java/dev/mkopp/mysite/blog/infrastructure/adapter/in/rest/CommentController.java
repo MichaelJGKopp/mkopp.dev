@@ -9,6 +9,7 @@ import dev.mkopp.mysite.user.application.port.in.FindOrCreateUserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +40,7 @@ class CommentController {
     @Operation(summary = "Get top-level comments for blog post")
     public ResponseEntity<Page<CommentTreeItem>> getTopLevelComments(
             @PathVariable UUID blogPostId,
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(commentService.getTopLevelComments(blogPostId, pageable));
     }
     
@@ -47,7 +48,7 @@ class CommentController {
     @Operation(summary = "Get replies for a comment")
     public ResponseEntity<Page<CommentTreeItem>> getReplies(
             @PathVariable UUID commentId,
-            Pageable pageable) {
+            @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(commentService.getReplies(commentId, pageable));
     }
     

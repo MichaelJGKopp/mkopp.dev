@@ -1,6 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap, map } from 'rxjs';
-import { BlogService, BlogPostResponse } from '@mkopp/api-clients/backend';
+import { Observable, tap, map, lastValueFrom } from 'rxjs';
+import {
+  BlogService,
+  BlogPostResponse,
+  LikesService,
+} from '@mkopp/api-clients/backend';
 
 @Injectable({
   providedIn: 'root',
@@ -8,9 +12,10 @@ import { BlogService, BlogPostResponse } from '@mkopp/api-clients/backend';
 export class BlogPostsService {
   private postsMetadata = signal<BlogPostResponse[]>([]);
   private blogApi = inject(BlogService);
+  private likesApi = inject(LikesService);
 
   loadPostsMetadataSSR(): Observable<BlogPostResponse[]> {
-    return this.blogApi.getAllPosts({ page: 0, size: 100 }).pipe(
+    return this.blogApi.getAllPosts(0, 100).pipe(
       map((response) => response.content || []),
       tap((metadata) => {
         this.postsMetadata.set(metadata);
@@ -34,5 +39,19 @@ export class BlogPostsService {
         return dateB - dateA;
       })
       .slice(0, limit);
+  }
+
+  async toggleLike(blogPostId: string): Promise<void> {
+    await lastValueFrom(this.likesApi.toggleLike(blogPostId));
+  }
+
+  async getLikeCount(blogPostId: string): Promise<number> {
+    const response = await lastValueFrom(this.likesApi.getLikeInfo(blogPostId));
+    return response.likeCount ?? 0;
+  }
+
+  async isLikedByCurrentUser(blogPostId: string): Promise<boolean> {
+    const response = await lastValueFrom(this.likesApi.getLikeInfo(blogPostId));
+    return response.isLiked ?? false;
   }
 }

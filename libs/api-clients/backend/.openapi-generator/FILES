@@ -20,7 +20,6 @@ model/likeResponse.ts
 model/models.ts
 model/pageBlogPostResponse.ts
 model/pageCommentTreeItem.ts
-model/pageable.ts
 model/pageableObject.ts
 model/sortObject.ts
 model/userResponse.ts

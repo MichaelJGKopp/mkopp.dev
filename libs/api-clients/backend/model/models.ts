@@ -6,7 +6,6 @@ export * from './commentTreeItem';
 export * from './likeResponse';
 export * from './pageBlogPostResponse';
 export * from './pageCommentTreeItem';
-export * from './pageable';
 export * from './pageableObject';
 export * from './sortObject';
 export * from './userResponse';
