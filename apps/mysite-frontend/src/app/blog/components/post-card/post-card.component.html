@@ -26,12 +26,12 @@
 
     <div class="card-actions justify-end mt-4">
       @if (post.type === 'EXTERNAL' || post.type === 'YOUTUBE') {
-      <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+      <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
         View {{ post.type === 'YOUTUBE' ? 'Video' : 'Article' }}
         <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
       </a>
       } @else {
-      <a [routerLink]="['/blog', post.slug]" class="btn btn-primary btn-sm">
+      <a [routerLink]="['/blog', post.slug]" class="btn btn-secondary btn-sm">
         Read More
         <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
       </a>

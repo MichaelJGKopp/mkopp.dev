@@ -51,10 +51,12 @@ public class SecurityConfig {
                         .permitAll()
 
                         // Allow authenticated access to comments and likes of posts
-                        .requestMatchers("/v1/blog/{blogPostId}/**")
+                        .requestMatchers("/v1/blog/{blogPostId}/**",
+                                "/v1/comments/**"
+                        )
                         .authenticated()
 
-                        // Allow unauthenticated access to get current user info
+                        // Allow authenticated access to get current user info
                         .requestMatchers("/v1/users/me")
                         .authenticated()
 
