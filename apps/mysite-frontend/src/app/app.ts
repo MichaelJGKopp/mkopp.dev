@@ -8,7 +8,7 @@ import { Oauth2AuthService } from './auth/oauth2-auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { ThemeService } from './shared/theme/theme.service';
 import { ApiModule } from '@mkopp/api-clients/backend';
-import { apiConfigFactory } from './core/api/api.config';
+import { apiConfigFactory } from './shared/config/api.config';
 
 @Component({
   imports: [RouterModule, Navbar, Footer, ToastComponent],

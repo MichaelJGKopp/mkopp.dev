@@ -28,239 +28,29 @@ import {
   LikesService,
   CommentLikeResponse,
 } from '@mkopp/api-clients/backend';
+import { Oauth2AuthService } from '../../../auth/oauth2-auth.service';
 
 @Component({
   selector: 'mysite-comment-item',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule, CommentItemComponent],
-  template: `
-    <div class="card bg-base-100 shadow-sm">
-      <div class="card-body p-4">
-        <!-- Comment Header -->
-        <div class="mb-2 flex items-start justify-between">
-          <div class="flex items-center gap-2">
-            <div class="avatar placeholder">
-              <div class="w-10 rounded-full bg-primary text-primary-content">
-                <span class="text-xs">{{ getUserInitials() }}</span>
-              </div>
-            </div>
-            <div>
-              <!-- ToDo: Replace with actual user name -->
-              <p class="text-sm font-semibold">
-                User {{ comment.userId?.substring(0, 8) }}
-              </p>
-              <p class="text-xs text-base-content/60">
-                {{ comment.createdAt | date: 'short' }}
-              </p>
-            </div>
-          </div>
-
-          @if (isOwnComment()) {
-            <div class="dropdown dropdown-end">
-              <label tabindex="0" class="btn btn-circle btn-ghost btn-sm">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                  />
-                </svg>
-              </label>
-              <ul
-                tabindex="0"
-                class="menu dropdown-content w-32 rounded-box bg-base-200 p-2 shadow"
-              >
-                <li>
-                  <a (click)="startEdit()"
-                    ><fa-icon [icon]="faEdit"></fa-icon> Edit</a
-                  >
-                </li>
-                <li>
-                  <a (click)="deleteComment()" class="text-error"
-                    ><fa-icon [icon]="faTrash"></fa-icon> Delete</a
-                  >
-                </li>
-              </ul>
-            </div>
-          }
-        </div>
-
-        <!-- Comment Content (View or Edit Mode) -->
-        @if (isEditing()) {
-          <div class="mb-3">
-            <textarea
-              class="textarea textarea-bordered w-full"
-              rows="3"
-              [(ngModel)]="editContent"
-              [disabled]="savingEdit()"
-            ></textarea>
-            <div class="mt-2 flex gap-2">
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="saveEdit()"
-                [disabled]="!editContent.trim() || savingEdit()"
-              >
-                <fa-icon [icon]="faCheck"></fa-icon>
-                @if (savingEdit()) {
-                  <span class="loading loading-spinner loading-xs"></span>
-                }
-                Save
-              </button>
-              <button
-                class="btn btn-ghost btn-sm"
-                (click)="cancelEdit()"
-                [disabled]="savingEdit()"
-              >
-                <fa-icon [icon]="faTimes"></fa-icon>
-                Cancel
-              </button>
-            </div>
-          </div>
-        } @else {
-          <p class="mb-3 whitespace-pre-wrap text-sm">{{ comment.content }}</p>
-        }
-
-        <!-- Action Buttons -->
-        <div class="flex items-center gap-4 text-sm">
-          <!-- Like Button -->
-          <button
-            class="flex items-center gap-1 transition-colors hover:text-error"
-            [class.text-error]="likeInfo().isLiked"
-            (click)="toggleLike()"
-            [disabled]="togglingLike() || !isAuthenticated"
-          >
-            @if (togglingLike()) {
-              <span class="loading loading-spinner loading-xs"></span>
-            } @else {
-              <fa-icon
-                [icon]="likeInfo().isLiked ? faHeartSolid : faHeartRegular"
-              ></fa-icon>
-            }
-            <span>{{ likeInfo().count || 0 }}</span>
-          </button>
-
-          <!-- Reply Button -->
-          @if (isAuthenticated) {
-            <button
-              class="flex items-center gap-1 transition-colors hover:text-primary"
-              (click)="toggleReplyForm()"
-            >
-              <fa-icon [icon]="faReply"></fa-icon>
-              <span>Reply</span>
-            </button>
-          }
-
-          <!-- Share Button -->
-          <button
-            class="flex items-center gap-1 transition-colors hover:text-info"
-            (click)="shareComment()"
-          >
-            <fa-icon [icon]="faShare"></fa-icon>
-            <span>Share</span>
-          </button>
-
-          <!-- Show Replies Button -->
-          @if (comment.replyCount && comment.replyCount! > 0) {
-            <button
-              class="flex items-center gap-1 transition-colors hover:text-primary"
-              (click)="toggleReplies()"
-            >
-              <fa-icon
-                [icon]="showReplies() ? faChevronUp : faChevronDown"
-              ></fa-icon>
-              <span
-                >{{ comment.replyCount }}
-                {{ comment.replyCount === 1 ? 'Reply' : 'Replies' }}</span
-              >
-            </button>
-          }
-        </div>
-
-        <!-- Reply Form -->
-        @if (showReplyForm()) {
-          <div class="ml-8 mt-4">
-            <textarea
-              class="textarea textarea-bordered textarea-sm w-full"
-              placeholder="Write a reply..."
-              rows="2"
-              [(ngModel)]="replyContent"
-              [disabled]="submittingReply()"
-            ></textarea>
-            <div class="mt-2 flex gap-2">
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="submitReply()"
-                [disabled]="!replyContent.trim() || submittingReply()"
-              >
-                @if (submittingReply()) {
-                  <span class="loading loading-spinner loading-xs"></span>
-                }
-                Post Reply
-              </button>
-              <button
-                class="btn btn-ghost btn-sm"
-                (click)="cancelReply()"
-                [disabled]="submittingReply()"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        }
-
-        <!-- Replies List -->
-        @if (showReplies() && replies().length > 0) {
-          <div class="ml-8 mt-4 space-y-3">
-            @for (reply of replies(); track reply.id) {
-              <mysite-comment-item
-                [comment]="reply"
-                [blogPostId]="blogPostId"
-                [currentUserId]="currentUserId"
-                [isAuthenticated]="isAuthenticated"
-                [isReply]="true"
-                (commentDeleted)="handleReplyDeleted($event)"
-                (commentUpdated)="handleReplyUpdated($event)"
-              />
-            }
-
-            @if (hasMoreReplies()) {
-              <button
-                class="btn btn-outline btn-sm"
-                (click)="loadMoreReplies()"
-                [disabled]="loadingReplies()"
-              >
-                @if (loadingReplies()) {
-                  <span class="loading loading-spinner loading-xs"></span>
-                }
-                Load More Replies
-              </button>
-            }
-          </div>
-        }
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  templateUrl: './comment-item.component.html',
 })
 export class CommentItemComponent implements OnInit {
   private commentsService = inject(CommentsService);
   private likesService = inject(LikesService);
+  private authService = inject(Oauth2AuthService);
 
   @Input({ required: true }) comment!: CommentTreeItem;
   @Input({ required: true }) blogPostId!: string;
-  @Input() currentUserId?: string;
-  @Input() isAuthenticated = false;
   @Input() isReply = false;
 
   @Output() commentDeleted = new EventEmitter<{ commentId: string }>();
   @Output() commentUpdated = new EventEmitter<{ comment: CommentTreeItem }>();
   @Output() replyAdded = new EventEmitter<{ commentId: string }>();
+
+  currentUser = this.authService.connectedUser;
+  isAuthenticated = this.authService.isAuthenticated;
 
   // UI State
   isEditing = signal(false);
@@ -300,13 +90,13 @@ export class CommentItemComponent implements OnInit {
     });
 
     // Load actual like status if authenticated
-    if (this.isAuthenticated) {
+    if (this.isAuthenticated()) {
       this.loadLikeInfo();
     }
   }
 
   isOwnComment(): boolean {
-    return this.currentUserId === this.comment.userId;
+    return this.currentUser()?.id === this.comment.userId;
   }
 
   getUserInitials(): string {
@@ -493,13 +283,17 @@ export class CommentItemComponent implements OnInit {
   }
 
   toggleLike() {
-    if (!this.isAuthenticated || !this.comment.id) return;
+    if (!this.isAuthenticated() || !this.comment.id) return;
 
     this.togglingLike.set(true);
 
+    console.log('Current like info before toggle:', this.likeInfo());
+
     this.commentsService.toggleCommentLike(this.comment.id!).subscribe({
       next: (response) => {
+        console.log('Toggle like response:', response);
         this.likeInfo.set(response);
+        console.log('Like info after set:', this.likeInfo());
         this.togglingLike.set(false);
       },
       error: (err) => {
@@ -507,6 +301,10 @@ export class CommentItemComponent implements OnInit {
         this.togglingLike.set(false);
       },
     });
+  }
+
+  login() {
+    this.authService.login();
   }
 
   // Share functionality

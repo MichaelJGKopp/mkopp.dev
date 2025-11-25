@@ -13,32 +13,7 @@ import { BlogPostsService } from '../../services/blog-posts.service';
   selector: 'mysite-blog-like-button',
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
-  template: `
-    <div class="flex items-center gap-4">
-      <!-- Like Button -->
-      <button
-        class="btn btn-ghost btn-sm gap-2"
-        [class.text-error]="liked()"
-        (click)="toggleLike()"
-        [disabled]="!isAuthenticated() || togglingLike()"
-      >
-        <fa-icon [icon]="liked() ? faHeartSolid : faHeartRegular" size="lg" />
-        <span class="text-base font-semibold">{{ likeCount() }}</span>
-      </button>
-
-      <!-- Share Button -->
-      <button class="btn btn-ghost btn-sm gap-2" (click)="share()">
-        <fa-icon [icon]="faShareSquare" size="lg" />
-        <span class="text-sm">Share</span>
-      </button>
-
-      @if (!isAuthenticated()) {
-        <span class="text-xs text-base-content/60"
-          >Login to like this post</span
-        >
-      }
-    </div>
-  `,
+  templateUrl: './blog-like-button.component.html',
 })
 export class BlogLikeButtonComponent implements OnInit {
   @Input({ required: true }) blogPostId!: string;
@@ -53,10 +28,9 @@ export class BlogLikeButtonComponent implements OnInit {
   liked = signal(false);
   likeCount = signal(0);
   togglingLike = signal(false);
-  isAuthenticated = signal(false);
+  isAuthenticated = this.authService.isAuthenticated;
 
   async ngOnInit() {
-    this.isAuthenticated.set(this.authService.isAuthenticated());
     this.loadLikeInfo();
   }
 
@@ -120,5 +94,9 @@ export class BlogLikeButtonComponent implements OnInit {
         console.error('Failed to copy to clipboard:', error);
       }
     }
+  }
+
+  login() {
+    this.authService.login();
   }
 }

@@ -2,11 +2,7 @@
   "name": "@my-workspace/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {
-    "download:backend": "powershell -File tools\\scripts\\api_download.ps1 -Service backend -Url http://api.localhost/v3/api-docs",
-    "generate:backend": "powershell -ExecutionPolicy Bypass -File tools\\scripts\\api_generate.ps1 -Service backend",
-    "update:backend": "npm run download:backend && npm run generate:backend"
-  },
+  "scripts": {},
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "~20.1.0",

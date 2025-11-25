@@ -13,8 +13,8 @@ import { SortObject } from './sortObject';
 
 
 export interface PageCommentTreeItem { 
-    totalPages?: number;
     totalElements?: number;
+    totalPages?: number;
     size?: number;
     content?: Array<CommentTreeItem>;
     number?: number;

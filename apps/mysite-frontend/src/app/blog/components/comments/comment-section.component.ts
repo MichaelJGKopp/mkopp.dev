@@ -10,87 +10,7 @@ import { CommentItemComponent } from './comment-item.component';
   selector: 'mysite-comment-section',
   standalone: true,
   imports: [CommonModule, FormsModule, FontAwesomeModule, CommentItemComponent],
-  template: `
-    <div class="mt-12 w-full">
-      <div class="divider"></div>
-
-      <div class="mb-6 flex items-center justify-between">
-        <h2 class="text-2xl font-bold">Comments ({{ totalComments() }})</h2>
-      </div>
-
-      <!-- New Comment Form -->
-      @if (isAuthenticated()) {
-        <div class="card mb-6 bg-base-200 shadow-sm">
-          <div class="card-body">
-            <textarea
-              class="textarea textarea-bordered w-full"
-              placeholder="Write a comment..."
-              rows="3"
-              [(ngModel)]="newCommentContent"
-              [disabled]="submittingComment()"
-            ></textarea>
-            <div class="card-actions mt-2 justify-end">
-              <button
-                class="btn btn-primary btn-sm"
-                (click)="submitComment()"
-                [disabled]="!newCommentContent.trim() || submittingComment()"
-              >
-                @if (submittingComment()) {
-                  <span class="loading loading-spinner loading-xs"></span>
-                }
-                Post Comment
-              </button>
-            </div>
-          </div>
-        </div>
-      } @else {
-        <div class="alert alert-info mb-6">
-          <span>Please log in to post comments</span>
-        </div>
-      }
-
-      <!-- Comments List -->
-      @if (loadingComments()) {
-        <div class="flex justify-center py-8">
-          <span class="loading loading-spinner loading-lg"></span>
-        </div>
-      } @else if (comments().length === 0) {
-        <div class="py-8 text-center text-base-content/60">
-          No comments yet. Be the first to comment!
-        </div>
-      } @else {
-        <div class="space-y-4">
-          @for (comment of comments(); track comment.id) {
-            <mysite-comment-item
-              [comment]="comment"
-              [blogPostId]="blogPostId"
-              [currentUserId]="currentUserId()"
-              [isAuthenticated]="isAuthenticated()"
-              (commentDeleted)="handleCommentDeleted($event)"
-              (commentUpdated)="handleCommentUpdated($event)"
-              (replyAdded)="handleReplyAdded($event)"
-            />
-          }
-        </div>
-
-        <!-- Load More -->
-        @if (hasMoreComments()) {
-          <div class="mt-6 flex justify-center">
-            <button
-              class="btn btn-outline"
-              (click)="loadMoreComments()"
-              [disabled]="loadingMore()"
-            >
-              @if (loadingMore()) {
-                <span class="loading loading-spinner loading-sm"></span>
-              }
-              Load More Comments
-            </button>
-          </div>
-        }
-      }
-    </div>
-  `,
+  templateUrl: './comment-section.component.html',
 })
 export class CommentSectionComponent implements OnInit {
   private commentsService = inject(CommentsService);
@@ -110,21 +30,12 @@ export class CommentSectionComponent implements OnInit {
 
   newCommentContent = '';
 
-  isAuthenticated = signal(false);
+  isAuthenticated = this.authService.isAuthenticated;
   currentUserId = signal<string | undefined>(undefined);
 
   ngOnInit() {
-    this.checkAuthentication();
     this.loadComments();
     this.loadCommentCount();
-  }
-
-  private async checkAuthentication() {
-    const authenticated = this.authService.isAuthenticated();
-    this.isAuthenticated.set(authenticated);
-
-    // TODO: Get user ID from auth service if needed for ownership checks
-    // this.currentUserId.set(userId);
   }
 
   private loadComments() {
@@ -226,5 +137,9 @@ export class CommentSectionComponent implements OnInit {
           : c
       )
     );
+  }
+
+  login() {
+    this.authService.login();
   }
 }

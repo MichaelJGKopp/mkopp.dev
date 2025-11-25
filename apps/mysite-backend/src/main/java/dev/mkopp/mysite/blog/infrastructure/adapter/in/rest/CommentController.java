@@ -109,7 +109,7 @@ class CommentController {
     
     // Comment Like endpoints
     
-    @PostMapping("/v1/comments/{commentId}/like")
+    @PostMapping(value = "/v1/comments/{commentId}/like", produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "oauth2")
     @Operation(summary = "Toggle like on comment")
     public ResponseEntity<CommentLikeResponse> toggleCommentLike(

@@ -13,8 +13,8 @@ import { BlogPostResponse } from './blogPostResponse';
 
 
 export interface PageBlogPostResponse { 
-    totalPages?: number;
     totalElements?: number;
+    totalPages?: number;
     size?: number;
     content?: Array<BlogPostResponse>;
     number?: number;

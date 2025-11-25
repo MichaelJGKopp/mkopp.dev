@@ -1,4 +1,5 @@
-<div class="bg-base-200 items-center sticky top-0 z-50">
+<div class="bg-base-200 items-center fixed top-0 left-0 right-0 z-50 transition-transform duration-300"
+    [class.-translate-y-full]="!isNavbarVisible()">
     <div class="navbar md:mx-auto lg:w-[1024px] lg:justify-center">
         <div class="navbar-start">
             <div class="dropdown lg:hidden">

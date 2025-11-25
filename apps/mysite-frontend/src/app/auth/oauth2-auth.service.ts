@@ -1,26 +1,18 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpParams,
-} from '@angular/common/http';
-import { afterNextRender, inject, Injectable, signal } from '@angular/core';
-import dayjs, { Dayjs } from 'dayjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { UserResponse, UserService } from '@mkopp/api-clients/backend';
 import Keycloak from 'keycloak-js';
 import {
   catchError,
   from,
   interval,
-  Observable,
   of,
   retry,
-  shareReplay,
-  Subject,
   Subscription,
   switchMap,
+  tap,
 } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { State } from '../shared/model/state.model';
-import { ConnectedUser } from '../shared/model/user.model';
 import { ToastService } from '../shared/toast/toast.service';
 
 @Injectable({
@@ -29,6 +21,7 @@ import { ToastService } from '../shared/toast/toast.service';
 export class Oauth2AuthService {
   private http = inject(HttpClient);
   private toastService = inject(ToastService);
+  private userService = inject(UserService);
 
   notConnected = 'NOT_CONNECTED';
 
@@ -42,32 +35,26 @@ export class Oauth2AuthService {
 
   private tokenRefreshSubscription?: Subscription;
 
-  private MIN_TOKEN_VALIDITY_MILLISECONDS = 10000;
+  private MIN_TOKEN_VALIDITY_MILLISECONDS = 60000;
 
-  private fetchUserHttp$ = new Observable<ConnectedUser>();
-
-  private lastSeen$ = new Subject<State<Dayjs>>();
-  lastSeen = this.lastSeen$.asObservable();
-
-  constructor() {
-    afterNextRender(() => {
-      // this.initFetchUserCaching(false); // ToDo: add back in later
-    });
-  }
-
-  private fetchUserSignal = signal(
-    State.forSuccess<ConnectedUser>({ email: this.notConnected })
-  );
+  private fetchUserSignal = signal<UserResponse>({ email: this.notConnected });
+  connectedUser = this.fetchUserSignal.asReadonly();
 
   private isAuthenticatedSignal = signal(false);
   isAuthenticated = this.isAuthenticatedSignal.asReadonly();
 
   public initAuthentication(): void {
+    // Get saved redirect URL or use current location
+    const savedRedirectUrl = localStorage.getItem('redirectUrl');
+    const redirectUri = savedRedirectUrl
+      ? window.location.origin + savedRedirectUrl
+      : window.location.href;
+
     from(
       this.keycloak.init({
         flow: 'standard',
         onLoad: 'check-sso',
-        redirectUri: window.location.origin + '/',
+        redirectUri: redirectUri,
         silentCheckSsoRedirectUri:
           window.location.origin + '/silent-check-sso.html',
       })
@@ -80,16 +67,30 @@ export class Oauth2AuthService {
           this.fetch();
           this.initUpdateTokenRefresh();
 
-          const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+          const justLoggedIn = localStorage.getItem('justLoggedIn');
           if (justLoggedIn === 'true') {
             this.toastService.show('Successfully logged in!', 'SUCCESS');
-            sessionStorage.removeItem('justLoggedIn');
+            localStorage.removeItem('justLoggedIn');
+            localStorage.removeItem('redirectUrl');
           }
+        }
+
+        // Restore scroll position after page loads (for both login and logout)
+        const scrollPosition = localStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+          localStorage.removeItem('scrollPosition');
+          // Use timeout to ensure page is fully rendered
+          setTimeout(() => {
+            window.scrollTo({
+              top: parseInt(scrollPosition, 10),
+              behavior: 'auto',
+            });
+          }, 300);
         }
       },
       error: (err) => {
         console.error('Keycloak initialization failed:', err);
-        sessionStorage.removeItem('justLoggedIn');
+        localStorage.removeItem('justLoggedIn');
       },
     });
   }
@@ -124,13 +125,9 @@ export class Oauth2AuthService {
       });
   }
 
-  initFetchUserCaching(forceResync: boolean): void {
-    const params = new HttpParams().set('forceResync', forceResync);
-    this.fetchUserHttp$ = this.http
-      .get<ConnectedUser>(
-        `${environment.API_URL}/users/get-authenticated-user`,
-        { params: params }
-      )
+  fetch(): void {
+    this.userService
+      .getCurrentUser()
       .pipe(
         retry(2),
         catchError((error: HttpErrorResponse) => {
@@ -138,28 +135,33 @@ export class Oauth2AuthService {
           console.error('[HTTP] Failed to fetch user after retries:', error);
           return of({ email: this.notConnected });
         }),
-        shareReplay(1)
-      );
-  }
-
-  fetch(): void {
-    this.fetchUserHttp$.subscribe({
-      next: (user) =>
-        this.fetchUserSignal.set(State.forSuccess<ConnectedUser>(user)),
-      error: (error: HttpErrorResponse) => {
-        this.fetchUserSignal.set(State.forError<ConnectedUser>(error));
-      },
-    });
+        tap((user) => this.fetchUserSignal.set(user))
+      )
+      .subscribe();
   }
 
   login(): void {
-    sessionStorage.setItem('justLoggedIn', 'true');
+    // Save current URL and scroll position to return after login
+    localStorage.setItem(
+      'redirectUrl',
+      window.location.pathname + window.location.search
+    );
+    localStorage.setItem('scrollPosition', window.scrollY.toString());
+    localStorage.setItem('justLoggedIn', 'true');
     this.keycloak.login();
   }
 
   logout(): void {
     this.tokenRefreshSubscription?.unsubscribe();
-    sessionStorage.removeItem('justLoggedIn');
+
+    // Save current URL and scroll position to return after logout
+    localStorage.setItem(
+      'redirectUrl',
+      window.location.pathname + window.location.search
+    );
+    localStorage.setItem('scrollPosition', window.scrollY.toString());
+    localStorage.removeItem('justLoggedIn');
+
     this.keycloak.logout().then(() => {
       // Sync signal after logout
       this.isAuthenticatedSignal.set(false);
@@ -168,5 +170,19 @@ export class Oauth2AuthService {
 
   goToProfilePage(): void {
     this.keycloak.accountManagement();
+  }
+
+  hasRole(role: string): boolean {
+    return (
+      this.keycloak.hasRealmRole(role) || this.keycloak.hasResourceRole(role)
+    );
+  }
+
+  getRoles(): string[] {
+    return [
+      ...(this.keycloak.realmAccess?.roles || []),
+      ...(this.keycloak.resourceAccess?.[environment.keycloak.clientId]
+        ?.roles || []),
+    ];
   }
 }
