@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}?options=-c%20timezone%3DUTC
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      poolName: MysiteHikari
+      auto-commit: false
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 30000 # 30 seconds
+      idle-timeout: 600000 # 10 minutes
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    properties:
+      hibernate:
+        '[generate_statistics]': false
+        '[order_updates]': true
+        '[order_inserts]': true
+        # '[order_deletes]': true
+        '[default_schema]': ${POSTGRES_SCHEMA}
+        jdbc:
+          '[time_zone]': UTC
+          '[batch_size]': 25
+          '[default_batch_fetch_size]': 25 # For collection fetching in queries
+          '[jdbc.fetch_size]': 25 # query hint
+          # '[batch_versioned_data]': true  # for later use with versioned entities
+          # '[jdbc.batch_versioned_data]': true
+        query:
+          '[fail_on_pagination_over_collection_fetch]': true
+          '[in_clause_parameter_padding]': true
+        connection:
+          '[provider_disables_autocommit]': true
+    hibernate:
+      ddl-auto: none # We use Flyway for schema migrations
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    open-in-view: false # Disable open-in-view pattern for better resource management
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public,app_user,blog

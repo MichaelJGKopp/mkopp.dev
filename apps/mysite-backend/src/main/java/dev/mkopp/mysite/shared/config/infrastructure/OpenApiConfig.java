@@ -1,5 +1,11 @@
 package dev.mkopp.mysite.shared.config.infrastructure;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -10,11 +16,6 @@ import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
@@ -45,15 +46,16 @@ public class OpenApiConfig {
                                 .url("https://github.com/MichaelJGKopp/mkopp.dev/blob/main/LICENSE")))
                 .servers(List.of(
                         new Server()
+                                .url("http://localhost:8200")
+                                .description("Local Development Server"),
+                        new Server()
                                 .url("https://api.mkopp.dev")
                                 .description("Docker Production Server"),
                         new Server()
                                 .url("http://api.localhost")
-                                .description("Docker Development Server"),
-                        new Server()
-                                .url("http://localhost:8200")
-                                .description("Local Development Server")
-                                ))
+                                .description("Docker Development Server")
+                                )
+                        )
                 .components(new Components()
                         // Bearer token scheme (manual token input)
                         .addSecuritySchemes(bearerSchemeName, new SecurityScheme()

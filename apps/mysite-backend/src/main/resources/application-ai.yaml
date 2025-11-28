@@ -1,0 +1,91 @@
+spring:
+  ai:
+    chat:
+      client:
+        enabled: false # Enable globally, individual clients can override
+    # LLM Google Gemini only but multimodal support + AI Stuido Key and or PROD Vertex AI
+    google:
+      genai:
+        project-id: dummy-project
+        api-key: ${GEMINI_API_KEY}
+        endpoint: ${GEMINI_BASE_URL}
+        chat:
+          options:
+            model: ${GEMINI_MODEL}
+            # temperature: 0.7  # Controls randomness (0 = deterministic, 1 = creative)
+            # top-p: 0.9  # Controls nucleus sampling
+            # max-output-tokens: 2048
+            ## discourage repetition
+            # presence-penalty: 0.0
+            # frequency-penalty: 0.0
+            ## safety-settings:
+            #   - category: HARM_CATEGORY_HATE_SPEECH
+            #     threshold: BLOCK_NONE
+            ## Stop sequences
+            # stop-sequences:
+            #   - "END"
+            #   - "\nUser:"
+
+            # JSON schema for forced JSON output
+            # response-schema: |
+            #   {
+            #     "type": "object",
+            #     "properties": {
+            #       "answer": { "type": "string" }
+            #     }
+            #   }
+
+            # Whether to return tool call metadata
+            # tool-choice: AUTO   # AUTO | NONE | specific tool name
+
+            # Tools (function calling)
+            # tools:
+            #   - name: "getWeather"
+            #     description: "Return current weather based on city name"
+            #     input-schema: |
+            #       {
+            #         "type": "object",
+            #         "properties": {
+            #           "city": { "type": "string" }
+            #         },
+            #         "required": ["city"]
+            #       }
+
+        # embedding:
+        #   model: text-embedding-004 # default recommended embedding model
+
+        # Optional:
+        # dimensions: 768
+        # auto-truncate: true
+        cache:
+          # enabled: false     # default: false
+          # ttl: 10m
+        connection:
+          # connect-timeout: 5s
+          # read-timeout: 30s
+        log-requests: true
+        log-responses: true
+
+        embedding:
+          api-key: ${GEMINI_API_KEY}
+          text:
+            options:
+              model: gemini-embedding-001
+    model:
+      embedding:
+        text: google-genai
+    # LLM local + GPT
+    openai:
+      api-key: ${LLM_API_KEY}
+      base-url: ${LLM_API_BASE_URL}
+      # base-url: ${LLM_API_BASE_URL}
+      chat:
+        completions-path: ${LLM_API_COMPLETIONS_PATH}
+        options:
+          model: ${LLM_MODEL}
+          # Optional parameters: uncomment if you want to override defaults
+          # temperature: 0.7
+          # max-tokens: 1024
+          # top-p: 0.95
+          # frequency-penalty: 0.0
+          # presence-penalty: 0.0

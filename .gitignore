@@ -53,3 +53,5 @@ Thumbs.db
 # Ignore locally generated SSL certificates
 docker/certs/**
 log.txt
+
+data

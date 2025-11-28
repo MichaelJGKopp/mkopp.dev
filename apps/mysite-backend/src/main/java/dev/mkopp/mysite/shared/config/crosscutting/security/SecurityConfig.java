@@ -17,6 +17,7 @@ import dev.mkopp.mysite.shared.authentication.infrastructure.primary.KeycloakJwt
 
 @Configuration
 @EnableWebSecurity
+// @EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
@@ -59,6 +60,11 @@ public class SecurityConfig {
                         // Allow authenticated access to get current user info
                         .requestMatchers("/v1/users/me")
                         .authenticated()
+
+                        // AI Chat endpoint DEV requires no authentication for now
+                        .requestMatchers("/v1/ai", 
+                                "/v1/ai/**")
+                        .permitAll()
 
                         // All other API requests must be admin
                         .requestMatchers("/v1/**")

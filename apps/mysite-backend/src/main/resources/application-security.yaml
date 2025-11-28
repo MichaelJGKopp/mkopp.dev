@@ -1,0 +1,22 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Backend connects to Keycloak directly via Docker network
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
+          # But validates JWTs have the public issuer (what browsers sees)
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+      client:
+        registration:
+          keycloak:
+            client-id: mkopp
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/swagger-ui/oauth2-redirect.html'
+            scope: openid, profile, email
+        provider:
+          keycloak:
+            authorization-uri: http://auth.localhost/realms/mkopp/protocol/openid-connect/auth
+            token-uri: http://auth.localhost/realms/mkopp/protocol/openid-connect/token
+            user-info-uri: http://auth.localhost/realms/mkopp/protocol/openid-connect/userinfo
+            jwk-set-uri: http://auth.localhost/realms/mkopp/protocol/openid-connect/certs
