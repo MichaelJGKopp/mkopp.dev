@@ -10,9 +10,9 @@
 
 
 export interface Usage { 
-    totalTokens?: number;
     nativeUsage?: any | null;
     promptTokens?: number;
+    totalTokens?: number;
     completionTokens?: number;
 }
 

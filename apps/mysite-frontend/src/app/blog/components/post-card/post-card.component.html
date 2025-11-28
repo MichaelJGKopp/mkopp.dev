@@ -16,7 +16,8 @@
     @if (post.tags) {
     <div class="flex flex-wrap gap-2 mt-2">
       @for (tag of post.tags; track tag) {
-      <span class="badge badge-primary badge-outline badge-md lg:badge-lg" [class.font-semibold]="!isDarkMode()">
+      <span class="badge badge-primary badge-outline badge-md lg:badge-lg border-primary/45
+      shadow-md shadow-primary/25" [class.font-semibold]="!isDarkMode()">
         <fa-icon [icon]="faTag" size="xs" class="mr-1"></fa-icon>
         {{ tag }}
       </span>
@@ -26,12 +27,14 @@
 
     <div class="card-actions justify-end mt-4">
       @if (post.type === 'EXTERNAL' || post.type === 'YOUTUBE') {
-      <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
+      <a [href]="post.externalUrl" target="_blank" rel="noopener" class="btn btn-sm btn-outline text-blue-400 border-info border-0.5 border-opacity-80 shadow-md shadow-info/30 
+        hover:bg-blue-400 hover:text-white hover:border-opacity-100 hover:border-info/25 transition-colors">
         View {{ post.type === 'YOUTUBE' ? 'Video' : 'Article' }}
         <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
       </a>
       } @else {
-      <a [routerLink]="['/blog', post.slug]" class="btn btn-secondary btn-sm">
+      <a [routerLink]="['/blog', post.slug]" class="btn btn-sm btn-outline text-blue-400 border-info border-0.5 border-opacity-80 shadow-md shadow-info/30 
+        hover:bg-blue-400 hover:text-white hover:border-opacity-100 hover:border-info/25 transition-colors">
         Read More
         <fa-icon [icon]="faArrowRight" size="sm"></fa-icon>
       </a>

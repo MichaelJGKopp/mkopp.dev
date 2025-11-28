@@ -1,4 +1,5 @@
-export * from './aiBlogPostResponse';
+export * from './aiBlogPostResponseDto';
+export * from './aiChatMessageResponseDto';
 export * from './assistantMessage';
 export * from './blogPostRequest';
 export * from './blogPostResponse';

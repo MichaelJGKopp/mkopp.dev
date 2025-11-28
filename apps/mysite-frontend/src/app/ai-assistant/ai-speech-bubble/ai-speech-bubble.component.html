@@ -1,0 +1,31 @@
+@if (isVisible()) {
+<div class="chat chat-end">
+    <div class="
+      chat-bubble animate-fade-in bg-blue-500 text-white relative 
+      p-4 pr-10 shadow-lg
+
+      max-w-xs w-full      <!-- mobile width -->
+      md:max-w-sm         <!-- medium screens -->
+      lg:max-w-md         <!-- large screens -->
+    ">
+        <!-- Close button -->
+        <button class="absolute top-2 right-2 text-white/80 hover:text-white" (click)="onClose()">
+            <mysite-ai-close-button />
+        </button>
+
+        <!-- Content -->
+        <div class="flex items-start gap-3">
+            <p class="text-3xl leading-none">👋</p>
+
+            <div class="flex flex-col">
+                <p class="text-base md:text-lg lg:text-xl leading-tight">
+                    Hello visitor!
+                </p>
+                <p class="text-base md:text-lg lg:text-xl leading-tight">
+                    Can I help?
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+}

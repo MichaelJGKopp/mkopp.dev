@@ -4,6 +4,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faBars, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { Oauth2AuthService } from '../auth/oauth2-auth.service';
 import { ThemeService } from '../shared/theme/theme.service';
+import { AiService } from '../ai-assistant/ai.service';
 
 @Component({
   selector: 'mysite-navbar',
@@ -12,8 +13,12 @@ import { ThemeService } from '../shared/theme/theme.service';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
+  toggleAIPanel() {
+    throw new Error('Method not implemented.');
+  }
   private oauth2Service = inject(Oauth2AuthService);
   private themeService = inject(ThemeService);
+  private aiService = inject(AiService);
 
   isAuthenticated = this.oauth2Service.isAuthenticated;
   isDarkMode = this.themeService.isDarkMode;

@@ -9,12 +9,8 @@
  */
 
 
-export interface RateLimit { 
-    requestsRemaining?: number;
-    tokensRemaining?: number;
-    requestsLimit?: number;
-    tokensLimit?: number;
-    requestsReset?: string;
-    tokensReset?: string;
+export interface AiChatMessageResponseDto { 
+    messageType?: string;
+    text?: string;
 }
 

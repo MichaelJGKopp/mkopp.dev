@@ -1,0 +1,11 @@
+<div class="px-4 py-3 border-t border-base-300 bg-base-100">
+    <p class="text-sm text-base-content/70 mb-3">Quick prompts to get started:</p>
+    <div class="flex flex-wrap gap-2">
+        @for (prompt of quickPrompts; track prompt.label) {
+        <button type="button" (click)="selectPrompt(prompt.text)"
+            class="badge badge-outline badge-sm md:badge-md lg:badge-lg hover:badge-primary transition-colors cursor-pointer">
+            <span class="text-base-content">{{ prompt.label }}</span>
+        </button>
+        }
+    </div>
+</div>

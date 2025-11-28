@@ -20,7 +20,7 @@ public class AiBlogPostController {
     private final Map<String, ChatClient> chatClients;
  
     @GetMapping("/new")
-    public AiBlogPostResponse newPost(
+    public AiBlogPostResponseDto newPost(
             @RequestParam String topic,
             @RequestParam(defaultValue = "geminiChatClient") String clientBean) {
         ChatClient chatClient = getChatClient(clientBean);
@@ -33,7 +33,7 @@ public class AiBlogPostController {
                     u.param("topic", topic);
                 })
                 .call()
-                .entity(AiBlogPostResponse.class);
+                .entity(AiBlogPostResponseDto.class);
     }
 
     private ChatClient getChatClient(String clientBean) {

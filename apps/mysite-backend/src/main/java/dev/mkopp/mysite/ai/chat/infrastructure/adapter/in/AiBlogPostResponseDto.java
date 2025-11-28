@@ -2,7 +2,7 @@ package dev.mkopp.mysite.ai.chat.infrastructure.adapter.in;
 
 import java.util.List;
 
-public record AiBlogPostResponse(
+public record AiBlogPostResponseDto(
     String slug,
     String title,
     String description,

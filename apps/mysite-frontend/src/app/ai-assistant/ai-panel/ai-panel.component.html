@@ -1,0 +1,35 @@
+<div class="fixed bg-base-100 shadow-2xl flex flex-col md:z-30 max-md:z-[60] max-md:top-0 max-md:left-0 max-md:right-0 max-md:w-screen max-md:h-screen"
+    [ngClass]="{ 'top-0 h-full w-full left-0': isMaximized(), 'md:h-[calc(100vh-4rem)] md:top-16 md:right-0': !isMaximized()}"
+    [style.width.px]="isMaximized() ? null : panelWidth()" [class.resizing]="isResizing()">
+    <!-- Resize Handle (desktop only, hidden when maximized) -->
+    @if (!isMaximized()) {
+    <div #resizeHandle
+        class="resize-handle absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary transition-colors max-md:hidden">
+    </div>
+    }
+
+    <!-- Header -->
+    <mysite-ai-header [isMaximized]="isMaximized()" [isHeaderVisible]="isHeaderVisible()" (close)="onClose()"
+        (clear)="clearConversation()" (maximize)="toggleMaximize()" />
+
+    <!-- Messages -->
+    <div class="flex-1 overflow-hidden">
+        <mysite-ai-message-list [messages]="aiService.messages()" [loading]="aiService.loading()"
+            (scrollEvent)="onScroll($event)" />
+    </div>
+
+    <!-- Quick Prompts (show when no messages) -->
+    @if (aiService.messages().length === 0 && !aiService.loading()) {
+    <mysite-ai-quick-prompts (promptSelect)="sendMessage($event)" />
+    }
+
+    <!-- Input -->
+    <mysite-ai-input [disabled]="aiService.loading()" (sendMessage)="sendMessage($event)" />
+
+    <!-- Error Display -->
+    @if (aiService.error()) {
+    <div class="px-4 py-2 bg-error text-error-content text-sm">
+        {{ aiService.error() }}
+    </div>
+    }
+</div>

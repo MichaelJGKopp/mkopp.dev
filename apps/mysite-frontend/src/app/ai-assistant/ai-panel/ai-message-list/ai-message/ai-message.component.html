@@ -1,0 +1,15 @@
+<div class="flex w-full mb-6" [ngClass]="{
+    'justify-end': isUser,
+    'justify-start': !isUser
+  }">
+    <div class="rounded-lg px-2 md:px-3 lg:px-4 shadow-lg border-2 border-opacity-20" [ngClass]="{
+      'shadow-primary/25 border-primary': isUser,
+      'shadow-info/25 border-info/30': !isUser
+    }">
+        <div class="prose prose-sm max-w-none" [ngClass]="{
+        'prose-invert text-base-content': isUser
+      }">
+            <markdown [data]="messageText" (ready)="onMarkdownReady()"></markdown>
+        </div>
+    </div>
+</div>

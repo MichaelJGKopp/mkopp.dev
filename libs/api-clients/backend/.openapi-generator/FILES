@@ -14,7 +14,8 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
-model/aiBlogPostResponse.ts
+model/aiBlogPostResponseDto.ts
+model/aiChatMessageResponseDto.ts
 model/assistantMessage.ts
 model/blogPostRequest.ts
 model/blogPostResponse.ts

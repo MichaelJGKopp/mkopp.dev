@@ -1,0 +1,131 @@
+<div class="border-t border-base-300 bg-base-100">
+    <!-- Attached Files Section -->
+    @if (attachedFiles().length > 0) {
+    <div class="px-4 pt-3 pb-2 flex flex-wrap gap-2 items-center border-b border-base-300">
+        @for (file of attachedFiles(); track $index) {
+        <div class="badge badge-primary gap-2">
+            @if (file.type === 'file') {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            }
+            <span class="text-xs">{{ file.name }}</span>
+            <button type="button" (click)="removeFile($index)" class="hover:text-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        }
+        <!-- Add Current URL Button -->
+        <button type="button" (click)="addCurrentUrl()" class="badge badge-outline gap-1 hover:badge-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span class="text-xs">Current Page</span>
+        </button>
+    </div>
+    }
+
+    <!-- Input Area -->
+    <div class="px-4 py-3">
+        <div class="relative">
+            <textarea [(ngModel)]="message" (keydown)="onKeyDown($event)" [disabled]="disabled"
+                placeholder="Ask about this project or webtechnology" rows="1"
+                class="textarea textarea-bordered w-full resize-none focus:outline-primary min-h-[2.5rem] max-h-32 pr-12"
+                [class.textarea-disabled]="disabled"></textarea>
+
+            <!-- Send Button (bottom-right inside textarea) -->
+            <button type="button" (click)="onSend()" [disabled]="disabled || !message().trim()"
+                class="btn btn-ghost btn-sm btn-circle absolute bottom-2 right-2" [attr.aria-label]="'Send message'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Bottom Controls, hide for now -->
+        <div class="flex items-center gap-2 mt-2 hidden">
+            <!-- File Attachment -->
+            <label class="btn btn-ghost btn-sm btn-circle" title="Attach file">
+                <input type="file" class="hidden" (change)="onFileSelect($event)"
+                    accept=".txt,.md,.json,.js,.ts,.html,.css" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+            </label>
+
+            <!-- Model Selector -->
+            <div class="dropdown dropdown-top">
+                <button type="button" tabindex="0" class="btn btn-ghost btn-sm gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-xs">{{ selectedModelLabel }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 mb-1">
+                    @for (model of models; track model.value) {
+                    <li>
+                        <button type="button" (click)="selectedModel.set(model.value)"
+                            [class.active]="selectedModel() === model.value">
+                            {{ model.label }}
+                        </button>
+                    </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Tools Selector -->
+            <div class="dropdown dropdown-top">
+                <button type="button" tabindex="0" class="btn btn-ghost btn-sm gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="text-xs">{{ selectedToolLabel }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-52 mb-1">
+                    <li>
+                        <button type="button" (click)="selectedTool.set(null)" [class.active]="selectedTool() === null">
+                            None
+                        </button>
+                    </li>
+                    @for (tool of tools; track tool.value) {
+                    <li>
+                        <button type="button" (click)="selectedTool.set(tool.value)"
+                            [class.active]="selectedTool() === tool.value">
+                            {{ tool.label }}
+                        </button>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>

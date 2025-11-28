@@ -1,0 +1,51 @@
+<div class="py-3 border-b border-base-300 bg-base-200 transition-transform duration-300 max-md:sticky max-md:top-0 max-md:z-10"
+    [class.max-md:-translate-y-full]="!isHeaderVisible">
+    <div class="lg:max-w-[1024px] px-5 mx-auto flex items-center justify-between">
+        <div class="flex items-center flex-1">
+            <img src="ai_assistant.webp" alt="AI Assistant" class="h-11 mt-2 mb-1 inline-block mr-2" />
+            <div class="flex-1 align-items-center mt-2 ml-2">
+                <h2 class="text-lg font-semibold text-base-content">AI Assistant</h2>
+                <p class="text-xs text-base-content/60">Powered by Google Gemini</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button type="button" (click)="onClear()" class="btn btn-ghost btn-sm btn-circle"
+                aria-label="Clear conversation" title="Clear conversation">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+
+            <button type="button" (click)="onMaximize()" class="btn btn-ghost btn-sm btn-circle max-md:hidden"
+                [attr.aria-label]="isMaximized ? 'Restore size' : 'Maximize'"
+                [attr.title]="isMaximized ? 'Restore size' : 'Maximize'">
+                @if (isMaximized) {
+                <!-- Compress/Restore icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                </svg>
+                } @else {
+                <!-- Expand/Maximize icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                </svg>
+                }
+            </button>
+
+            <button type="button" (click)="onClose()" class="btn btn-ghost btn-sm btn-circle"
+                aria-label="Close AI Assistant" title="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

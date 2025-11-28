@@ -13,7 +13,7 @@ import { ChatResponseMetadata } from './chatResponseMetadata';
 
 export interface ChatResponse { 
     result?: Generation;
-    results?: Array<Generation>;
     metadata?: ChatResponseMetadata;
+    results?: Array<Generation>;
 }
 

@@ -9,9 +9,10 @@ import { ToastComponent } from './shared/toast/toast.component';
 import { ThemeService } from './shared/theme/theme.service';
 import { ApiModule } from '@mkopp/api-clients/backend';
 import { apiConfigFactory } from './shared/config/api.config';
+import { AiAssistantComponent } from './ai-assistant/ai-assistant.component';
 
 @Component({
-  imports: [RouterModule, Navbar, Footer, ToastComponent],
+  imports: [RouterModule, Navbar, Footer, ToastComponent, AiAssistantComponent],
   selector: 'mysite-root',
   templateUrl: './app.html',
   providers: [

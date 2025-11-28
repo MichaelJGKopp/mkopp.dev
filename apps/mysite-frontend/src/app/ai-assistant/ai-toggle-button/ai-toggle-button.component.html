@@ -1,0 +1,10 @@
+<div class="fixed bottom-6 right-6 z-40">
+    <div class="flex flex-row justify-end">
+        <mysite-ai-speech-bubble />
+        <button type="button" (click)="onToggle()"
+            class="w-24 h-24 rounded-full hover:bg-primary transition-all duration-200 flex items-center justify-center group"
+            [attr.aria-label]="'Open AI Assistant'">
+            <img src="ai_assistant.webp" alt="AI Assistant" class="h-12 md:h-14 inline-block" />
+        </button>
+    </div>
+</div>

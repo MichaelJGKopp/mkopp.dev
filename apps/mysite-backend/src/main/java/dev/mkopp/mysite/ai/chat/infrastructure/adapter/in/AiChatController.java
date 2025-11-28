@@ -11,6 +11,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class AiChatController {
                                 chatClient.toString());
         }
 
-        @GetMapping("/chat")
+        @GetMapping(value = "/chat", produces = MediaType.TEXT_PLAIN_VALUE)
         public ResponseEntity<String> chat(
                         @RequestParam(defaultValue = "Hello, how can AI assist me today?") String message,
                         @RequestParam(defaultValue = "global") String conversationId,
@@ -54,22 +55,24 @@ public class AiChatController {
                                 .system(systemInstructions)
                                 .advisors(
                                         MessageChatMemoryAdvisor.builder(chatMemory)
-                                                .conversationId(conversationId).build(),
-                                        QuestionAnswerAdvisor.builder(vectorStore).build())
+                                                .conversationId(conversationId).build()
+                                        //         ,
+                                        // QuestionAnswerAdvisor.builder(vectorStore).build()
+                                )
                                 .user(message)
-                                .tools(dateTimeTools)     // adding global Tool Bean, can be also created manually
+                                // .tools(dateTimeTools)     // adding global Tool Bean, can be also created manually
                                 .call()
                                 .content();
                 return ResponseEntity.ok(chatResponse);
         }
 
-        @GetMapping("/history")
-        public ResponseEntity<List<Map<String, String>>> history(
+        @GetMapping(value = "/history", produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<List<AiChatMessageResponseDto>> history(
                         @RequestParam(defaultValue = "global") String conversationId) {
-                List<Map<String, String>> history = chatMemory.get(conversationId).stream()
-                                .map(msg -> Map.of(
-                                                "messageType", msg.getMessageType().toString(),
-                                                "text", msg.getText()))
+                List<AiChatMessageResponseDto> history = chatMemory.get(conversationId).stream()
+                                .map(msg -> new AiChatMessageResponseDto(
+                                                msg.getMessageType().toString(),
+                                                msg.getText()))
                                 .toList();
                 return ResponseEntity.ok(history);
         }

@@ -17,7 +17,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { AiBlogPostResponse } from '../model/aiBlogPostResponse';
+import { AiBlogPostResponseDto } from '../model/aiBlogPostResponseDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -42,9 +42,9 @@ export class AiBlogPostControllerService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public newPost(topic: string, clientBean?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AiBlogPostResponse>;
-    public newPost(topic: string, clientBean?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AiBlogPostResponse>>;
-    public newPost(topic: string, clientBean?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AiBlogPostResponse>>;
+    public newPost(topic: string, clientBean?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<AiBlogPostResponseDto>;
+    public newPost(topic: string, clientBean?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AiBlogPostResponseDto>>;
+    public newPost(topic: string, clientBean?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AiBlogPostResponseDto>>;
     public newPost(topic: string, clientBean?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (topic === null || topic === undefined) {
             throw new Error('Required parameter topic was null or undefined when calling newPost.');
@@ -83,7 +83,7 @@ export class AiBlogPostControllerService extends BaseService {
 
         let localVarPath = `/v1/ai/blog-post/new`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<AiBlogPostResponse>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<AiBlogPostResponseDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

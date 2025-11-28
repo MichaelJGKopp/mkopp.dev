@@ -1,4 +1,4 @@
-<div class="bg-base-200 items-center fixed top-0 left-0 right-0 z-50 transition-transform duration-300"
+<div class="bg-base-200 items-center fixed top-0 left-0 right-0 z-[49] transition-transform duration-300"
     [class.-translate-y-full]="!isNavbarVisible()">
     <div class="navbar md:mx-auto lg:w-[1024px] lg:justify-center">
         <div class="navbar-start">
@@ -6,7 +6,8 @@
                 <div tabIndex="0" role="button" class="btn btn-ghost">
                     <fa-icon [icon]="faBars" size="xs" class="menu-icon"></fa-icon>
                 </div>
-                <ul tabIndex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                <ul tabIndex="0"
+                    class="menu menu-lg dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow z-[48]">
                     <li><a routerLink="/">Home</a></li>
                     <li><a routerLink="/blog">Blog</a></li>
                     <li><a href="https://github.com/MichaelJGKopp/mkopp.dev" target="_blank"
@@ -29,7 +30,7 @@
                 <li>
                     <details #resourcesMenu>
                         <summary class="btn btn-ghost">Resources</summary>
-                        <ul class="z-30 shadow">
+                        <ul class="z-[48] shadow">
                             <li><a class="btn btn-ghost" href="https://github.com/MichaelJGKopp/mkopp.dev"
                                     target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
                             <li><a class="btn btn-ghost"
@@ -40,6 +41,7 @@
                         </ul>
                     </details>
                 </li>
+                <li><button class="btn-ghost btn" (click)="toggleAIPanel()">AI</button></li>
             </ul>
         </div>
         <div class="navbar-end flex gap-2">
@@ -65,7 +67,7 @@
                 <div tabindex="0" role="button">
                     <fa-icon [icon]="['fas', 'user']" size="xs" class="menu-icon"></fa-icon>
                 </div>
-                <ul class="dropdown-content menu menu-lg bg-base-100 rounded-box z-10 w-52 p-2 shadow">
+                <ul class="dropdown-content menu menu-lg bg-base-100 rounded-box z-[48] w-52 p-2 shadow">
                     @if (!isAuthenticated()) {
                     <li><button type="button" (click)="login()">Login</button></li>
                     } @else {

@@ -9,12 +9,11 @@
  */
 
 
-export interface RateLimit { 
-    requestsRemaining?: number;
-    tokensRemaining?: number;
-    requestsLimit?: number;
-    tokensLimit?: number;
-    requestsReset?: string;
-    tokensReset?: string;
+export interface AiBlogPostResponseDto { 
+    slug?: string;
+    title?: string;
+    description?: string;
+    content?: string;
+    tags?: Array<string>;
 }
 
