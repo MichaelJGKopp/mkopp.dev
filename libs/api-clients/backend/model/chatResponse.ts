@@ -7,15 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SortObject } from './sortObject';
+import { Generation } from './generation';
+import { ChatResponseMetadata } from './chatResponseMetadata';
 
 
-export interface PageableObject { 
-    offset?: number;
-    sort?: SortObject;
-    unpaged?: boolean;
-    pageNumber?: number;
-    paged?: boolean;
-    pageSize?: number;
+export interface ChatResponse { 
+    result?: Generation;
+    results?: Array<Generation>;
+    metadata?: ChatResponseMetadata;
 }
 

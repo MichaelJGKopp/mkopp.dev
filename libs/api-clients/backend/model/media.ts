@@ -7,15 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SortObject } from './sortObject';
+import { MimeType } from './mimeType';
 
 
-export interface PageableObject { 
-    offset?: number;
-    sort?: SortObject;
-    unpaged?: boolean;
-    pageNumber?: number;
-    paged?: boolean;
-    pageSize?: number;
+export interface Media { 
+    id?: string;
+    mimeType?: MimeType;
+    data?: any | null;
+    name?: string;
+    dataAsByteArray?: string;
 }
 

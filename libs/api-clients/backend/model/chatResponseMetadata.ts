@@ -7,11 +7,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RateLimit } from './rateLimit';
+import { Usage } from './usage';
 
 
-export interface SortObject { 
+export interface ChatResponseMetadata { 
+    id?: string;
+    model?: string;
+    rateLimit?: RateLimit;
+    usage?: Usage;
+    promptMetadata?: any | null;
     empty?: boolean;
-    unsorted?: boolean;
-    sorted?: boolean;
 }
 

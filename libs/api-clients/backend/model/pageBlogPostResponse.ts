@@ -13,15 +13,15 @@ import { BlogPostResponse } from './blogPostResponse';
 
 
 export interface PageBlogPostResponse { 
-    totalElements?: number;
     totalPages?: number;
+    totalElements?: number;
     size?: number;
     content?: Array<BlogPostResponse>;
     number?: number;
     sort?: SortObject;
-    numberOfElements?: number;
     first?: boolean;
     last?: boolean;
+    numberOfElements?: number;
     pageable?: PageableObject;
     empty?: boolean;
 }
