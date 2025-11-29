@@ -1,5 +1,5 @@
-<div #scrollContainer (scroll)="onScroll()" class="h-full overflow-y-auto py-4 space-y-4">
-    <div class="lg:max-w-[1024px] px-3 mx-auto">
+<div #scrollContainer (scroll)="onScroll()" class="h-full overflow-y-auto py-4 max-md:pt-16 space-y-4">
+    <div class="lg:max-w-[700px] px-3 mx-auto">
         @for (message of safeMessages; track $index) {
         <mysite-ai-message [message]="message" />
         }

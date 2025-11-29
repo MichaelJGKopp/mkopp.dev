@@ -13,9 +13,6 @@ import { AiService } from '../ai-assistant/ai.service';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
-  toggleAIPanel() {
-    throw new Error('Method not implemented.');
-  }
   private oauth2Service = inject(Oauth2AuthService);
   private themeService = inject(ThemeService);
   private aiService = inject(AiService);
@@ -57,5 +54,9 @@ export class Navbar {
 
   onThemeToggle() {
     this.themeService.toggleTheme();
+  }
+
+  toggleAIPanel() {
+    this.aiService.togglePanel();
   }
 }

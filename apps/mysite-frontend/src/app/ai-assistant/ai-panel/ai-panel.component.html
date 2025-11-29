@@ -1,4 +1,4 @@
-<div class="fixed bg-base-100 shadow-2xl flex flex-col md:z-30 max-md:z-[60] max-md:top-0 max-md:left-0 max-md:right-0 max-md:w-screen max-md:h-screen"
+<div class="fixed bg-base-100 shadow-2xl flex flex-col z-[60] max-md:top-0 max-md:left-0 max-md:right-0 max-md:w-screen max-md:h-screen"
     [ngClass]="{ 'top-0 h-full w-full left-0': isMaximized(), 'md:h-[calc(100vh-4rem)] md:top-16 md:right-0': !isMaximized()}"
     [style.width.px]="isMaximized() ? null : panelWidth()" [class.resizing]="isResizing()">
     <!-- Resize Handle (desktop only, hidden when maximized) -->
@@ -9,7 +9,7 @@
     }
 
     <!-- Header -->
-    <mysite-ai-header [isMaximized]="isMaximized()" [isHeaderVisible]="isHeaderVisible()" (close)="onClose()"
+    <mysite-ai-header [isMaximized]="isMaximized()" [isHeaderVisible]="isHeaderVisible()" (aiHeaderClose)="onClose()"
         (clear)="clearConversation()" (maximize)="toggleMaximize()" />
 
     <!-- Messages -->

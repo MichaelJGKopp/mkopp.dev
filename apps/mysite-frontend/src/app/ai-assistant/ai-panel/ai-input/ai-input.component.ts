@@ -1,4 +1,13 @@
-import { Component, Output, EventEmitter, Input, signal } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  Input,
+  signal,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,9 +23,10 @@ interface AttachedFile {
   imports: [CommonModule, FormsModule],
   templateUrl: './ai-input.component.html',
 })
-export class AiInputComponent {
-  @Input() disabled: boolean = false;
+export class AiInputComponent implements AfterViewInit {
+  @Input() disabled = false;
   @Output() sendMessage = new EventEmitter<string>();
+  @ViewChild('messageInput') messageInput?: ElementRef<HTMLTextAreaElement>;
 
   message = signal<string>('');
   attachedFiles = signal<AttachedFile[]>([]);
@@ -49,11 +59,37 @@ export class AiInputComponent {
     );
   }
 
+  ngAfterViewInit(): void {
+    this.adjustTextareaHeight();
+  }
+
+  adjustTextareaHeight(): void {
+    if (!this.messageInput) return;
+    const textarea = this.messageInput.nativeElement;
+
+    // Reset height to auto to get the correct scrollHeight
+    textarea.style.height = 'auto';
+
+    // Calculate the number of rows based on scrollHeight
+    const lineHeight = 28; // Approximate line height in pixels
+    const maxRows = 12;
+    const minHeight = lineHeight * 1; // 1 row minimum
+    const maxHeight = lineHeight * maxRows;
+
+    const newHeight = Math.min(
+      Math.max(textarea.scrollHeight, minHeight),
+      maxHeight
+    );
+    textarea.style.height = `${newHeight}px`;
+  }
+
   onSend(): void {
     const msg = this.message().trim();
     if (msg && !this.disabled) {
       this.sendMessage.emit(msg);
       this.message.set('');
+      // Reset textarea height after sending
+      setTimeout(() => this.adjustTextareaHeight(), 0);
     }
   }
 

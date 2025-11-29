@@ -7,8 +7,10 @@ import {
   PLATFORM_ID,
   inject,
   AfterViewInit,
+  OnDestroy,
   ElementRef,
   ViewChild,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AiHeaderComponent } from './ai-header/ai-header.component';
@@ -32,7 +34,7 @@ import { isPlatformBrowser } from '@angular/common';
   templateUrl: './ai-panel.component.html',
   styleUrls: ['./ai-panel.component.css'],
 })
-export class AiPanelComponent implements AfterViewInit {
+export class AiPanelComponent implements AfterViewInit, OnDestroy {
   @Input() conversationId = '';
   @Output() closePanel = new EventEmitter<void>();
   @ViewChild('resizeHandle') resizeHandle?: ElementRef<HTMLDivElement>;
@@ -47,6 +49,19 @@ export class AiPanelComponent implements AfterViewInit {
   isHeaderVisible = signal<boolean>(true);
   private savedPanelWidth = 380;
   private lastScrollTop = 0;
+
+  constructor() {
+    // Manage body overflow when maximized
+    effect(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
+
+      if (this.isMaximized()) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -79,6 +94,13 @@ export class AiPanelComponent implements AfterViewInit {
 
   clearConversation(): void {
     this.aiService.clearHistory();
+    // Create and set new conversation ID
+    if (isPlatformBrowser(this.platformId)) {
+      const newId = crypto.randomUUID();
+      localStorage.setItem('mkopp-ai-conversation-id', newId);
+      this.conversationId = newId;
+      this.aiService.conversationId.set(newId);
+    }
   }
 
   sendMessage(message: string): void {
@@ -148,5 +170,11 @@ export class AiPanelComponent implements AfterViewInit {
     };
 
     handle.addEventListener('mousedown', onMouseDown);
+  }
+
+  ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
   }
 }

@@ -1,6 +1,6 @@
 <div>
-    @if (!isOpen()) {
-    <mysite-ai-toggle-button [isOpen]="isOpen()" (toggleClick)="togglePanel()" />
+    @if (!aiService.isOpen()) {
+    <mysite-ai-toggle-button [isOpen]="aiService.isOpen()" (toggleClick)="togglePanel()" />
     } @else {
     <mysite-ai-panel [conversationId]="conversationId()" (closePanel)="closePanel()" />
     }

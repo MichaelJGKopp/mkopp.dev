@@ -18,6 +18,7 @@ export class AiService {
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
   conversationId = signal<string>('');
+  isOpen = signal<boolean>(false);
 
   loadHistory(conversationId: string): void {
     if (!conversationId) return;
@@ -83,6 +84,18 @@ export class AiService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('mkopp-ai-chat-history');
     }
+  }
+
+  togglePanel(): void {
+    this.isOpen.update((open) => !open);
+  }
+
+  openPanel(): void {
+    this.isOpen.set(true);
+  }
+
+  closePanel(): void {
+    this.isOpen.set(false);
   }
 
   private saveToLocalStorage(): void {

@@ -19,9 +19,8 @@ import { loadOrCreateConversationId } from './conversation-id.util';
 })
 export class AiAssistantComponent {
   private platformId = inject(PLATFORM_ID);
-  private aiService = inject(AiService);
+  aiService = inject(AiService);
 
-  isOpen = signal<boolean>(false);
   conversationId = signal<string>('');
 
   constructor() {
@@ -34,10 +33,10 @@ export class AiAssistantComponent {
   }
 
   togglePanel(): void {
-    this.isOpen.update((open) => !open);
+    this.aiService.togglePanel();
   }
 
   closePanel(): void {
-    this.isOpen.set(false);
+    this.aiService.closePanel();
   }
 }

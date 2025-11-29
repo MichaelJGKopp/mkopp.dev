@@ -10,12 +10,12 @@ import { CommonModule } from '@angular/common';
 export class AiHeaderComponent {
   @Input() isMaximized = false;
   @Input() isHeaderVisible = true;
-  @Output() close = new EventEmitter<void>();
+  @Output() aiHeaderClose = new EventEmitter<void>();
   @Output() clear = new EventEmitter<void>();
   @Output() maximize = new EventEmitter<void>();
 
   onClose(): void {
-    this.close.emit();
+    this.aiHeaderClose.emit();
   }
 
   onClear(): void {
