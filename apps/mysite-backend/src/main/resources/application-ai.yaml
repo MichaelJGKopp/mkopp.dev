@@ -78,7 +78,6 @@ spring:
     openai:
       api-key: ${LLM_API_KEY}
       base-url: ${LLM_API_BASE_URL}
-      # base-url: ${LLM_API_BASE_URL}
       chat:
         completions-path: ${LLM_API_COMPLETIONS_PATH}
         options:

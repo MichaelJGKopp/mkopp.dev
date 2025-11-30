@@ -31,7 +31,7 @@ public class RagConfig {
     @Value("classpath:/data/README.md")
     private Resource models;
 
-    @Bean
+    // @Bean
     SimpleVectorStore simpleVectorStore(@Qualifier("googleGenAiTextEmbedding") EmbeddingModel embeddingModel) throws IOException {
         var simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
         var vectorStoreFile = getVectorStoreFile();

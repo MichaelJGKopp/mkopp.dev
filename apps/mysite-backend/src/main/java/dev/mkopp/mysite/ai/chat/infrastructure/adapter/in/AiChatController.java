@@ -2,15 +2,12 @@ package dev.mkopp.mysite.ai.chat.infrastructure.adapter.in;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +28,7 @@ public class AiChatController {
 
         private final Map<String, ChatClient> chatClients;
         private final ChatMemory chatMemory;
-        private final VectorStore vectorStore;
+        // private final VectorStore vectorStore;
         private final DateTimeTools dateTimeTools;
 
         @GetMapping("/info")
