@@ -1,6 +1,7 @@
-<div class="fixed bg-base-100 shadow-2xl flex flex-col z-[60] max-md:top-0 max-md:left-0 max-md:right-0 max-md:w-screen max-md:h-screen"
-    [ngClass]="{ 'top-0 h-full w-full left-0': isMaximized(), 'md:h-[calc(100vh-4rem)] md:top-16 md:right-0': !isMaximized()}"
-    [style.width.px]="isMaximized() ? null : panelWidth()" [class.resizing]="isResizing()">
+<div class="bg-base-100 shadow-2xl flex flex-col z-[60]" [ngClass]="{ 
+      'fixed top-0 left-0 right-0 bottom-0 w-full h-full': isMaximized(),
+      'md:fixed md:h-[calc(100dvh-4rem)] md:top-16 md:right-0 max-md:min-h-[100dvh]': !isMaximized()
+    }" [style.width.px]="isMaximized() ? null : panelWidth()" [class.resizing]="isResizing()">
     <!-- Resize Handle (desktop only, hidden when maximized) -->
     @if (!isMaximized()) {
     <div #resizeHandle
@@ -13,7 +14,7 @@
         (clear)="clearConversation()" (maximize)="toggleMaximize()" />
 
     <!-- Messages -->
-    <div class="flex-1 overflow-hidden">
+    <div class="flex-1 min-h-0">
         <mysite-ai-message-list [messages]="aiService.messages()" [loading]="aiService.loading()"
             (scrollEvent)="onScroll($event)" />
     </div>
