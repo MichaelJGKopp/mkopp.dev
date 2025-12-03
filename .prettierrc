@@ -5,6 +5,5 @@
   "semi": true,
   "printWidth": 80,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindConfig": "./apps/mysite-frontend/tailwind.config.js",
-  "tailwindFunctions": ["clsx", "cn"]
+  "tailwindConfig": "./apps/mysite-frontend/tailwind.config.js"
 }
