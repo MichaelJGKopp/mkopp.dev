@@ -19,14 +19,20 @@ It is designed to be a living, breathing showcase of enterprise-level full-stack
 
 This project is a full-stack application built within an **Nx monorepo**.
 
-| Category          | Technology                                                                                                       |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Frontend**        | [Angular](https://angular.io/) (with SSR)                                                                        |
-| **Backend**         | [Spring Boot](https://spring.io/projects/spring-boot) (Java)                                                     |
-| **Database**        | [PostgreSQL](https://www.postgresql.org/)                                                                        |
-| **Authentication**  | [Keycloak](https://www.keycloak.org/) (planned)                                                                  |
-| **DevOps**          | [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [GitHub Actions](https://github.com/features/actions), [Traefik](https://traefik.io/traefik/), SSH |
-| **Monorepo Tool**   | [Nx](https://nx.dev/)                                                                                            |
+| Category                   | Technology                                                                                                       |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Frontend**               | [Angular 20](https://angular.io/) with SSR, [TailwindCSS](https://tailwindcss.com/), [DaisyUI](https://daisyui.com/) |
+| **Backend**                | [Spring Boot 3.5](https://spring.io/projects/spring-boot) (Java 17), [Spring Modulith](https://spring.io/projects/spring-modulith) |
+| **AI/ML**                  | [Spring AI 1.1](https://spring.io/projects/spring-ai), [Google Gemini](https://ai.google.dev/), OpenAI, PGVector |
+| **Database**               | [PostgreSQL 16](https://www.postgresql.org/) with [Flyway](https://flywaydb.org/) migrations                    |
+| **Authentication**         | [Keycloak 24](https://www.keycloak.org/) (OAuth2/OIDC + Social Login)                                           |
+| **Content**                | [ngx-markdown](https://github.com/jfcere/ngx-markdown), [highlight.js](https://highlightjs.org/)                |
+| **API Contract**           | [OpenAPI 3.1](https://www.openapis.org/) with [OpenAPI Generator](https://openapi-generator.tech/)              |
+| **Quality**                | [SonarQube](https://www.sonarsource.com/products/sonarqube/), OWASP, Snyk                                       |
+| **DevOps**                 | [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [GitHub Actions](https://github.com/features/actions), [Traefik 3](https://traefik.io/) |
+| **Monorepo**               | [Nx 21](https://nx.dev/)                                                                                         |
+| **Monitoring (Planned)**   | Grafana, Loki, Prometheus, Tempo observability stack                                                             |
+| **Caching (Planned)**      | Distributed Redis cache, rate limiting (Traefik + backend), idempotent keys                                      |
 
 ---
 
@@ -51,24 +57,82 @@ flowchart TD
       B3[Backend-3]
     end
     DB[(PostgreSQL)]
-    KC[Keycloak planned]
+    KC[Keycloak]
+    SQ[SonarQube]
+    AI[Google Gemini / Local LLM]
   end
 
 T --> F1
 T --> F2
 T --> F3
+T --> KC
+T --> SQ
 F1 --> B1
 F2 --> B2
 F3 --> B3
+F1 -.OAuth2.-> KC
+F2 -.OAuth2.-> KC
+F3 -.OAuth2.-> KC
 B1 --> DB
 B2 --> DB
 B3 --> DB
-KC --> B1
-KC --> B2
-KC --> B3
+B1 -.JWT Validation.-> KC
+B2 -.JWT Validation.-> KC
+B3 -.JWT Validation.-> KC
+B1 -.Spring AI.-> AI
+B2 -.Spring AI.-> AI
+B3 -.Spring AI.-> AI
+KC --> DB
 ```
 
 For a full rationale and implementation details, see **[ADR 004 – Deployment with Docker + Traefik](./docs/adr/0004-deployment-with-docker-and-traefik.md)**.
+
+---
+
+## Key Features
+
+### 🤖 AI-Powered Chatbot (preliminary)
+
+- **Spring AI Integration**: Supports Google Gemini, OpenAI, and local LLM models
+- **Conversation Memory**: In-memory chat history with conversation ID management
+- **System Prompts & Guardrails**: Portfolio assistant and blog post generator with safety controls
+- **Streaming Responses**: Real-time streaming and traditional response modes
+- **Tool Usage**: Extensible function calling (DateTimeTools example)
+- **Future RAG**: Skeleton for vectorized codebase and documentation search
+
+### 📝 Full-Featured Blog System
+
+- **Markdown Rendering**: Rich content with `ngx-markdown` and syntax highlighting via `highlight.js`
+- **Theme Support**: Light and dark modes for code blocks
+- **Comments System**: Nested comments with threaded replies and pagination
+- **Likes**: Like functionality for both blog posts and comments
+- **SSR Optimized**: Blog posts loaded server-side for SEO and performance
+- **Database-Driven**: PostgreSQL storage with automated Flyway migrations from Markdown source
+
+### 🎨 Modern Frontend
+
+- **Fully Responsive**: Optimized layouts for mobile, tablet, and desktop
+- **No Theme Flash**: Early JavaScript theme loading prevents visual flicker
+- **Scroll Restoration**: Persists scroll position across navigation and authentication
+- **Type-Safe API Client**: Auto-generated from OpenAPI contract with TypeScript types
+- **TailwindCSS + DaisyUI**: Utility-first styling with component library and Prettier plugin for class ordering
+- **Icons**: FontAwesome (brands, regular, solid), DaisyUI icons, direct SVG
+
+### 🔒 Enterprise Security
+
+- **OAuth2/OIDC**: Keycloak integration with PKCE flow and social login (Google)
+- **JWT Validation**: Backend validates access tokens
+- **Role-Based Access**: Admin and user roles with route guards
+- **Token Refresh**: Automatic token renewal
+- **User Registration**: Email validation via SMTP with password strength requirements
+
+### 🛠 Development Excellence
+
+- **Code Quality**: SonarQube integration for static analysis
+- **Security Scanning**: OWASP and Snyk for vulnerability detection
+- **API-First**: OpenAPI 3.1 contract drives type-safe client generation
+- **Database Migrations**: Flyway for versioned schema evolution
+- **Monorepo**: Nx workspace with integrated tooling
 
 ---
 
@@ -84,44 +148,44 @@ For a full rationale and implementation details, see **[ADR 004 – Deployment w
 
 ### Setup
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
 
     ```sh
     git clone https://github.com/MichaelJGKopp/mkopp.dev.git
     cd mkopp.dev
     ```
 
-2.  **Configure Environment Variables:**
-    -   Copy the example environment file:
+2. **Configure Environment Variables:**
+    - Copy the example environment file:
 
         ```sh
         cp .env.example .env
         ```
 
-    -   Open the new `.env` file and replace the placeholder values with your local configuration.
+    - Open the new `.env` file and replace the placeholder values with your local configuration.
 
-3.  **Launch the Application:**
-    -   Use Docker Compose to build and run all the services:
+3. **Launch the Application:**
+    - Use Docker Compose to build and run all the services:
 
         ```sh
-        docker-compose up --build
+        docker-compose -f docker/docker-compose.yml --env-file .env up --build
         ```
 
-4.  **Access the Application:**
-    -   Frontend: [http://localhost](http://localhost) (or your configured domain)
-    -   Traefik Dashboard: [http://traefik.localhost](http://traefik.localhost) (Requires basic auth credentials from your `.env` file).
+4. **Access the Application:**
+    - Frontend: [http://localhost](http://localhost) (or your configured domain)
+    - Traefik Dashboard: [http://traefik.localhost](http://traefik.localhost) (Requires basic auth credentials from your `.env` file).
 
 ### Running Tests
 
 You can run the tests for the frontend and backend separately.
 
--   **Frontend (Angular):**
+- **Frontend (Angular):**
 
     ```sh
     npx nx test mysite-frontend
     ```
 
--   **Backend (Spring Boot):**
+- **Backend (Spring Boot):**
 
     ```sh
     npx nx test mysite-backend
@@ -135,10 +199,10 @@ Production deployment uses a separate `docker-compose.prod.yml` file and is auto
 
 ### CI/CD Flow
 
-1.  **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
-2.  **Build & Test:** The workflow builds and tests the frontend and backend applications.
-3.  **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
-4.  **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
+1. **Push to `main` branch:** A push or merge to the `main` branch triggers the [GitHub Actions workflow](https://github.com/MichaelJGKopp/mkopp.dev/actions/workflows/deploy.yml).
+2. **Build & Test:** The workflow builds and tests the frontend and backend applications.
+3. **Publish Docker Images:** On success, multi-stage Docker images are built and pushed to DockerHub.
+4. **Deploy to VPS:** The `deploy.sh` script is executed on the production VPS via SSH. This script pulls the latest images from DockerHub and restarts the services using `docker-compose -f docker-compose.prod.yml up -d`.
 
 This process ensures automated, consistent deployments to the production environment.
 
@@ -148,10 +212,10 @@ This process ensures automated, consistent deployments to the production environ
 
 This is an Nx monorepo. Key directories include:
 
--   `apps/`: Contains the two main applications:
-    -   `mysite-frontend/`: The Angular SSR frontend.
-    -   `mysite-backend/`: The Spring Boot (Java) backend.
--   `docs/`: Contains all project documentation, including this README, the [Design Document](./docs/design.md), and [Architecture Decision Records (ADRs)](./docs/adr/).
+- `apps/`: Contains the two main applications:
+  - `mysite-frontend/`: The Angular SSR frontend.
+  - `mysite-backend/`: The Spring Boot (Java) backend.
+- `docs/`: Contains all project documentation, including this README, the [Design Document](./docs/design.md), and [Architecture Decision Records (ADRs)](./docs/adr/).
 
 To visualize the project graph and dependencies, run:
 

@@ -1,4 +1,4 @@
-# mkopp.dev – Design Document (v0.2)
+# mkopp.dev – Design Document (v0.4)
 
 ## Version History
 
@@ -6,8 +6,9 @@
 | ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | v0.1    | 2025-09-10 | Initial outline: project goals, tech stack, basic architecture                                                                | —                                                                                                                          |
 | v0.2    | 2025-09-14 | Full monorepo setup with Nx (Angular SSR frontend + Spring Boot backend), CI/CD pipeline with Docker, Traefik, VPS deployment | ADR 002 – Nx Monorepo with Feature-Based Modularity<br>ADR 003 – SSR Angular<br>ADR 004 – Deployment with Docker + Traefik |
-| v0.3    | TBD        | Planned: integrate Keycloak for authentication and roles, admin panel, blog system                                            | ADR 001 – Authentication with Keycloak (planned)                                                                           |
-| v0.4    | TBD        | Planned: enhanced documentation, ADR indexing, teaching resources                                                             | —                                                                                                                          |
+| v0.3    | 2025-11-01 | Keycloak OAuth2/OIDC integration fully implemented (frontend + backend), role-based access control                            | ADR 001 – Authentication with Keycloak                                                                           |
+| v0.4    | 2025-12-04 | AI chatbot, blog system with comments/likes, Markdown rendering, theme system, OpenAPI code generation, SonarQube integration | ADR 006 – Flyway, ADR 007 – Keycloak JS                                                                          |
+| v0.5    | TBD        | Planned: vectorized RAG (codebase + documentation), persistent chat memory in DB, enhanced AI capabilities                    | —                                                                                                                          |
 
 ---
 
@@ -32,7 +33,57 @@ Unlike traditional portfolios that showcase many external projects, **mkopp.dev 
 
 ---
 
-## 3. Features
+## 3. Technology Stack
+
+### Frontend
+
+* **Framework**: Angular 20.1 with Server-Side Rendering (SSR)
+* **UI Components**: Custom components with TailwindCSS
+* **State Management**: Angular Signals for reactive state
+* **Markdown**: ngx-markdown 20.1.0 with highlight.js 11.11.1 for syntax highlighting
+* **Icons**: FontAwesome (brands, regular, solid)
+* **Build Tools**: Nx 21.4.1 monorepo tooling
+* **Code Generation**: OpenAPI Generator CLI 2.25.2 for type-safe API clients
+* **Styling**: TailwindCSS with Prettier plugin for class ordering
+
+### Backend
+
+* **Framework**: Spring Boot 3.5.5 (Java 17)
+* **Architecture**: Spring Modulith 1.4.1 for modular monolith design
+* **AI Integration**: Spring AI 1.1.0
+  * Google Gemini AI model support
+  * OpenAI model support  
+  * PGVector for vector storage
+  * RAG (Retrieval Augmented Generation) capabilities
+  * System prompt instructions and guardrails
+* **Security**: Spring Security with OAuth2 Resource Server + Social Login (Google)
+* **Database**:
+  * PostgreSQL 16 with PGVector extension
+  * Flyway for database migrations
+* **API Documentation**: OpenAPI 3.1 with Springdoc
+* **Object Mapping**: MapStruct 1.6.3
+
+### DevOps & Quality
+
+* **CI/CD**: GitHub Actions
+* **Containerization**: Docker with multi-stage builds
+* **Orchestration**: Docker Compose (dev), planned Kubernetes (prod)
+* **Reverse Proxy**: Traefik 3.5 with automatic SSL
+* **Code Quality**: SonarQube
+* **Security Scanning**: OWASP Dependency-Check, Snyk (local)
+* **Version Control**: Git with GitHub
+
+### Infrastructure
+
+* **Hosting**: VPS (Virtual Private Server)
+* **Database**: PostgreSQL 16.10-alpine
+* **Authentication**: Keycloak 24.0.4
+* **SSL/TLS**: Let's Encrypt via Traefik
+* **Monitoring**: Traefik Dashboard with Basic Auth
+
+---
+
+## 4. Features
 
 ### Implemented
 
@@ -46,17 +97,73 @@ Unlike traditional portfolios that showcase many external projects, **mkopp.dev 
   * Docker Compose with Traefik, 3x frontend + 3x backend + Postgres.
   * HTTPS/SSL + email forwarding for domain.
 
+* **Authentication via Keycloak**:
+  * OAuth2/OpenID Connect integration
+  * Frontend: `keycloak-js` library with custom `Oauth2AuthService`
+  * Backend: Spring Security with OAuth2 Resource Server
+  * Features: login/logout, token refresh, role-based access control, account management
+
+* **AI-Powered Chatbot**:
+  * Spring AI 1.1.0 integration with multiple LLM providers (Google Gemini, OpenAI, local LLM support)
+  * In-memory chat conversation history with conversation ID management
+  * System prompting with guardrails (portfolio assistant, blog post generator)
+  * Preliminary tool usage (DateTimeTools)
+  * Streaming and non-streaming response modes
+  * Skeleton implementations for: RAG (vector store with embeddings), image-to-text, structured output
+  * Fully responsive chat UI optimized for desktop and mobile
+
+* **Blog System**:
+  * Full CRUD operations for blog posts (create, read, update, delete)
+  * PostgreSQL storage with Flyway database migrations
+  * Automated SQL migration generation from Markdown blog posts
+  * SSR-optimized: blog posts retrieved server-side from database
+  * Markdown rendering with `ngx-markdown` and `highlight.js` for code syntax highlighting
+  * Light/dark theme support for code blocks
+  * Comment system: nested comments, threaded replies, pagination
+  * Like system: for both blog posts and comments
+  * Tag-based filtering and categorization
+
+* **Frontend Features**:
+  * Fully responsive design across mobile, tablet, and desktop
+  * Theme system with no flash on reload (early JavaScript theme loading in `index.html`)
+  * Theme persistence in localStorage
+  * Scroll position storage and restoration across navigation
+  * Type-safe API client generation with OpenAPI Generator CLI
+  * TailwindCSS + DaisyUI component library
+  * Prettier plugin for Tailwind class ordering
+
+* **User Management**:
+  * User registration with email validation via SMTP
+  * Password strength requirements and validation
+  * Notifications for blog comments and replies
+
+* **Development & Quality Tools**:
+  * SonarQube server integration for code quality and static analysis
+  * Local vulnerability scanners: OWASP Dependency-Check and Snyk (documented for future CI/CD integration)
+  * Automated API contract generation and client code generation
+
 ### Planned Features
 
-* **Authentication via Keycloak** (planned).
+* **AI Enhancements**:
+  * Fully vectorized repository as AI advisor (RAG implementation)
+  * Vectorized documentation for Spring Boot and other technologies
+  * Persistent chat memory moved to PostgreSQL database
+  * Advanced tool usage and function calling
+  * Multi-modal capabilities (image analysis, structured output)
+
+* **Infrastructure & Performance**:
+  * Grafana + Loki + Prometheus + Tempo observability stack
+  * Distributed Redis cache for improved performance
+  * Rate limiting (Traefik-level and backend-level)
+  * Idempotent key handling for safe retries
+
 * Admin dashboard for managing content (Keycloak-protected).
-* Blog posts about project architecture, CI/CD, and lessons learned.
 * Publicly available Kanban/issue tracker integrated into the site.
 * Interactive architecture diagrams and deployment visualizations.
 
 ---
 
-## 4. Architecture
+## 5. Architecture
 
 ### Current Setup
 
@@ -77,21 +184,32 @@ flowchart TD
       B3[Backend-3]
     end
     DB[(PostgreSQL)]
-    KC[Keycloak planned]
+    KC[Keycloak]
+    SQ[SonarQube]
+    AI[Google Gemini / Local LLM]
   end
 
 T --> F1
 T --> F2
 T --> F3
+T --> KC
+T --> SQ
 F1 --> B1
 F2 --> B2
 F3 --> B3
+F1 -.OAuth2.-> KC
+F2 -.OAuth2.-> KC
+F3 -.OAuth2.-> KC
 B1 --> DB
 B2 --> DB
 B3 --> DB
-KC --> B1
-KC --> B2
-KC --> B3
+B1 -.JWT Validation.-> KC
+B2 -.JWT Validation.-> KC
+B3 -.JWT Validation.-> KC
+B1 -.Spring AI.-> AI
+B2 -.Spring AI.-> AI
+B3 -.Spring AI.-> AI
+KC --> DB
 ```
 
 ### Deployment Flow
@@ -105,7 +223,7 @@ KC --> B3
 
 ---
 
-## 5. Development Process
+## 6. Development Process
 
 ### Agile Approach
 
@@ -129,7 +247,7 @@ KC --> B3
 
 ---
 
-## 6. Documentation & Showcase
+## 7. Documentation & Showcase
 
 * `/docs/` folder contains:
 
@@ -142,16 +260,16 @@ KC --> B3
 
 ---
 
-## 7. Non-Functional Requirements
+## 8. Non-Functional Requirements
 
 * **SEO**: Angular SSR for search discoverability.
 * **Resilience**: Multiple frontend & backend instances behind Traefik.
-* **Security**: Hardened VPS, planned Keycloak authentication, SSL.
+* **Security**: Hardened VPS, Keycloak OAuth2/OIDC authentication, SSL/TLS.
 * **Transparency**: Public repo, public docs, public process.
 * **Performance**: Optimized SSR build & caching.
 
 ---
 
-## 8. Roadmap
+## 9. Roadmap
 
 For a detailed project roadmap, please see the [Roadmap](./roadmap.md) document.

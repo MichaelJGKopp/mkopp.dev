@@ -17,8 +17,29 @@ Each ADR documents an important architectural or design decision, including:
 
 ## Index
 
+### Core Architecture
+
 - [ADR 0000 – Template](0000-template.md)
-- [ADR 0001 – Authentication with Keycloak](0001-authentication-with-keycloak.md)
 - [ADR 0002 – Nx Monorepo](0002-nx-monorepo.md)
 - [ADR 0003 – SSR Angular](0003-ssr-angular.md)
-- [ADR 0004 – Deployment with Docker and Traefik.md](0004-deployment-with-docker-and-traefik.md)
+- [ADR 0004 – Deployment with Docker and Traefik](0004-deployment-with-docker-and-traefik.md)
+
+### Security & Authentication
+
+- [ADR 0001 – Authentication with Keycloak](0001-authentication-with-keycloak.md)
+- [ADR 0007 – Keycloak JS over Angular-Keycloak](0007-keycloak-js-over-angular-keycloak.md)
+
+### Data & Persistence
+
+- [ADR 0006 – Flyway Over Liquibase](0006-flyway-over-liquibase.md)
+- [ADR 0012 – SSR Blog Optimization with Database](0012-ssr-blog-optimization-with-database.md)
+
+### AI & Machine Learning
+
+- [ADR 0008 – Spring AI Integration](0008-spring-ai-integration.md)
+
+### Frontend & User Experience
+
+- [ADR 0009 – OpenAPI Code Generation](0009-openapi-code-generation.md)
+- [ADR 0010 – Markdown Rendering with highlight.js](0010-markdown-rendering-with-highlightjs.md)
+- [ADR 0011 – Theme Management Without Flash](0011-theme-management-without-flash.md)

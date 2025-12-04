@@ -55,3 +55,4 @@ docker/certs/**
 log.txt
 
 data
+**/DOCUMENTATION_UPDATE_*
